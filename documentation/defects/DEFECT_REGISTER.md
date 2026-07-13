@@ -20,7 +20,7 @@ Evidence: `pip install -r services/api/requirements.txt` timed out after the `ps
 
 Impact: FastAPI startup import and automated pytest execution could not be completed locally.
 
-Next action: Re-run dependency installation on a stable network or in GitHub Actions.
+Next action: Re-run dependency installation on a stable network or in GitHub Actions. PostgreSQL-only dependency installation has been split into `services/api/requirements-postgres.txt` to reduce the backend test job surface.
 
 ## High
 

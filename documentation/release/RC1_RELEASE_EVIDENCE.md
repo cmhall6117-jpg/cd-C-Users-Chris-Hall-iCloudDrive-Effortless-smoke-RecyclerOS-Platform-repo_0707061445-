@@ -16,6 +16,7 @@
 | Flutter analyze/test | Blocked | Flutter commands timed out locally. |
 | GitHub Actions checks | Implemented | `.github/workflows/rc1-ci.yml`. |
 | Draft pull request | Blocked | No GitHub remote or repository full name is configured for this local monorepo. |
+| Draft pull request body | Passed | `documentation/release/PULL_REQUEST_DRAFT.md`. |
 
 ## Gates Not Marked Passed
 

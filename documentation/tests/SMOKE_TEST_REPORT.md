@@ -22,9 +22,9 @@ PASS 024_rc1_tenant_scope.sql
 
 ### Backend Tenant Isolation
 
-Result: blocked locally
+Result: passed in CI
 
-Reason: backend dependency installation timed out before FastAPI and pytest could be installed.
+Evidence: GitHub Actions `backend` job succeeded on run `29289307269`.
 
 Tests added:
 
@@ -36,9 +36,9 @@ Tests added:
 
 ### Flutter Primary Path
 
-Result: blocked locally
+Result: passed in CI
 
-Reason: Flutter commands timed out in the local environment.
+Evidence: GitHub Actions `flutter` job succeeded on run `29289307269`.
 
 Routes added:
 

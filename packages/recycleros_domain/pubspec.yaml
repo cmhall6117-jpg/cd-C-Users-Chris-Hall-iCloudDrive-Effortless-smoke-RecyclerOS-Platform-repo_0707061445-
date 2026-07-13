@@ -1,0 +1,5 @@
+name: recycleros_domain
+description: Shared domain models for RecyclerOS Platform.
+version: 0.1.0
+environment:
+  sdk: ">=3.4.0 <4.0.0"

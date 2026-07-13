@@ -1,0 +1,10 @@
+PASS 001_initial_offline_schema.sql
+PASS 002_opportunity_discovery.sql
+PASS 003_vehicle_digital_twin.sql
+PASS 004_procurement_workspace.sql
+PASS 005_pick_list_focus_point.sql
+PASS 006_inventory_intake.sql
+PASS 022_integration_readiness.sql
+PASS 023_local_integration_bundle.sql
+PASS 024_rc1_tenant_scope.sql
+TABLES business_events, harvest_sessions, harvested_parts, integration_issues, integration_smoke_test_runs, inventory_items, opportunities, organizations, pick_list_items, procurement_analyses, procurement_scenarios, storage_locations, sync_queue, vehicle_timeline, vehicles, workspaces

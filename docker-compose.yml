@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: recycleros_postgres
+    environment:
+      POSTGRES_DB: recycleros_dev
+      POSTGRES_USER: recycleros
+      POSTGRES_PASSWORD: recycleros_dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - recycleros_pg_data:/var/lib/postgresql/data
+
+volumes:
+  recycleros_pg_data:

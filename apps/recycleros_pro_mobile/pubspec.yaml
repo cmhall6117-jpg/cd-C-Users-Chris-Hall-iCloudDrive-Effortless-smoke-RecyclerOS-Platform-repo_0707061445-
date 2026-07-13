@@ -1,0 +1,26 @@
+name: recycleros_pro_mobile
+description: RecyclerOS Pro mobile application scaffold.
+publish_to: "none"
+version: 0.1.0
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  go_router: ^14.0.0
+  flutter_riverpod: ^2.5.0
+  dio: ^5.4.0
+  drift: ^2.18.0
+  sqlite3_flutter_libs: ^0.5.0
+  uuid: ^4.4.0
+  intl: ^0.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true

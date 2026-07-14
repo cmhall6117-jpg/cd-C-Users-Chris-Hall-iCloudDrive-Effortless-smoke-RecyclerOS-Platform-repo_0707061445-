@@ -178,7 +178,7 @@ jobs:
             -f services/api/Dockerfile \
             -t recycleros-api:production .
           test "$(docker image inspect recycleros-api:production --format '{{.Config.User}}')" = "recycleros"
-          test "$(docker image inspect recycleros-api:production --format '{{index .Config.Labels \"org.opencontainers.image.revision\"}}')" = "$GITHUB_SHA"
+          test "$(docker image inspect recycleros-api:production --format '{{index .Config.Labels "org.opencontainers.image.revision"}}')" = "$GITHUB_SHA"
           docker run --rm --entrypoint python recycleros-api:production -m pip check
       - name: Validate digest-pinned production compose
         shell: bash

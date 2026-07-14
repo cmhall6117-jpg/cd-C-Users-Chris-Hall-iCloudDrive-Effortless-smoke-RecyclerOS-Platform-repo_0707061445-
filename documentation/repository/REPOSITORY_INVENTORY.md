@@ -1229,3 +1229,23 @@ readiness edits.
 - `tools/scripts/rc1_sqlite_check.py`
 - `tools/smoke_tests/smoke_test_api.py`
 - `tools/smoke_tests/SMOKE_TEST_README.md`
+
+## Production Launch Preparation Contributions
+
+- `deploy/production/compose.yml`
+- `deploy/production/production.env.example`
+- `deploy/production/secrets/.gitignore`
+- `services/api/production_bootstrap.py`
+- `services/api/production_entrypoint.py`
+- `services/api/src/service_metadata.py`
+- `services/api/tests/test_production_runtime.py`
+- `tools/scripts/production_release_manifest.py`
+- `documentation/deployment/PRODUCTION_DEPLOYMENT_RUNBOOK.md`
+- `documentation/deployment/PRODUCTION_READINESS_CHECKLIST.md`
+- `documentation/operations/PRODUCTION_ROLLBACK_RUNBOOK.md`
+- `documentation/security/PRODUCTION_SECURITY_BASELINE.md`
+- `documentation/release/PRODUCTION_LAUNCH_PREPARATION_PR.md`
+- `documentation/release/PRODUCTION_RELEASE_EVIDENCE.md`
+
+These files are repository-authored operational controls derived from the
+integrated RC1 path. They do not activate archived vertical slice packages.

@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 import json
 import os
 import secrets
+from uuid import uuid4
 
 from auth import (
     AuthenticatedIdentity,
@@ -230,6 +231,105 @@ class PostgresAuthService:
                 """,
                 (user_id,),
             )
+
+    def bootstrap_production_owner(
+        self,
+        *,
+        email: str,
+        display_name: str,
+        password: str,
+        organization_id: str,
+        organization_name: str,
+        workspace_id: str,
+        workspace_name: str,
+    ) -> str:
+        """Create the first production owner once through an explicit command."""
+        normalized_email = email.strip().casefold()
+        required_values = {
+            "email": normalized_email,
+            "display_name": display_name.strip(),
+            "organization_id": organization_id.strip(),
+            "organization_name": organization_name.strip(),
+            "workspace_id": workspace_id.strip(),
+            "workspace_name": workspace_name.strip(),
+        }
+        if any(not value for value in required_values.values()):
+            raise ValueError("Production owner and tenant values cannot be empty.")
+
+        with self._connect() as conn, conn.cursor() as cursor:
+            cursor.execute(
+                "SELECT id FROM auth_users WHERE LOWER(email) = %s",
+                (normalized_email,),
+            )
+            if cursor.fetchone() is not None:
+                raise RuntimeError("The production owner email already exists.")
+
+            cursor.execute(
+                """
+                INSERT INTO organizations (id, name)
+                VALUES (%s, %s)
+                ON CONFLICT (id) DO NOTHING
+                """,
+                (organization_id, organization_name),
+            )
+            cursor.execute(
+                """
+                INSERT INTO workspaces (id, organization_id, name)
+                VALUES (%s, %s, %s)
+                ON CONFLICT (id) DO NOTHING
+                """,
+                (workspace_id, organization_id, workspace_name),
+            )
+
+            user_id = f"user-{uuid4()}"
+            salt = secrets.token_bytes(16)
+            iterations = 200_000
+            cursor.execute(
+                """
+                INSERT INTO auth_users (id, email, display_name)
+                VALUES (%s, %s, %s)
+                """,
+                (user_id, normalized_email, display_name),
+            )
+            cursor.execute(
+                """
+                INSERT INTO auth_password_credentials (
+                    user_id,
+                    password_salt,
+                    password_digest,
+                    password_iterations
+                )
+                VALUES (%s, %s, %s, %s)
+                """,
+                (
+                    user_id,
+                    salt,
+                    password_digest(password, salt, iterations),
+                    iterations,
+                ),
+            )
+            cursor.execute(
+                """
+                INSERT INTO auth_tenant_memberships (
+                    user_id, organization_id, workspace_id, role
+                )
+                VALUES (%s, %s, %s, 'owner')
+                """,
+                (user_id, organization_id, workspace_id),
+            )
+            self._audit(
+                cursor,
+                event_type="account_bootstrapped",
+                user_id=user_id,
+                email=normalized_email,
+                occurred_at=self._clock(),
+                details={
+                    "organization_id": organization_id,
+                    "workspace_id": workspace_id,
+                    "role": "owner",
+                },
+            )
+        return user_id
 
     def authenticate(self, email: str, password: str) -> AuthSession | None:
         normalized_email = email.strip().casefold()

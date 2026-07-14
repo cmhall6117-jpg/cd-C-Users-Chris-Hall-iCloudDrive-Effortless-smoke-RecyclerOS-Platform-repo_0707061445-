@@ -1,4 +1,4 @@
-# Pilot Backup and Restore Runbook
+# Backup and Restore Runbook
 
 ## Policy Candidate
 
@@ -46,7 +46,9 @@ Restore requires an exact target-name confirmation:
 ```powershell
 $env:RECYCLEROS_RESTORE_DATABASE_URL = "postgresql://recycleros:$postgresPassword@127.0.0.1:5432/recycleros_restore_drill"
 $env:RECYCLEROS_RESTORE_CONFIRM = "recycleros_restore_drill"
-python tools/scripts/pilot_postgres_restore.py --backup build_artifacts/pilot_backups/recycleros-pilot.dump
+python tools/scripts/pilot_postgres_restore.py `
+  --backup build_artifacts/pilot_backups/recycleros-pilot.dump `
+  --manifest build_artifacts/pilot_backups/recycleros-pilot.dump.manifest.json
 $env:RECYCLEROS_VERIFY_DATABASE_VARIABLE = "RECYCLEROS_RESTORE_DATABASE_URL"
 python tools/scripts/pilot_postgres_verify.py --require-runtime-data
 ```
@@ -63,3 +65,4 @@ operator. Remove all temporary environment variables after the rehearsal.
 - restore to a new empty database whenever possible
 - run schema, auth, opportunity, and inventory verification before switching traffic
 - retain command output in the release or incident evidence record
+- require the matching SHA-256 backup manifest before every production restore

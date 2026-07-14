@@ -1,6 +1,7 @@
 import os
 
 from fastapi import FastAPI
+from fastapi import Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from auth import AuthService, LocalAuthService
@@ -14,7 +15,12 @@ from routes.opportunities import router as opportunities_router
 from routes.pick_list import router as pick_list_router
 from routes.procurement import router as procurement_router
 from routes.vehicles import router as vehicles_router
-from runtime_config import read_config_value
+from runtime_config import (
+    read_config_value,
+    read_csv_config,
+    validate_production_web_config,
+)
+from service_metadata import API_VERSION
 from store import InMemoryStore, WorkflowStore
 
 
@@ -34,14 +40,21 @@ def create_app(
             "durable workflow and auth state."
         )
 
-    trusted_hosts = [
-        host.strip()
-        for host in os.getenv("RECYCLEROS_TRUSTED_HOSTS", "").split(",")
-        if host.strip()
-    ]
-    if deployment_mode == "production" and not trusted_hosts:
-        raise RuntimeError(
-            "Production mode requires RECYCLEROS_TRUSTED_HOSTS."
+    trusted_hosts = read_csv_config("RECYCLEROS_TRUSTED_HOSTS")
+    configured_origins = read_csv_config("RECYCLEROS_CORS_ORIGINS")
+    cors_origin_regex = os.getenv(
+        "RECYCLEROS_CORS_ORIGIN_REGEX",
+        (
+            "a^"
+            if deployment_mode == "production"
+            else r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$"
+        ),
+    )
+    if deployment_mode == "production":
+        validate_production_web_config(
+            trusted_hosts=trusted_hosts,
+            cors_origins=configured_origins,
+            cors_origin_regex=cors_origin_regex,
         )
 
     if store is None:
@@ -53,25 +66,39 @@ def create_app(
             else LocalAuthService.from_environment()
         )
 
-    app = FastAPI(title="RecyclerOS Platform API", version="0.5.0")
+    production_docs_disabled = deployment_mode == "production"
+    app = FastAPI(
+        title="RecyclerOS Platform API",
+        version=API_VERSION,
+        docs_url=None if production_docs_disabled else "/docs",
+        redoc_url=None if production_docs_disabled else "/redoc",
+        openapi_url=None if production_docs_disabled else "/openapi.json",
+    )
     app.state.store = store
     app.state.auth_service = auth_service
+    app.state.release_sha = os.getenv("RECYCLEROS_RELEASE_SHA", "development")
+
+    @app.middleware("http")
+    async def add_security_headers(request: Request, call_next):
+        response = await call_next(request)
+        response.headers["Cache-Control"] = "no-store"
+        response.headers["Referrer-Policy"] = "no-referrer"
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        if deployment_mode == "production":
+            response.headers["Strict-Transport-Security"] = (
+                "max-age=31536000; includeSubDomains"
+            )
+        return response
+
     app.add_middleware(
         TrustedHostMiddleware,
         allowed_hosts=trusted_hosts or ["*"],
     )
-    configured_origins = [
-        origin.strip()
-        for origin in os.getenv("RECYCLEROS_CORS_ORIGINS", "").split(",")
-        if origin.strip()
-    ]
     app.add_middleware(
         CORSMiddleware,
         allow_origins=configured_origins,
-        allow_origin_regex=os.getenv(
-            "RECYCLEROS_CORS_ORIGIN_REGEX",
-            r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$",
-        ),
+        allow_origin_regex=cors_origin_regex,
         allow_credentials=False,
         allow_methods=["GET", "POST", "PATCH", "OPTIONS"],
         allow_headers=[

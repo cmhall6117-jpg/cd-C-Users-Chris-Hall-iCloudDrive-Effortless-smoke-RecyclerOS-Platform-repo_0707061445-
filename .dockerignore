@@ -7,6 +7,7 @@ build_artifacts
 documentation
 packages
 deploy/pilot/secrets
+deploy/production/secrets
 **/__pycache__
 **/.pytest_cache
 **/*.pyc

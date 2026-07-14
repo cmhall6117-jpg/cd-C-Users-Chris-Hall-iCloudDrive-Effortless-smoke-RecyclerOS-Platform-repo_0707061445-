@@ -202,3 +202,73 @@ Impact: None remaining for repository-level pilot readiness.
 Resolution: The Linux image reached real readiness with a read-only filesystem,
 dropped capabilities, and no-new-privileges. The recovery rehearsal restored and
 verified auth, opportunity, and inventory data.
+
+## Production Launch Preparation
+
+### High
+
+#### DEF-PROD-001: Production hosting, ingress, DNS, and TLS are not provisioned
+
+Status: open, external blocker
+
+Impact: Production traffic must remain closed.
+
+Next action: Approve the production account and region, harden the host and
+network, provision DNS and managed TLS, and retain external verification.
+
+#### DEF-PROD-002: No approved image is published by immutable registry digest
+
+Status: open, external blocker
+
+Impact: The deployment cannot identify or retrieve an approved release artifact.
+
+Next action: Configure the approved registry, publish the exact CI candidate,
+record its SHA-256 digest and provenance, and create the release manifest.
+
+#### DEF-PROD-003: Managed PostgreSQL recovery controls are not provisioned
+
+Status: open, external blocker
+
+Impact: Production data would lack evidenced encryption, point-in-time recovery,
+retention, and target-environment restore capability.
+
+Next action: Provision managed PostgreSQL, restrict network access, configure
+encrypted backups and retention, approve RPO/RTO, and pass a restore drill.
+
+#### DEF-PROD-004: Production secrets and IAM ownership are not approved
+
+Status: open, external blocker
+
+Impact: Database and first-owner credentials cannot be safely provisioned or rotated.
+
+Next action: Configure the approved secret manager and deployment role, review
+least privilege, assign rotation owners, and retain an access review.
+
+#### DEF-PROD-005: Monitoring, incident response, and launch support are not active
+
+Status: open, external blocker
+
+Impact: Failures may not be detected, escalated, or rolled back within an approved window.
+
+Next action: Route logs, metrics, uptime and readiness alerts; test delivery; and
+assign on-call, incident command, rollback, and customer support ownership.
+
+### Medium
+
+#### DEF-PROD-006: Capacity, privacy, retention, and business launch approvals are absent
+
+Status: open, external blocker
+
+Impact: Technical repository readiness alone cannot authorize production use.
+
+Next action: Approve target load and retention, complete privacy and terms review,
+and record the accountable business go/no-go decision.
+
+#### DEF-PROD-007: Production container gate awaits GitHub Actions evidence
+
+Status: open, repository blocker
+
+Impact: The digest-pinned Compose model, migration ledger, owner bootstrap, and
+hardened multi-worker runtime are not yet proven on Linux.
+
+Next action: Run both push and pull-request workflows and record exact-head output.

@@ -68,8 +68,8 @@ working path PR run `29325554779`.
 
 PostgreSQL local execution is blocked in this environment because Docker is not
 installed or not available on PATH. Earlier GitHub Actions evidence applied the
-first ten active migrations successfully against a clean PostgreSQL 16 service.
-Clean execution of all eleven migrations, followed by the durable restart test,
-is pending on `codex/rc1-defect-closure`.
+first ten active migrations successfully. Push run `29366652838` and
+pull-request run `29366685297` applied all eleven active migrations against
+clean PostgreSQL 16 services, then passed the durable workflow/auth restart test.
 
 The PostgreSQL consolidation migration creates the missing PostgreSQL `sync_queue` table for parity with SQLite and adds tenant validation triggers for tenant-owned records.

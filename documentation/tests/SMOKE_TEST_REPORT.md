@@ -25,7 +25,7 @@ PASS tenant mismatch rejected
 
 ### Backend Authentication, RBAC, and Tenant Isolation
 
-Result: passed locally; defect-closure CI pending
+Result: passed locally and in defect-closure CI
 
 Evidence:
 
@@ -123,7 +123,7 @@ context. The new composite `release-evidence` job passed on push run
 
 ### PostgreSQL Restart and Auth Controls
 
-Result: pending GitHub Actions
+Result: passed in GitHub Actions
 
 `services/api/tests/test_postgres_runtime.py` is installed in the clean
 PostgreSQL migration job. It validates:
@@ -134,3 +134,7 @@ PostgreSQL migration job. It validates:
 4. Logout revocation survives another app instance.
 5. Repeated failed logins trigger a durable lockout.
 6. Login, failure, block, and logout audit events are stored.
+
+Evidence: push run `29366652838` and pull-request run `29366685297` passed the
+clean PostgreSQL migration and restart job at commit
+`7beea835073e42e8f07b90afbf1c4687e972d734`.

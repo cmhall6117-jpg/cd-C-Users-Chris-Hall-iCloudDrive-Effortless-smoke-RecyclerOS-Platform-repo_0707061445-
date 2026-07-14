@@ -6,6 +6,9 @@ on:
     branches:
       - "codex/rc1-*"
 
+permissions:
+  contents: read
+
 jobs:
   backend:
     runs-on: ubuntu-latest
@@ -102,3 +105,56 @@ jobs:
           flutter test --dart-define=RECYCLEROS_LIVE_API_TEST=true \
             --dart-define=RECYCLEROS_TEST_PASSWORD=local-ci-rc1 \
             test/live_rc1_gateway_test.dart
+
+  release-evidence:
+    if: ${{ always() }}
+    needs:
+      - backend
+      - sqlite-migrations
+      - postgres-migrations
+      - flutter
+      - core-integration
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify and summarize RC1 gates
+        shell: bash
+        env:
+          BACKEND_RESULT: ${{ needs.backend.result }}
+          SQLITE_RESULT: ${{ needs['sqlite-migrations'].result }}
+          POSTGRES_RESULT: ${{ needs['postgres-migrations'].result }}
+          FLUTTER_RESULT: ${{ needs.flutter.result }}
+          CORE_INTEGRATION_RESULT: ${{ needs['core-integration'].result }}
+        run: |
+          run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          {
+            echo "## RC1 release evidence"
+            echo
+            echo "| Field | Value |"
+            echo "| --- | --- |"
+            echo "| Commit | \`${GITHUB_SHA}\` |"
+            echo "| Branch | \`${GITHUB_REF_NAME}\` |"
+            echo "| Event | \`${GITHUB_EVENT_NAME}\` |"
+            echo "| Run | [${GITHUB_RUN_ID}](${run_url}) |"
+            echo
+            echo "| Required gate | Result |"
+            echo "| --- | --- |"
+            echo "| backend | ${BACKEND_RESULT} |"
+            echo "| sqlite-migrations | ${SQLITE_RESULT} |"
+            echo "| postgres-migrations | ${POSTGRES_RESULT} |"
+            echo "| flutter | ${FLUTTER_RESULT} |"
+            echo "| core-integration | ${CORE_INTEGRATION_RESULT} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          for result in \
+            "$BACKEND_RESULT" \
+            "$SQLITE_RESULT" \
+            "$POSTGRES_RESULT" \
+            "$FLUTTER_RESULT" \
+            "$CORE_INTEGRATION_RESULT"; do
+            if [[ "$result" != "success" ]]; then
+              echo "Required RC1 gate did not pass: $result"
+              exit 1
+            fi
+          done
+
+          echo "All required RC1 gates passed for ${GITHUB_SHA}."

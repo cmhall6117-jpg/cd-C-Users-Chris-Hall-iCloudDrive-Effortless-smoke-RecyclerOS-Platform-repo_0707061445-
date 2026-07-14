@@ -29,8 +29,9 @@ Result: passed locally and in current CI
 
 Evidence:
 
-- Local backend suite: 26 passed in 12.95 seconds on the current local run.
-- Current-branch GitHub Actions evidence is pending publication.
+- Local backend suite: 26 passed in 13.42 seconds on the current local run.
+- Pull-request run `29363414967` passed the backend job at commit
+  `9bf4490f91b914b05963208355218a863b632977`.
 
 Tests added:
 
@@ -70,14 +71,16 @@ Validated sequence:
 Evidence: `services/api/tests/test_rc1_workflow.py`; 26 tests passed across the
 full backend suite.
 
-GitHub Actions confirmation for this auth/RBAC increment is pending publication.
+GitHub Actions confirmation: backend and authenticated core integration passed
+on pull-request run `29363414967`.
 
 ### Flutter Primary Path
 
-Result: pending current-branch CI
+Result: passed in auth/tenant/RBAC CI
 
-Evidence: The previous core-path Flutter job succeeded on run `29325554779`.
-Current-branch evidence is pending publication.
+Evidence: Pull-request run `29363414967` passed `flutter pub get`,
+`flutter analyze`, and `flutter test` at commit
+`9bf4490f91b914b05963208355218a863b632977`.
 
 Routes added:
 
@@ -110,5 +113,7 @@ transport test verifies login response mapping, bearer authorization, required
 tenant headers, and API response mapping. A focused widget test verifies that a
 failed login stays on the login screen and a viewer cannot create records.
 
-The previous core path passed on run `29325554779`. Current-branch Flutter and
-authenticated live integration evidence is pending publication.
+The authenticated `core-integration` job also passed on pull-request run
+`29363414967`, completing all eight live transitions with bearer and tenant
+context. Exact-head verification of the new composite release-evidence job is
+pending publication of `codex/rc1-cicd-release-evidence`.

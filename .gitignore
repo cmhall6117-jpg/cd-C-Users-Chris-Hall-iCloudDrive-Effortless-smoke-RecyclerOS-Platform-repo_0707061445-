@@ -13,3 +13,7 @@ build_artifacts/pilot_backups/
 deploy/pilot/secrets/*
 !deploy/pilot/secrets/.gitignore
 deploy/pilot/pilot.env
+deploy/production/secrets/*
+!deploy/production/secrets/.gitignore
+deploy/production/production.env
+build_artifacts/production_releases/

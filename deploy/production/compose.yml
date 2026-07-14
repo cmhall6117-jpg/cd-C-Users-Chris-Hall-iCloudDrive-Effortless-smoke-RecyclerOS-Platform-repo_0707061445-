@@ -1,0 +1,80 @@
+name: recycleros-production
+
+x-api-image: &api-image
+  image: "${RECYCLEROS_API_IMAGE:?Set the approved image}@${RECYCLEROS_API_IMAGE_DIGEST:?Set the approved sha256 digest}"
+
+x-hardened-runtime: &hardened-runtime
+  read_only: true
+  tmpfs:
+    - /tmp:size=64m,mode=1777
+  cap_drop:
+    - ALL
+  security_opt:
+    - no-new-privileges:true
+
+services:
+  migrate:
+    <<: [*api-image, *hardened-runtime]
+    entrypoint: ["python", "tools/scripts/rc1_postgres_migrate.py"]
+    environment:
+      DATABASE_URL_FILE: /run/secrets/database_url
+    secrets:
+      - database_url
+    restart: "no"
+
+  bootstrap-owner:
+    <<: [*api-image, *hardened-runtime]
+    profiles: ["bootstrap"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    entrypoint: ["python", "services/api/production_bootstrap.py"]
+    environment:
+      DATABASE_URL_FILE: /run/secrets/database_url
+      RECYCLEROS_BOOTSTRAP_OWNER_PASSWORD_FILE: /run/secrets/bootstrap_owner_password
+      RECYCLEROS_BOOTSTRAP_OWNER_EMAIL: ${RECYCLEROS_BOOTSTRAP_OWNER_EMAIL:-}
+      RECYCLEROS_BOOTSTRAP_OWNER_DISPLAY_NAME: ${RECYCLEROS_BOOTSTRAP_OWNER_DISPLAY_NAME:-}
+      RECYCLEROS_BOOTSTRAP_ORGANIZATION_ID: ${RECYCLEROS_BOOTSTRAP_ORGANIZATION_ID:-}
+      RECYCLEROS_BOOTSTRAP_ORGANIZATION_NAME: ${RECYCLEROS_BOOTSTRAP_ORGANIZATION_NAME:-}
+      RECYCLEROS_BOOTSTRAP_WORKSPACE_ID: ${RECYCLEROS_BOOTSTRAP_WORKSPACE_ID:-}
+      RECYCLEROS_BOOTSTRAP_WORKSPACE_NAME: ${RECYCLEROS_BOOTSTRAP_WORKSPACE_NAME:-}
+      RECYCLEROS_BOOTSTRAP_CONFIRM: ${RECYCLEROS_BOOTSTRAP_CONFIRM:-}
+    secrets:
+      - database_url
+      - bootstrap_owner_password
+    restart: "no"
+
+  api:
+    <<: [*api-image, *hardened-runtime]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    entrypoint: ["python", "services/api/production_entrypoint.py"]
+    environment:
+      DATABASE_URL_FILE: /run/secrets/database_url
+      RECYCLEROS_DEPLOYMENT_MODE: production
+      RECYCLEROS_RELEASE_SHA: ${RECYCLEROS_RELEASE_SHA:?Set the deployed Git SHA}
+      RECYCLEROS_TRUSTED_HOSTS: ${RECYCLEROS_TRUSTED_HOSTS:?Set exact API hosts}
+      RECYCLEROS_CORS_ORIGINS: ${RECYCLEROS_CORS_ORIGINS:-}
+      RECYCLEROS_CORS_ORIGIN_REGEX: a^
+      RECYCLEROS_API_WORKERS: ${RECYCLEROS_API_WORKERS:-2}
+      RECYCLEROS_FORWARDED_ALLOW_IPS: ${RECYCLEROS_FORWARDED_ALLOW_IPS:?Set trusted proxy addresses}
+      RECYCLEROS_SESSION_TTL_HOURS: ${RECYCLEROS_SESSION_TTL_HOURS:-8}
+      RECYCLEROS_AUTH_MAX_FAILURES: ${RECYCLEROS_AUTH_MAX_FAILURES:-5}
+      RECYCLEROS_AUTH_LOCKOUT_MINUTES: ${RECYCLEROS_AUTH_LOCKOUT_MINUTES:-15}
+    secrets:
+      - database_url
+    ports:
+      - "127.0.0.1:${RECYCLEROS_API_PORT:-8000}:8000"
+    init: true
+    pids_limit: 256
+    mem_limit: ${RECYCLEROS_API_MEMORY_LIMIT:-1g}
+    cpus: ${RECYCLEROS_API_CPU_LIMIT:-1.0}
+    stop_grace_period: 30s
+    restart: unless-stopped
+
+secrets:
+  database_url:
+    file: ${RECYCLEROS_PRODUCTION_SECRET_DIR:-./secrets}/database_url
+  bootstrap_owner_password:
+    file: ${RECYCLEROS_PRODUCTION_SECRET_DIR:-./secrets}/bootstrap_owner_password

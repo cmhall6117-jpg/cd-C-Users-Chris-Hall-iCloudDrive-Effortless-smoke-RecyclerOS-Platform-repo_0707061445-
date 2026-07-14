@@ -73,3 +73,15 @@ pull-request run `29366685297` applied all eleven active migrations against
 clean PostgreSQL 16 services, then passed the durable workflow/auth restart test.
 
 The PostgreSQL consolidation migration creates the missing PostgreSQL `sync_queue` table for parity with SQLite and adds tenant validation triggers for tenant-owned records.
+
+## Production Execution Policy
+
+`tools/scripts/rc1_postgres_migrate.py` now accepts `DATABASE_URL_FILE`, takes a
+transaction-scoped PostgreSQL advisory lock, and records each applied filename,
+SHA-256 checksum, and timestamp in `recycleros_schema_migrations`. An exact
+replay is skipped. A changed checksum fails the deployment instead of silently
+reapplying edited migration history.
+
+The first ledger-enabled run replays the existing idempotent migration set and
+records all eleven active files. Production CI must prove both the clean run and
+the subsequent all-skip replay before the gate may pass.

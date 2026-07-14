@@ -229,3 +229,51 @@ def test_postgres_workflow_auth_persist_and_revoke_across_restart():
     assert {"login_succeeded", "logout", "login_failed", "login_blocked"} <= events
     assert attempts[0] == 2
     assert attempts[1] is not None
+
+
+def test_production_owner_bootstrap_is_audited_and_one_time():
+    import psycopg
+
+    _reset_auth_state()
+    auth_service = _runtime_auth()
+    owner_email = "production-owner@example.com"
+    owner_password = "production-owner-password"
+
+    user_id = auth_service.bootstrap_production_owner(
+        email=owner_email,
+        display_name="Production Owner",
+        password=owner_password,
+        organization_id="org-production",
+        organization_name="Effortless Smoke Production",
+        workspace_id="workspace-production",
+        workspace_name="RecyclerOS Production",
+    )
+
+    session = auth_service.authenticate(owner_email, owner_password)
+    assert session is not None
+    assert session.identity.memberships[0].role.value == "owner"
+    assert auth_service.check_readiness() is True
+
+    with pytest.raises(RuntimeError, match="already exists"):
+        auth_service.bootstrap_production_owner(
+            email=owner_email,
+            display_name="Production Owner",
+            password=owner_password,
+            organization_id="org-production",
+            organization_name="Effortless Smoke Production",
+            workspace_id="workspace-production",
+            workspace_name="RecyclerOS Production",
+        )
+
+    with psycopg.connect(DATABASE_URL) as conn, conn.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT event_type, details->>'role'
+            FROM auth_audit_events
+            WHERE user_id = %s AND event_type = 'account_bootstrapped'
+            """,
+            (user_id,),
+        )
+        audit_event = cursor.fetchone()
+
+    assert audit_event == ("account_bootstrapped", "owner")

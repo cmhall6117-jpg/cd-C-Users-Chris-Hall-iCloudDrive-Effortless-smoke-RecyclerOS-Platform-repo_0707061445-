@@ -120,3 +120,18 @@ restored into a clean database, and verified.
 Draft pull request #9 is open against `codex/rc1-defect-closure`:
 
 `https://github.com/cmhall6117-jpg/cd-C-Users-Chris-Hall-iCloudDrive-Effortless-smoke-RecyclerOS-Platform-repo_0707061445-/pull/9`
+
+## Production Launch Preparation
+
+- Branch: `codex/production-launch-preparation`
+- API version: `0.6.0`
+- Production stack: `deploy/production/compose.yml`
+- Runtime: digest-pinned image, external database, separate migrations, two API workers
+- Security: exact hosts, HTTPS origins, hidden docs, HSTS, non-root read-only container
+- Identity: explicit one-time audited owner bootstrap; no bootstrap secret in API
+- Database: advisory-locked checksum ledger and manifest-verified restore
+- Release: commit, image digest, and migration checksum manifest
+- Focused local result: 13 production and operations tests passed
+- Full local backend result: 46 passed and 2 PostgreSQL-only tests skipped
+- Python compilation and SQLite clean initialization: passed
+- GitHub Actions results: pending exact-head evidence run

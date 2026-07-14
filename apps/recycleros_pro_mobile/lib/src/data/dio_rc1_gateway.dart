@@ -21,6 +21,22 @@ class DioRc1Gateway implements Rc1Gateway {
             );
 
   final Dio _dio;
+  String? _accessToken;
+
+  @override
+  Future<AuthSession> signIn({
+    required String email,
+    required String password,
+  }) async {
+    final json = await _request(
+      () => _dio.post<dynamic>(
+        '/v1/auth/login',
+        data: {'email': email, 'password': password},
+      ),
+    );
+    _accessToken = json['access_token'] as String;
+    return _authSession(json);
+  }
 
   @override
   Future<Opportunity> createOpportunity(
@@ -46,7 +62,7 @@ class DioRc1Gateway implements Rc1Gateway {
           'estimated_net_profit': 3250.0,
           'confidence_score': 81.0,
         },
-        options: Options(headers: tenant.headers),
+        options: _tenantOptions(tenant),
       ),
     );
     return _opportunity(json);
@@ -68,7 +84,7 @@ class DioRc1Gateway implements Rc1Gateway {
           'model': opportunity.model,
           'mileage': 126000,
         },
-        options: Options(headers: tenant.headers),
+        options: _tenantOptions(tenant),
       ),
     );
     return _vehicle(json);
@@ -82,7 +98,7 @@ class DioRc1Gateway implements Rc1Gateway {
     final json = await _request(
       () => _dio.get<dynamic>(
         '/v1/procurement/$opportunityId/analysis',
-        options: Options(headers: tenant.headers),
+        options: _tenantOptions(tenant),
       ),
     );
     final scenarios = json['scenarios'] as List<dynamic>? ?? const [];
@@ -102,7 +118,7 @@ class DioRc1Gateway implements Rc1Gateway {
           'yard_name': 'Greenville Pull-A-Part',
           'yard_row': '12',
         },
-        options: Options(headers: tenant.headers),
+        options: _tenantOptions(tenant),
       ),
     );
     return _pickListItem(json, vehicle);
@@ -118,7 +134,7 @@ class DioRc1Gateway implements Rc1Gateway {
       () => _dio.patch<dynamic>(
         '/v1/pick-list/${item.pickListItemId}/availability',
         data: {'availability_status': availabilityStatus},
-        options: Options(headers: tenant.headers),
+        options: _tenantOptions(tenant),
       ),
     );
     return _pickListItemFromExisting(json, item);
@@ -133,7 +149,7 @@ class DioRc1Gateway implements Rc1Gateway {
       () => _dio.post<dynamic>(
         '/v1/harvest/focus-point/start',
         queryParameters: {'vehicle_id': vehicleId},
-        options: Options(headers: tenant.headers),
+        options: _tenantOptions(tenant),
       ),
     );
     return _harvestSession(json);
@@ -148,7 +164,7 @@ class DioRc1Gateway implements Rc1Gateway {
       () => _dio.post<dynamic>(
         '/v1/harvest/focus-point/complete',
         queryParameters: {'harvest_session_id': harvestSessionId},
-        options: Options(headers: tenant.headers),
+        options: _tenantOptions(tenant),
       ),
     );
     return _harvestSession(json);
@@ -177,7 +193,7 @@ class DioRc1Gateway implements Rc1Gateway {
           'quantity': 1,
           'estimated_value': 225.0,
         },
-        options: Options(headers: tenant.headers),
+        options: _tenantOptions(tenant),
       ),
     );
     return _inventoryItem(json);
@@ -198,6 +214,19 @@ class DioRc1Gateway implements Rc1Gateway {
     }
   }
 
+  Options _tenantOptions(TenantScope tenant) {
+    final accessToken = _accessToken;
+    if (accessToken == null) {
+      throw const Rc1GatewayException('Sign in before accessing RecyclerOS.');
+    }
+    return Options(
+      headers: {
+        ...tenant.headers,
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
+  }
+
   static Map<String, dynamic> _json(dynamic value) {
     if (value is Map<String, dynamic>) {
       return value;
@@ -206,6 +235,27 @@ class DioRc1Gateway implements Rc1Gateway {
       return Map<String, dynamic>.from(value);
     }
     throw const Rc1GatewayException('RecyclerOS API returned invalid data.');
+  }
+
+  static AuthSession _authSession(Map<String, dynamic> json) {
+    final identity = _json(json['identity']);
+    final memberships = identity['memberships'] as List<dynamic>? ?? const [];
+    return AuthSession(
+      userId: identity['user_id'] as String,
+      email: identity['email'] as String,
+      displayName: identity['display_name'] as String,
+      expiresAt: DateTime.parse(json['expires_at'] as String),
+      memberships: memberships.map((item) {
+        final membership = _json(item);
+        return TenantMembership(
+          organizationId: membership['organization_id'] as String,
+          organizationName: membership['organization_name'] as String,
+          workspaceId: membership['workspace_id'] as String,
+          workspaceName: membership['workspace_name'] as String,
+          role: membership['role'] as String,
+        );
+      }).toList(),
+    );
   }
 
   static Opportunity _opportunity(Map<String, dynamic> json) {

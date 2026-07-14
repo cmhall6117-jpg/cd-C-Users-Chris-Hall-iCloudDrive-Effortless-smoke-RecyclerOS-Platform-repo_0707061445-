@@ -11,7 +11,7 @@ def test_local_flutter_web_cors_preflight():
                 "Origin": "http://localhost:4242",
                 "Access-Control-Request-Method": "POST",
                 "Access-Control-Request-Headers": (
-                    "content-type,x-organization-id,x-workspace-id"
+                    "authorization,content-type,x-organization-id,x-workspace-id"
                 ),
             },
         )
@@ -20,6 +20,7 @@ def test_local_flutter_web_cors_preflight():
     assert response.headers["access-control-allow-origin"] == "http://localhost:4242"
     assert "POST" in response.headers["access-control-allow-methods"]
     allowed_headers = response.headers["access-control-allow-headers"].lower()
+    assert "authorization" in allowed_headers
     assert "x-organization-id" in allowed_headers
     assert "x-workspace-id" in allowed_headers
 

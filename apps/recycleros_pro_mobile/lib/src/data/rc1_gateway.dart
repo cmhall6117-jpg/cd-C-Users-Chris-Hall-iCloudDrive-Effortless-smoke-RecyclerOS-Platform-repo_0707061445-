@@ -1,5 +1,37 @@
 import 'package:recycleros_domain/recycleros_domain.dart';
 
+class TenantMembership {
+  const TenantMembership({
+    required this.organizationId,
+    required this.organizationName,
+    required this.workspaceId,
+    required this.workspaceName,
+    required this.role,
+  });
+
+  final String organizationId;
+  final String organizationName;
+  final String workspaceId;
+  final String workspaceName;
+  final String role;
+}
+
+class AuthSession {
+  const AuthSession({
+    required this.userId,
+    required this.email,
+    required this.displayName,
+    required this.expiresAt,
+    required this.memberships,
+  });
+
+  final String userId;
+  final String email;
+  final String displayName;
+  final DateTime expiresAt;
+  final List<TenantMembership> memberships;
+}
+
 class TenantScope {
   const TenantScope({
     required this.organizationId,
@@ -16,6 +48,11 @@ class TenantScope {
 }
 
 abstract interface class Rc1Gateway {
+  Future<AuthSession> signIn({
+    required String email,
+    required String password,
+  });
+
   Future<Opportunity> createOpportunity(
     TenantScope tenant, {
     required String title,

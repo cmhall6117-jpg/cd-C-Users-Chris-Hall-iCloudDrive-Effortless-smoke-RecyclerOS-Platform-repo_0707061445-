@@ -25,22 +25,42 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.dispose();
   }
 
-  void _continue() {
+  Future<void> _continue() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-    ref.read(rc1WorkflowProvider.notifier).signIn(_emailController.text);
-    context.go(AppPaths.workspace);
+    final session = await ref.read(rc1WorkflowProvider.notifier).signIn(
+          _emailController.text,
+          _passwordController.text,
+        );
+    if (!mounted) {
+      return;
+    }
+    if (session != null) {
+      context.go(AppPaths.workspace);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            ref.read(rc1WorkflowProvider).errorMessage ?? 'Sign in failed.',
+          ),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(rc1WorkflowProvider);
     return Rc1Scaffold(
       title: 'RecyclerOS Pro',
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
-          const PageHeader(title: 'Sign in', detail: 'Effortless Smoke operations'),
+          const PageHeader(
+            title: 'Sign in',
+            detail: 'Effortless Smoke operations',
+          ),
           const SizedBox(height: 24),
           Form(
             key: _formKey,
@@ -81,7 +101,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 const SizedBox(height: 20),
                 FilledButton.icon(
                   key: const Key('loginContinue'),
-                  onPressed: _continue,
+                  onPressed: state.isBusy ? null : _continue,
                   icon: const Icon(Icons.login),
                   label: const Text('Continue'),
                 ),

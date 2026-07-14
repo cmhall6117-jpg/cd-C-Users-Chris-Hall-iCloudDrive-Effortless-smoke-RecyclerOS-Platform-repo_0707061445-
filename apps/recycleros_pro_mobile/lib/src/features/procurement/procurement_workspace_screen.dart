@@ -137,6 +137,7 @@ class _ProcurementWorkspaceScreenState
             key: const Key('procurementApprove'),
             onPressed: vehicle == null ||
                     state.isBusy ||
+                    !state.canOperate ||
                     state.procurementScenarios.isEmpty
                 ? null
                 : () async {

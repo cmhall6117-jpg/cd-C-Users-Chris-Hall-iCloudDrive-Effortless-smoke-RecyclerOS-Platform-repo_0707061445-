@@ -76,8 +76,19 @@ def test_rc1_backend_workflow():
             },
         )
         assert pick_list_response.status_code == 201
+        pick_list_item = pick_list_response.json()
+
+        availability_response = client.patch(
+            f"/v1/pick-list/{pick_list_item['pick_list_item_id']}/availability",
+            headers=TENANT_HEADERS,
+            json={"availability_status": "available"},
+        )
+        assert availability_response.status_code == 200
+        assert availability_response.json()["availability_status"] == "available"
+
         pick_list = client.get("/v1/pick-list", headers=TENANT_HEADERS).json()
         assert pick_list["items"][0]["vehicle_id"] == vehicle["vehicle_id"]
+        assert pick_list["items"][0]["availability_status"] == "available"
 
         session_response = client.post(
             "/v1/harvest/focus-point/start",

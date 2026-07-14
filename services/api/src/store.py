@@ -215,6 +215,20 @@ class InMemoryStore:
                 if self._belongs_to(record, tenant)
             ]
 
+    def update_pick_list_availability(
+        self,
+        pick_list_item_id: str,
+        availability_status: str,
+        tenant: TenantContext,
+    ) -> dict[str, Any] | None:
+        with self._lock:
+            record = self._pick_list_items.get(pick_list_item_id)
+            if record is None or not self._belongs_to(record, tenant):
+                return None
+            record["availability_status"] = availability_status
+            record["updated_at"] = self._now()
+            return deepcopy(record)
+
     def start_harvest_session(
         self, vehicle_id: str, tenant: TenantContext
     ) -> dict[str, Any] | None:

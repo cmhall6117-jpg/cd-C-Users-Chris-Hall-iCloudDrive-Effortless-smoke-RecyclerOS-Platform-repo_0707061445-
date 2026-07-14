@@ -2,16 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:recycleros_pro_mobile/src/app/recycleros_app.dart';
+import 'package:recycleros_pro_mobile/src/state/rc1_workflow.dart';
+
+import 'support/fake_rc1_gateway.dart';
 
 void main() {
   testWidgets('completes the primary RC1 workflow', (tester) async {
+    final gateway = FakeRc1Gateway();
     tester.view.physicalSize = const Size(430, 932);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
     await tester.pumpWidget(
-      const ProviderScope(child: RecyclerOSApp()),
+      ProviderScope(
+        overrides: [rc1GatewayProvider.overrideWithValue(gateway)],
+        child: const RecyclerOSApp(),
+      ),
     );
     await tester.pumpAndSettle();
 
@@ -93,6 +100,15 @@ void main() {
 
     expect(find.textContaining('INV-000001'), findsWidgets);
     expect(find.text('Session Inventory'), findsOneWidget);
+    expect(gateway.seenTenants, hasLength(8));
+    expect(
+      gateway.seenTenants.every(
+        (tenant) =>
+            tenant.organizationId == 'org-local' &&
+            tenant.workspaceId == 'workspace-local',
+      ),
+      isTrue,
+    );
     expect(tester.takeException(), isNull);
   });
 }

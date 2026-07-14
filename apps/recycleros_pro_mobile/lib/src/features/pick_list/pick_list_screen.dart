@@ -71,14 +71,28 @@ class PickListScreen extends ConsumerWidget {
                       selected: item.availabilityStatus == 'pending'
                           ? const <String>{}
                           : <String>{item.availabilityStatus},
-                      onSelectionChanged: (selection) {
+                      onSelectionChanged: state.isBusy
+                          ? null
+                          : (selection) async {
                         if (selection.isEmpty) {
                           return;
                         }
-                        ref.read(rc1WorkflowProvider.notifier).setAvailability(
+                        final updated = await ref
+                            .read(rc1WorkflowProvider.notifier)
+                            .setAvailability(
                               item.pickListItemId,
                               selection.first,
                             );
+                        if (updated == null && context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                ref.read(rc1WorkflowProvider).errorMessage ??
+                                    'Availability could not be updated.',
+                              ),
+                            ),
+                          );
+                        }
                       },
                     ),
                     const SizedBox(height: 16),

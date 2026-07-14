@@ -4,7 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - codex/rc1-repository-integration
+      - "codex/rc1-*"
 
 jobs:
   backend:

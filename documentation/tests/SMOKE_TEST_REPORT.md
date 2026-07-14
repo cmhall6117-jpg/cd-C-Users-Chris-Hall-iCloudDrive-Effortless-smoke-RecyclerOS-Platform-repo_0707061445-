@@ -29,7 +29,7 @@ Result: passed locally and in inherited CI
 
 Evidence:
 
-- Local backend suite: 13 passed in 7.39 seconds.
+- Local backend suite: 17 passed in 9.03 seconds.
 - GitHub Actions `backend` job succeeded on backend baseline run `29320807780`.
 
 Tests added:
@@ -43,6 +43,9 @@ Tests added:
 - cross-tenant opportunity lookup rejected without record disclosure
 - cross-tenant procurement linkage rejected
 - cross-tenant pick-list linkage rejected
+- cross-tenant pick-list availability update rejected without disclosure
+- mismatched tenant fields on availability updates rejected
+- local browser CORS preflight accepted and non-local origins denied by default
 
 ### Backend RC1 Workflow
 
@@ -54,11 +57,11 @@ Validated sequence:
 2. Opportunity create and list.
 3. Vehicle create from opportunity and vehicle read.
 4. Procurement analysis retrieval.
-5. Pick-list create and list.
+5. Pick-list create, persisted availability update, and list.
 6. Focus-point start and complete.
 7. Inventory create and list.
 
-Evidence: `services/api/tests/test_rc1_workflow.py`; 13 tests passed across the
+Evidence: `services/api/tests/test_rc1_workflow.py`; 17 tests passed across the
 full backend suite.
 
 GitHub Actions confirmation: backend baseline run `29320807780` passed all four
@@ -96,6 +99,9 @@ mobile viewport through:
 7. Focus-point part selection and completion.
 8. Inventory creation.
 
-GitHub Actions completed `flutter pub get`, `flutter analyze`, and `flutter test`.
-The full mobile-viewport workflow test passed after the Mission Control metric
-labels were constrained for narrow layouts.
+The core working path now injects `FakeRc1Gateway` into the full mobile test and
+asserts all eight workflow calls carry `org-local` and `workspace-local`. A Dio
+transport test verifies required HTTP headers and API response mapping.
+
+Current-branch GitHub Actions evidence is pending. Inherited baseline evidence is
+run `29323035764` and does not pass the new integration gate by itself.

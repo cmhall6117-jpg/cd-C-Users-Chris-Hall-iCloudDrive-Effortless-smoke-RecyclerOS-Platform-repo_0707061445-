@@ -14,6 +14,17 @@ From the repository root:
 The API is available at `http://127.0.0.1:8000`, with OpenAPI documentation at
 `http://127.0.0.1:8000/docs`.
 
+Local Flutter web origins on `localhost` and `127.0.0.1` are allowed by default.
+Deployment origins must be set explicitly as a comma-separated list:
+
+```powershell
+$env:RECYCLEROS_CORS_ORIGINS = "https://app.example.com"
+```
+
+`RECYCLEROS_CORS_ORIGIN_REGEX` can replace the default local-only origin regular
+expression. Credentials are disabled, and the API never enables a wildcard
+origin by default.
+
 Tenant-scoped requests require both headers:
 
 ```text

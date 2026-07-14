@@ -24,6 +24,20 @@ Resolution: Backend requirements installed successfully in the ignored repositor
 
 ## High
 
+### DEF-RC1-008: Core Flutter API integration awaits CI verification
+
+Status: open
+
+Evidence: The workstation has no Flutter or Dart executable, so the new Dio
+gateway, asynchronous workflow controller, and injected fake tests cannot be
+analyzed or executed locally.
+
+Impact: The current branch cannot pass its Flutter gate until GitHub Actions
+completes `flutter pub get`, `flutter analyze`, and `flutter test`.
+
+Next action: Push the branch, open the draft PR, and resolve all Flutter CI
+findings before closing this defect.
+
 ### DEF-RC1-007: Backend records are not durable across process restarts
 
 Status: open

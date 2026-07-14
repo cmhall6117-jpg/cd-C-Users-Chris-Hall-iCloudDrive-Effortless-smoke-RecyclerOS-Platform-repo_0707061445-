@@ -8,17 +8,36 @@ import '../../app/app_routes.dart';
 import '../../state/rc1_workflow.dart';
 import '../../widgets/rc1_scaffold.dart';
 
-class ProcurementWorkspaceScreen extends ConsumerWidget {
+class ProcurementWorkspaceScreen extends ConsumerStatefulWidget {
   const ProcurementWorkspaceScreen({required this.opportunityId, super.key});
 
   final String opportunityId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProcurementWorkspaceScreen> createState() =>
+      _ProcurementWorkspaceScreenState();
+}
+
+class _ProcurementWorkspaceScreenState
+    extends ConsumerState<ProcurementWorkspaceScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (mounted) {
+        await ref
+            .read(rc1WorkflowProvider.notifier)
+            .loadProcurementAnalysis(widget.opportunityId);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final state = ref.watch(rc1WorkflowProvider);
     Opportunity? opportunity;
     for (final item in state.opportunities) {
-      if (item.opportunityId == opportunityId) {
+      if (item.opportunityId == widget.opportunityId) {
         opportunity = item;
         break;
       }
@@ -49,7 +68,19 @@ class ProcurementWorkspaceScreen extends ConsumerWidget {
             detail: '${opportunity.opportunityCode}  |  Non-dealer public',
           ),
           const SizedBox(height: 20),
-          for (final scenario in procurementScenarios)
+          if (state.isBusy && state.procurementScenarios.isEmpty)
+            const Center(child: CircularProgressIndicator()),
+          if (state.errorMessage != null &&
+              state.procurementScenarios.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Text(
+                state.errorMessage!,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+            ),
+          for (final scenario in state.procurementScenarios)
             Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -77,7 +108,10 @@ class ProcurementWorkspaceScreen extends ConsumerWidget {
                           ),
                         ),
                         if (scenario.intent == ProcurementIntent.partOut)
-                          const Icon(Icons.check_circle, color: Color(0xFF1F5C4A)),
+                          const Icon(
+                            Icons.check_circle,
+                            color: Color(0xFF1F5C4A),
+                          ),
                       ],
                     ),
                     const SizedBox(height: 12),
@@ -101,13 +135,29 @@ class ProcurementWorkspaceScreen extends ConsumerWidget {
           const SizedBox(height: 16),
           FilledButton.icon(
             key: const Key('procurementApprove'),
-            onPressed: vehicle == null
+            onPressed: vehicle == null ||
+                    state.isBusy ||
+                    state.procurementScenarios.isEmpty
                 ? null
-                : () {
-                    ref
+                : () async {
+                    final item = await ref
                         .read(rc1WorkflowProvider.notifier)
-                        .addToPickList(vehicle.vehicleId);
-                    context.go(AppPaths.pickList);
+                        .addToPickList(vehicle!.vehicleId);
+                    if (!context.mounted) {
+                      return;
+                    }
+                    if (item != null) {
+                      context.go(AppPaths.pickList);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            ref.read(rc1WorkflowProvider).errorMessage ??
+                                'Pick-list item could not be created.',
+                          ),
+                        ),
+                      );
+                    }
                   },
             icon: const Icon(Icons.playlist_add_check),
             label: const Text('Approve Part-Out and Add to Pick List'),

@@ -13,14 +13,15 @@
 | SQLite clean initialization | Passed | `build_artifacts/sqlite_init_report.txt`. |
 | PostgreSQL clean migration | Passed | GitHub Actions `postgres-migrations` job succeeded on run `29323035764`. |
 | Backend automated tests | Passed | GitHub Actions `backend` job succeeded on run `29323035764`. |
-| Connected backend RC1 workflow | Passed locally | `services/api/tests/test_rc1_workflow.py`; full backend suite reported 13 passed. |
+| Connected backend RC1 workflow | Passed locally | `services/api/tests/test_rc1_workflow.py`; full backend suite reported 17 passed. |
 | Cross-tenant resource isolation | Passed locally | `services/api/tests/test_tenant_isolation.py`; cross-tenant reads and link attempts return `404`. |
-| Connected Flutter RC1 workflow | Passed | Full-path mobile widget test passed on run `29323035764`. |
+| Connected Flutter RC1 workflow | Pending | Live Dio gateway and injected fake path await current-branch CI. |
+| Flutter tenant headers | Pending | Dio transport test awaits current-branch CI. |
 | Durable API persistence | Blocked | Default backend storage is process-local; tracked as `DEF-RC1-007`. |
-| Flutter analyze/test | Passed | GitHub Actions `flutter` job succeeded on run `29323035764`. |
-| GitHub Actions checks | Passed | Flutter baseline PR checks succeeded on run `29323035764`. |
-| Draft pull request | Passed | PR #4 is open as draft. |
-| Draft pull request body | Passed | `documentation/release/RC1_FLUTTER_BASELINE_PR.md`. |
+| Flutter analyze/test | Pending | Current-branch command evidence not yet available. |
+| GitHub Actions checks | Pending | Core working path has not been pushed yet. |
+| Draft pull request | Pending | Core working path draft PR not yet created. |
+| Draft pull request body | Passed | `documentation/release/RC1_CORE_WORKING_PATH_PR.md`. |
 
 ## CI Evidence
 

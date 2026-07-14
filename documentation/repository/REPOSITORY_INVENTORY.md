@@ -937,6 +937,22 @@ This inventory records original package zip contents and the active files curren
 
 ## Active Repository Files
 
+### RC1 Core Working Path Integration
+
+The following files are authored by repository integration work rather than
+copied from one source package:
+
+- `apps/recycleros_pro_mobile/lib/src/data/rc1_gateway.dart`
+- `apps/recycleros_pro_mobile/lib/src/data/dio_rc1_gateway.dart`
+- `apps/recycleros_pro_mobile/test/dio_rc1_gateway_test.dart`
+- `apps/recycleros_pro_mobile/test/support/fake_rc1_gateway.dart`
+- `services/api/tests/test_cors.py`
+- `documentation/build/RC1_CORE_WORKING_PATH.md`
+- `documentation/release/RC1_CORE_WORKING_PATH_PR.md`
+
+Existing VS-001 through VS-005 app and API files retain their package provenance
+and contain documented RC1 integration edits.
+
 - `apps/recycleros_pro_mobile/lib/main.dart`
 - `apps/recycleros_pro_mobile/lib/src/app/app_routes.dart`
 - `apps/recycleros_pro_mobile/lib/src/app/recycleros_app.dart`

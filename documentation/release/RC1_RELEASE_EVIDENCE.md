@@ -15,6 +15,7 @@
 | Backend automated tests | Passed | GitHub Actions `backend` job succeeded on run `29320807780`. |
 | Connected backend RC1 workflow | Passed locally | `services/api/tests/test_rc1_workflow.py`; full backend suite reported 13 passed. |
 | Cross-tenant resource isolation | Passed locally | `services/api/tests/test_tenant_isolation.py`; cross-tenant reads and link attempts return `404`. |
+| Connected Flutter RC1 workflow | Pending | Full-path test added; current branch awaits GitHub Actions. |
 | Durable API persistence | Blocked | Default backend storage is process-local; tracked as `DEF-RC1-007`. |
 | Flutter analyze/test | Passed | GitHub Actions `flutter` job succeeded on run `29289307269`. |
 | GitHub Actions checks | Passed | Backend baseline PR checks succeeded on run `29320807780`. |

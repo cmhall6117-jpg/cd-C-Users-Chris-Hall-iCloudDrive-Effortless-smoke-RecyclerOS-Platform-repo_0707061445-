@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  recycleros_domain:
+    path: ../../packages/recycleros_domain
   go_router: ^14.0.0
   flutter_riverpod: ^2.5.0
   dio: ^5.4.0

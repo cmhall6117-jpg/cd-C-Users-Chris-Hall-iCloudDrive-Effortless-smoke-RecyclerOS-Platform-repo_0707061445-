@@ -34,15 +34,15 @@ Impact: The RC1 workflow is functional and tenant-scoped within one API process,
 
 Next action: Implement the existing storage boundary against the consolidated PostgreSQL schema and run the same workflow and tenant-isolation contract tests against it.
 
-### DEF-RC1-003: Flutter SDK commands hang locally
+### DEF-RC1-003: Flutter SDK is unavailable locally
 
-Status: closed by CI evidence
+Status: open for current branch
 
-Evidence: `flutter pub get`, `flutter analyze`, and `flutter test` timed out without usable command output.
+Evidence: `where flutter` and `where dart` found no executable on July 14, 2026. Earlier Flutter commands timed out without usable output.
 
-Impact: Flutter gates are blocked locally.
+Impact: The Flutter baseline cannot run `flutter pub get`, `flutter analyze`, or `flutter test` locally.
 
-Resolution: GitHub Actions `flutter` succeeded on run `29289307269`.
+Next action: Require passing GitHub Actions output for the Flutter baseline branch. Install a local Flutter SDK separately if workstation execution is required.
 
 ### DEF-RC1-004: Standard `python -m compileall` hangs locally
 

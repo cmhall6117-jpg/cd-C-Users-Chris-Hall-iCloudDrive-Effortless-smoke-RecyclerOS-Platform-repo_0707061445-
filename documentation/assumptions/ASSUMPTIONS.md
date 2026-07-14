@@ -7,4 +7,6 @@
 - Tenant context for API calls is represented by `X-Organization-ID` and `X-Workspace-ID` headers.
 - The backend baseline uses an injectable, process-local store to validate RC1 workflow contracts; durable PostgreSQL API persistence is the next backend increment.
 - Cross-tenant resource lookups return `404` so the API does not disclose whether another tenant owns a requested record.
+- The Flutter baseline uses Riverpod process-local workflow state; backend transport and offline SQLite synchronization remain explicit follow-up integrations.
+- Flutter sign-in validates local form state only. Live SSO and credential exchange remain deferred.
 - The short repository path `repo_0707061445` is the authoritative monorepo because longer Windows paths interrupt deep generated file copies.

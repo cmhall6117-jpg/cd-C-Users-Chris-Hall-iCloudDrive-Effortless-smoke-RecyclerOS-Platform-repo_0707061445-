@@ -1,15 +1,37 @@
-from datetime import datetime, timezone
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
+
+from dependencies import get_store
+from store import InMemoryStore
 from tenant import TenantContext, require_tenant_context
 
 router = APIRouter()
 
-@router.post('/focus-point/start')
-def start_focus_point(vehicle_id: str, tenant: TenantContext = Depends(require_tenant_context)):
-    now = datetime.now(timezone.utc)
-    return {'harvest_session_id': 'HVS-DEMO-000001', 'organization_id': tenant.organization_id, 'workspace_id': tenant.workspace_id, 'vehicle_id': vehicle_id, 'started_at': now.isoformat(), 'event_created': 'focus_point.started', 'timer_status': 'active'}
 
-@router.post('/focus-point/complete')
-def complete_focus_point(harvest_session_id: str, tenant: TenantContext = Depends(require_tenant_context)):
-    now = datetime.now(timezone.utc)
-    return {'harvest_session_id': harvest_session_id, 'organization_id': tenant.organization_id, 'workspace_id': tenant.workspace_id, 'ended_at': now.isoformat(), 'event_created': 'focus_point.completed', 'timer_status': 'stopped'}
+@router.post("/focus-point/start", status_code=status.HTTP_201_CREATED)
+def start_focus_point(
+    vehicle_id: str,
+    tenant: TenantContext = Depends(require_tenant_context),
+    store: InMemoryStore = Depends(get_store),
+):
+    session = store.start_harvest_session(vehicle_id, tenant)
+    if session is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Vehicle not found in tenant workspace.",
+        )
+    return session
+
+
+@router.post("/focus-point/complete")
+def complete_focus_point(
+    harvest_session_id: str,
+    tenant: TenantContext = Depends(require_tenant_context),
+    store: InMemoryStore = Depends(get_store),
+):
+    session = store.complete_harvest_session(harvest_session_id, tenant)
+    if session is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Harvest session not found in tenant workspace.",
+        )
+    return session

@@ -13,6 +13,9 @@
 | SQLite clean initialization | Passed | `build_artifacts/sqlite_init_report.txt`. |
 | PostgreSQL clean migration | Passed | GitHub Actions `postgres-migrations` job succeeded on run `29289307269`. |
 | Backend automated tests | Passed | GitHub Actions `backend` job succeeded on run `29289307269`. |
+| Connected backend RC1 workflow | Passed locally | `services/api/tests/test_rc1_workflow.py`; full backend suite reported 13 passed. |
+| Cross-tenant resource isolation | Passed locally | `services/api/tests/test_tenant_isolation.py`; cross-tenant reads and link attempts return `404`. |
+| Durable API persistence | Blocked | Default backend storage is process-local; tracked as `DEF-RC1-007`. |
 | Flutter analyze/test | Passed | GitHub Actions `flutter` job succeeded on run `29289307269`. |
 | GitHub Actions checks | Passed | Latest PR checks succeeded on run `29289307269`. |
 | Draft pull request | Passed | PR #1 is open as draft. |
@@ -39,3 +42,7 @@ Draft pull request:
 ## RC1 Decision
 
 RC1 has reached the first reproducible build state in GitHub Actions. Local workstation tooling still has issues, but release gates that require command evidence now have passing CI evidence.
+
+The backend baseline now provides a connected, locally verified RC1 workflow.
+This does not pass the durable persistence gate; PostgreSQL API repository wiring
+remains required before production release.

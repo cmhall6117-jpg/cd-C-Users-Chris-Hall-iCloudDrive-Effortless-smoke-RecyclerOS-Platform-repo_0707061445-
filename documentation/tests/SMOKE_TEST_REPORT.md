@@ -25,9 +25,12 @@ PASS tenant mismatch rejected
 
 ### Backend Tenant Isolation
 
-Result: passed in CI
+Result: passed locally and in inherited CI
 
-Evidence: GitHub Actions `backend` job succeeded on run `29289307269`.
+Evidence:
+
+- Local backend suite: 13 passed in 7.39 seconds.
+- GitHub Actions `backend` job succeeded on parent run `29289307269`.
 
 Tests added:
 
@@ -36,6 +39,27 @@ Tests added:
 - mismatched organization rejected
 - vehicle record requires tenant context
 - mismatched inventory workspace rejected
+- missing tenant context rejected across all list/read endpoints
+- cross-tenant opportunity lookup rejected without record disclosure
+- cross-tenant procurement linkage rejected
+- cross-tenant pick-list linkage rejected
+
+### Backend RC1 Workflow
+
+Result: passed locally
+
+Validated sequence:
+
+1. Health/startup check.
+2. Opportunity create and list.
+3. Vehicle create from opportunity and vehicle read.
+4. Procurement analysis retrieval.
+5. Pick-list create and list.
+6. Focus-point start and complete.
+7. Inventory create and list.
+
+Evidence: `services/api/tests/test_rc1_workflow.py`; 13 tests passed across the
+full backend suite.
 
 ### Flutter Primary Path
 

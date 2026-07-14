@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from auth import Permission
 from dependencies import get_store
-from store import InMemoryStore
+from store import WorkflowStore
 from tenant import TenantContext, require_permission
 
 router = APIRouter()
@@ -12,7 +12,7 @@ router = APIRouter()
 def get_procurement_analysis(
     opportunity_id: str,
     tenant: TenantContext = Depends(require_permission(Permission.READ)),
-    store: InMemoryStore = Depends(get_store),
+    store: WorkflowStore = Depends(get_store),
 ):
     analysis = store.get_or_create_procurement_analysis(opportunity_id, tenant)
     if analysis is None:

@@ -1,7 +1,7 @@
 from fastapi import Request
 
-from store import InMemoryStore
+from store import WorkflowStore
 
 
-def get_store(request: Request) -> InMemoryStore:
+def get_store(request: Request) -> WorkflowStore:
     return request.app.state.store

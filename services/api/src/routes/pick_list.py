@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from auth import Permission
 from dependencies import get_store
 from schemas.pick_list import PickListAvailabilityUpdate, PickListItemCreate
-from store import InMemoryStore
+from store import WorkflowStore
 from tenant import TenantContext, require_permission, validate_payload_tenant
 
 router = APIRouter()
@@ -13,7 +13,7 @@ router = APIRouter()
 def create_pick_list_item(
     payload: PickListItemCreate,
     tenant: TenantContext = Depends(require_permission(Permission.OPERATE)),
-    store: InMemoryStore = Depends(get_store),
+    store: WorkflowStore = Depends(get_store),
 ):
     validate_payload_tenant(payload, tenant)
     values = payload.model_dump(exclude={"organization_id", "workspace_id"})
@@ -29,7 +29,7 @@ def create_pick_list_item(
 @router.get("")
 def list_pick_list_items(
     tenant: TenantContext = Depends(require_permission(Permission.READ)),
-    store: InMemoryStore = Depends(get_store),
+    store: WorkflowStore = Depends(get_store),
 ):
     return {
         "organization_id": tenant.organization_id,
@@ -43,7 +43,7 @@ def update_pick_list_availability(
     pick_list_item_id: str,
     payload: PickListAvailabilityUpdate,
     tenant: TenantContext = Depends(require_permission(Permission.OPERATE)),
-    store: InMemoryStore = Depends(get_store),
+    store: WorkflowStore = Depends(get_store),
 ):
     validate_payload_tenant(payload, tenant)
     item = store.update_pick_list_availability(

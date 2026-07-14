@@ -20,8 +20,10 @@
 | Cross-tenant resource isolation | Passed | Authenticated isolation tests succeeded on run `29363414967`. |
 | Connected Flutter RC1 workflow | Passed | Authenticated `core-integration` succeeded on run `29363414967`. |
 | Flutter bearer and tenant headers | Passed | Dio and live integration tests succeeded on run `29363414967`. |
-| Durable identity and sessions | Blocked | Local auth is process-local; tracked as `DEF-RC1-010`. |
-| Durable API persistence | Blocked | Default backend storage is process-local; tracked as `DEF-RC1-007`. |
+| Durable identity and sessions | Pending | PostgreSQL implementation and restart test added; CI evidence pending. |
+| Durable API persistence | Pending | PostgreSQL workflow store and restart test added; CI evidence pending. |
+| Production fail-closed storage | Passed locally | Production startup without `DATABASE_URL` is rejected by an automated test. |
+| Session revocation and login throttling | Pending | Local logout test passed; PostgreSQL restart and lockout evidence pending. |
 | Flutter analyze/test | Passed | `flutter` succeeded on run `29363414967`. |
 | GitHub Actions checks | Passed | Five required jobs succeeded on push run `29363344692` and PR run `29363414967`. |
 | Composite release-evidence check | Passed | Push run `29363973050` and PR run `29364157746` passed at commit `28eab96b8ed1ec8f03b2d4ecda6e1fea1fe5da53`. |
@@ -56,6 +58,15 @@ The auth/tenant/RBAC increment and the composite release-evidence check are
 verified by successful push and pull-request runs against their exact code
 commits.
 
-This does not pass durable persistence or durable identity gates. PostgreSQL API
-repository wiring and a production `AuthService` implementation remain required
-before production release.
+Durable persistence and identity implementations are present on the defect
+closure branch, but those gates are not passed until the clean PostgreSQL job
+and composite release-evidence job succeed on the exact branch commit.
+
+## Defect Closure Candidate
+
+Branch `codex/rc1-defect-closure` adds the PostgreSQL workflow and auth
+implementations, migration `026`, durable restart coverage, production
+fail-closed selection, logout, login throttling, auth audit events, and Node 24
+GitHub Action majors. Local evidence is 28 passed and 1 PostgreSQL-only test
+skipped. Durable gates remain pending until the clean PostgreSQL and composite
+release-evidence jobs succeed on the exact branch commit.

@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi.security import HTTPAuthorizationCredentials
 
 from auth import AuthenticatedIdentity, AuthService, AuthSession
 from auth_dependencies import get_auth_service
 from schemas.auth import LoginRequest
-from tenant import require_identity
+from tenant import bearer_scheme, require_identity
 
 router = APIRouter()
 
@@ -59,3 +60,18 @@ def get_current_identity(
     identity: AuthenticatedIdentity = Depends(require_identity),
 ):
     return _identity_payload(identity)
+
+
+@router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
+def logout(
+    credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
+    _identity: AuthenticatedIdentity = Depends(require_identity),
+    auth_service: AuthService = Depends(get_auth_service),
+) -> Response:
+    if credentials is None or not auth_service.revoke(credentials.credentials):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication is required.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

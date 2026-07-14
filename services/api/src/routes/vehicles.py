@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from auth import Permission
 from dependencies import get_store
 from schemas.vehicle import VehicleCreate
-from store import InMemoryStore
+from store import WorkflowStore
 from tenant import TenantContext, require_permission, validate_payload_tenant
 
 router = APIRouter()
@@ -13,7 +13,7 @@ router = APIRouter()
 def create_vehicle(
     payload: VehicleCreate,
     tenant: TenantContext = Depends(require_permission(Permission.OPERATE)),
-    store: InMemoryStore = Depends(get_store),
+    store: WorkflowStore = Depends(get_store),
 ):
     validate_payload_tenant(payload, tenant)
     values = payload.model_dump(exclude={"organization_id", "workspace_id"})
@@ -30,7 +30,7 @@ def create_vehicle(
 def get_vehicle(
     vehicle_code: str,
     tenant: TenantContext = Depends(require_permission(Permission.READ)),
-    store: InMemoryStore = Depends(get_store),
+    store: WorkflowStore = Depends(get_store),
 ):
     vehicle = store.get_vehicle(vehicle_code, tenant)
     if vehicle is None:

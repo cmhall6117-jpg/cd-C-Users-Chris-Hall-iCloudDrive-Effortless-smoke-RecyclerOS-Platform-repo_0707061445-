@@ -25,11 +25,11 @@ PASS tenant mismatch rejected
 
 ### Backend Authentication, RBAC, and Tenant Isolation
 
-Result: passed locally and in current CI
+Result: passed locally; defect-closure CI pending
 
 Evidence:
 
-- Local backend suite: 26 passed in 13.42 seconds on the current local run.
+- Local backend suite: 28 passed and 1 PostgreSQL-only test skipped in 13.59 seconds on the current local run.
 - Pull-request run `29363414967` passed the backend job at commit
   `9bf4490f91b914b05963208355218a863b632977`.
 
@@ -53,6 +53,8 @@ Tests added:
 - cross-tenant pick-list availability update rejected without disclosure
 - mismatched tenant fields on availability updates rejected
 - local browser CORS preflight accepted and non-local origins denied by default
+- logout revokes the current local bearer session
+- production mode rejects startup without durable database configuration
 
 ### Backend RC1 Workflow
 
@@ -68,7 +70,7 @@ Validated sequence:
 6. Focus-point start and complete.
 7. Inventory create and list.
 
-Evidence: `services/api/tests/test_rc1_workflow.py`; 26 tests passed across the
+Evidence: `services/api/tests/test_rc1_workflow.py`; 28 tests passed across the
 full backend suite.
 
 GitHub Actions confirmation: backend and authenticated core integration passed
@@ -118,3 +120,17 @@ The authenticated `core-integration` job also passed on pull-request run
 context. The new composite `release-evidence` job passed on push run
 `29363973050` and pull-request run `29364157746` at commit
 `28eab96b8ed1ec8f03b2d4ecda6e1fea1fe5da53`.
+
+### PostgreSQL Restart and Auth Controls
+
+Result: pending GitHub Actions
+
+`services/api/tests/test_postgres_runtime.py` is installed in the clean
+PostgreSQL migration job. It validates:
+
+1. Clean migration through `026_rc1_durable_runtime.sql`.
+2. Login and the complete opportunity-to-inventory workflow.
+3. Workflow records and the bearer session survive a new app/store/auth instance.
+4. Logout revocation survives another app instance.
+5. Repeated failed logins trigger a durable lockout.
+6. Login, failure, block, and logout audit events are stored.

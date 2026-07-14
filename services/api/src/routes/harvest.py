@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from auth import Permission
 from dependencies import get_store
-from store import InMemoryStore
+from store import WorkflowStore
 from tenant import TenantContext, require_permission
 
 router = APIRouter()
@@ -12,7 +12,7 @@ router = APIRouter()
 def start_focus_point(
     vehicle_id: str,
     tenant: TenantContext = Depends(require_permission(Permission.OPERATE)),
-    store: InMemoryStore = Depends(get_store),
+    store: WorkflowStore = Depends(get_store),
 ):
     session = store.start_harvest_session(vehicle_id, tenant)
     if session is None:
@@ -27,7 +27,7 @@ def start_focus_point(
 def complete_focus_point(
     harvest_session_id: str,
     tenant: TenantContext = Depends(require_permission(Permission.OPERATE)),
-    store: InMemoryStore = Depends(get_store),
+    store: WorkflowStore = Depends(get_store),
 ):
     session = store.complete_harvest_session(harvest_session_id, tenant)
     if session is None:

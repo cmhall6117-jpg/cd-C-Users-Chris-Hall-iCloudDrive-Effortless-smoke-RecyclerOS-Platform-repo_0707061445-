@@ -2,7 +2,7 @@
 
 ## Repository
 
-- Branch: `codex/rc1-cicd-release-evidence`
+- Branch: `codex/rc1-defect-closure`
 - Monorepo root: `repo_0707061445`
 - Source package archive: `archive/source_packages`
 - Repository inventory: `documentation/repository/REPOSITORY_INVENTORY.md`
@@ -14,15 +14,20 @@
 - Auth implementation and boundary: `services/api/src/auth.py`
 - Authenticated tenant/RBAC dependency: `services/api/src/tenant.py`
 - Injectable storage dependency: `services/api/src/dependencies.py`
-- RC1 process-local store: `services/api/src/store.py`
-- Automated tests include `test_auth_rbac.py`, `test_tenant_isolation.py`, and `test_rc1_workflow.py`
+- Workflow store contract and local implementation: `services/api/src/store.py`
+- PostgreSQL workflow implementation: `services/api/src/postgres_store.py`
+- PostgreSQL auth implementation: `services/api/src/postgres_auth.py`
+- Durable runtime migration: `database/migrations/postgres/026_rc1_durable_runtime.sql`
+- Automated tests include `test_auth_rbac.py`, `test_tenant_isolation.py`, `test_rc1_workflow.py`, and `test_postgres_runtime.py`
 
 Local result:
 
 - Backend requirements are available in the ignored repository `.venv`.
 - `python -m compileall services/api/src`: passed.
-- FastAPI startup and OpenAPI route manifest check: passed with 13 paths.
-- `pytest -q services/api/tests`: 26 passed in 13.42 seconds on the current local run.
+- FastAPI startup and OpenAPI route manifest check: passed with 14 paths.
+- `pytest -q services/api/tests`: 28 passed and 1 PostgreSQL-only test skipped in 13.59 seconds on the current local run.
+- SQLite clean initialization: passed all 10 client migrations, tenant-column checks, and tenant mismatch rejection.
+- PostgreSQL restart test: pending GitHub Actions because no local PostgreSQL service is available.
 - PostgreSQL client dependencies were split into `services/api/requirements-postgres.txt` so backend tests and PostgreSQL migration checks can install only the dependencies they need in CI.
 
 Auth/tenant/RBAC baseline CI result:
@@ -59,6 +64,11 @@ GitHub Actions workflow at `.github/workflows/rc1-ci.yml` runs backend, SQLite,
 PostgreSQL, Flutter, and authenticated core-integration checks. This branch adds
 a final `release-evidence` job that summarizes the exact run, commit, event, and
 prerequisite results, then fails unless all five required jobs passed.
+
+The defect-closure candidate upgrades official checkout and Python setup actions
+to their Node 24 major versions. The PostgreSQL job now applies migration `026`
+and verifies the complete workflow, session persistence, logout revocation,
+login throttling, and auth audit records across three app instances.
 
 Auth/tenant/RBAC pull-request run `29363414967` passed all five prerequisite
 jobs at commit `9bf4490f91b914b05963208355218a863b632977`:

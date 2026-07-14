@@ -192,11 +192,13 @@ monitoring service and test alert delivery.
 
 #### DEF-PILOT-005: Pilot container and recovery checks await CI
 
-Status: open
+Status: closed by CI evidence
 
-Evidence: Local Python checks pass, but Docker is unavailable on this workstation.
+Evidence: Local Python checks pass. Push run `29369194654` and pull-request run
+`29369197183` passed the hardened container and populated backup/restore jobs.
 
-Impact: Repository-level pilot readiness is not yet evidenced on Linux.
+Impact: None remaining for repository-level pilot readiness.
 
-Next action: Pass `pilot-container` and the PostgreSQL backup/restore rehearsal in
-GitHub Actions.
+Resolution: The Linux image reached real readiness with a read-only filesystem,
+dropped capabilities, and no-new-privileges. The recovery rehearsal restored and
+verified auth, opportunity, and inventory data.

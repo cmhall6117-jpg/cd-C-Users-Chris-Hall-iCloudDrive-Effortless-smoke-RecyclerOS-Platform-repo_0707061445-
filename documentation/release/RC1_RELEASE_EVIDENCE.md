@@ -78,14 +78,15 @@ required job on both trigger paths with zero check annotations.
 | Secret-backed runtime configuration | Passed locally | Secret-file and conflict tests. |
 | Production trusted-host enforcement | Passed locally | `test_pilot_runtime.py`. |
 | Liveness and dependency readiness | Passed locally | 16-path startup and health tests. |
-| Non-root read-only pilot image | Pending CI | `pilot-container` job. |
-| Secret-backed compose validation | Pending CI | `docker compose config --quiet`. |
-| Migration-first container startup | Pending CI | Real PostgreSQL container smoke. |
-| Populated backup and clean restore | Pending CI | PostgreSQL backup/restore rehearsal. |
+| Non-root read-only pilot image | Passed | Runs `29369194654` and `29369197183`. |
+| Secret-backed compose validation | Passed | `docker compose config --quiet` in both runs. |
+| Migration-first container startup | Passed | Real PostgreSQL/auth readiness in both runs. |
+| Populated backup and clean restore | Passed | Auth and workflow data verified after restore. |
 | Public DNS and TLS | Blocked external | `DEF-PILOT-001`. |
 | Real secret provisioning | Blocked external | `DEF-PILOT-002`. |
 | Off-host backup schedule | Blocked external | `DEF-PILOT-003`. |
 | Central log and alert routing | Blocked external | `DEF-PILOT-004`. |
 
-RC1 remains reproducible and green. Pilot deployment is no-go until automated
-pilot gates pass and the external blockers have owner-approved evidence.
+RC1 remains reproducible and green, and repository-level pilot deployment gates
+passed at commit `59bd74a78c39923ad99d583a00f352a57d8dfb95`. Pilot launch
+remains no-go until the external blockers have owner-approved evidence.

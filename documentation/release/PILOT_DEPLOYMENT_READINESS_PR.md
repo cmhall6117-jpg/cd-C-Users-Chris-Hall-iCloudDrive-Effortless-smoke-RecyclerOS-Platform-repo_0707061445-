@@ -30,5 +30,19 @@ outside the pilot implementation.
 - centralized logs and alert routing
 - named pilot support and rollback authority
 
-The pull request remains a deployment-readiness candidate until automated pilot
-jobs pass and the external no-go items are closed outside the repository.
+## CI Evidence
+
+At commit `59bd74a78c39923ad99d583a00f352a57d8dfb95`, push run
+`29369194654` and pull-request run `29369197183` passed all seven jobs:
+
+- backend compile and 38-test suite
+- SQLite initialization and tenant checks
+- PostgreSQL migrations, durable workflow test, backup, clean restore, and data verification
+- Flutter dependencies, analyzer, and tests
+- authenticated live Flutter-to-FastAPI path
+- secret-backed compose validation and hardened container readiness
+- composite release-evidence gate
+
+The repository is deployment-ready. The pull request remains draft because the
+external no-go items require infrastructure and ownership evidence outside the
+repository.

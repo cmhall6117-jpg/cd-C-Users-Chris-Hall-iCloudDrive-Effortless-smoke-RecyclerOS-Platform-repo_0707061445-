@@ -10,6 +10,8 @@ from tenant import TenantContext
 class WorkflowStore(Protocol):
     storage_name: str
 
+    def check_readiness(self) -> bool: ...
+
     def create_opportunity(
         self, tenant: TenantContext, values: dict[str, Any]
     ) -> dict[str, Any]: ...
@@ -74,6 +76,9 @@ class InMemoryStore:
         self._pick_list_items: dict[str, dict[str, Any]] = {}
         self._harvest_sessions: dict[str, dict[str, Any]] = {}
         self._inventory_items: dict[str, dict[str, Any]] = {}
+
+    def check_readiness(self) -> bool:
+        return True
 
     @staticmethod
     def _now() -> str:

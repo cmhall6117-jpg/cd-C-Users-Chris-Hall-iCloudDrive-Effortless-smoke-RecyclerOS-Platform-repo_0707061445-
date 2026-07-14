@@ -62,6 +62,8 @@ class AuthService(Protocol):
 
     def revoke(self, access_token: str) -> bool: ...
 
+    def check_readiness(self) -> bool: ...
+
 
 @dataclass(frozen=True)
 class LocalUser:
@@ -198,6 +200,9 @@ class LocalAuthService:
 
     def revoke(self, access_token: str) -> bool:
         return self._sessions.pop(token_digest(access_token), None) is not None
+
+    def check_readiness(self) -> bool:
+        return True
 
 
 def token_digest(access_token: str) -> str:

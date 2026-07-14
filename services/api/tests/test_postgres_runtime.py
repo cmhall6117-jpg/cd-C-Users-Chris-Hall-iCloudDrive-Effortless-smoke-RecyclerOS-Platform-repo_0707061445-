@@ -60,6 +60,9 @@ def test_postgres_workflow_auth_persist_and_revoke_across_restart():
         assert health.status_code == 200
         assert health.json()["storage"] == "postgres"
         assert health.json()["auth_storage"] == "postgres"
+        readiness = first_client.get("/v1/health/ready")
+        assert readiness.status_code == 200
+        assert readiness.json()["status"] == "ready"
 
         login = first_client.post(
             "/v1/auth/login",

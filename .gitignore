@@ -9,3 +9,7 @@ __pycache__/
 coverage/
 *.log
 build_artifacts/*.sqlite
+build_artifacts/pilot_backups/
+deploy/pilot/secrets/*
+!deploy/pilot/secrets/.gitignore
+deploy/pilot/pilot.env

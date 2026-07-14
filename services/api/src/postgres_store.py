@@ -23,6 +23,20 @@ class PostgresStore:
             ) from exc
         return psycopg.connect(self._database_url, row_factory=dict_row)
 
+    def check_readiness(self) -> bool:
+        with self._connect() as conn, conn.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT
+                    to_regclass('public.opportunities') IS NOT NULL
+                    AND to_regclass('public.vehicles') IS NOT NULL
+                    AND to_regclass('public.inventory_items') IS NOT NULL
+                    AND to_regclass('public.rc1_code_sequences') IS NOT NULL
+                    AS ready
+                """
+            )
+            return bool(cursor.fetchone()["ready"])
+
     @staticmethod
     def _tenant_values(tenant: TenantContext) -> tuple[str, str]:
         return tenant.organization_id, tenant.workspace_id

@@ -15,6 +15,12 @@ $env:RECYCLEROS_LOCAL_OPERATOR_PASSWORD = Read-Host "Local operator password"
 The API is available at `http://127.0.0.1:8000`, with OpenAPI documentation at
 `http://127.0.0.1:8000/docs`.
 
+Health endpoints are separated by purpose:
+
+- `GET /v1/health/live` confirms the API process is running.
+- `GET /v1/health/ready` confirms workflow storage and auth dependencies are ready.
+- `GET /v1/health` reports the active provider names and API version.
+
 Local Flutter web origins on `localhost` and `127.0.0.1` are allowed by default.
 Deployment origins must be set explicitly as a comma-separated list:
 
@@ -70,6 +76,7 @@ durable database is missing:
 $env:DATABASE_URL = "postgresql://user:password@localhost:5432/recycleros"
 $env:RECYCLEROS_DEPLOYMENT_MODE = "production"
 $env:RECYCLEROS_LOCAL_OPERATOR_PASSWORD = Read-Host "Initial operator password"
+$env:RECYCLEROS_TRUSTED_HOSTS = "api.example.com"
 ```
 
 The operator secret bootstraps the account only when it does not exist; app
@@ -83,3 +90,15 @@ audit events. The optional controls are:
 
 Live SSO, password recovery, refresh tokens, and external identity credentials
 remain deferred behind `AuthService`.
+
+Production secrets may be mounted as files by setting `DATABASE_URL_FILE` and
+`RECYCLEROS_LOCAL_OPERATOR_PASSWORD_FILE`. The API rejects configurations that
+set both a direct value and its matching `_FILE` reference.
+
+## Pilot Container
+
+The hardened pilot image is defined in `services/api/Dockerfile`, and the
+secret-backed stack is in `deploy/pilot/compose.yml`. See
+`documentation/deployment/PILOT_DEPLOYMENT_RUNBOOK.md` before starting it. The
+stack binds both published ports to loopback and requires a separate TLS reverse
+proxy for remote access.

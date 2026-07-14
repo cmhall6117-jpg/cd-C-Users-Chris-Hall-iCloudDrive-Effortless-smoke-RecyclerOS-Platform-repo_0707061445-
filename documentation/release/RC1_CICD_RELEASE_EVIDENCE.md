@@ -28,8 +28,20 @@ and prerequisite results to the GitHub job summary. It succeeds only when every
 required result is `success`.
 
 This provides one auditable CI verdict without changing the underlying backend,
-database, Flutter, or live-integration gates. Exact-head evidence for the new
-job is pending publication of `codex/rc1-cicd-release-evidence`.
+database, Flutter, or live-integration gates.
+
+## Evidence Branch
+
+- Branch: `codex/rc1-cicd-release-evidence`
+- Commit: `28eab96b8ed1ec8f03b2d4ecda6e1fea1fe5da53`
+- Draft pull request: `#7`
+- Pull-request run: `29364157746`
+- Push run: `29363973050`
+- Result: success
+- Pull request state: open, draft, mergeable
+
+Both runs passed backend, SQLite, PostgreSQL, Flutter, authenticated core
+integration, and the final release-evidence gate.
 
 ## Release Boundary
 

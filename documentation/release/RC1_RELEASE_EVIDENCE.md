@@ -24,27 +24,27 @@
 | Durable API persistence | Blocked | Default backend storage is process-local; tracked as `DEF-RC1-007`. |
 | Flutter analyze/test | Passed | `flutter` succeeded on run `29363414967`. |
 | GitHub Actions checks | Passed | Five required jobs succeeded on push run `29363344692` and PR run `29363414967`. |
-| Composite release-evidence check | Pending CI | Added on `codex/rc1-cicd-release-evidence`; exact-head run is pending. |
-| Draft pull request | Passed | PR #6 is open, draft, green, and mergeable. |
-| Draft pull request body | Passed | `documentation/release/RC1_AUTH_TENANT_RBAC_PR.md`. |
+| Composite release-evidence check | Passed | Push run `29363973050` and PR run `29364157746` passed at commit `28eab96b8ed1ec8f03b2d4ecda6e1fea1fe5da53`. |
+| Draft pull request | Passed | PR #7 is open, draft, green, and mergeable. |
+| Draft pull request body | Passed | `documentation/release/RC1_CICD_RELEASE_EVIDENCE_PR.md`. |
 
 ## CI Evidence
 
-Latest successful auth/tenant/RBAC workflow:
+Latest successful CI/CD release-evidence workflow:
 
 - Workflow: RC1 Integration Checks
-- Pull-request run: `29363414967`
-- Push run: `29363344692`
-- Branch: `codex/rc1-auth-tenant-rbac`
-- Commit: `9bf4490f91b914b05963208355218a863b632977`
-- PR: `#6`
+- Pull-request run: `29364157746`
+- Push run: `29363973050`
+- Branch: `codex/rc1-cicd-release-evidence`
+- Commit: `28eab96b8ed1ec8f03b2d4ecda6e1fea1fe5da53`
+- PR: `#7`
 - Result: success
 - Jobs passed: backend, sqlite-migrations, postgres-migrations, flutter,
-  core-integration
+  core-integration, release-evidence
 
 Draft pull request:
 
-- URL: `https://github.com/cmhall6117-jpg/cd-C-Users-Chris-Hall-iCloudDrive-Effortless-smoke-RecyclerOS-Platform-repo_0707061445-/pull/6`
+- URL: `https://github.com/cmhall6117-jpg/cd-C-Users-Chris-Hall-iCloudDrive-Effortless-smoke-RecyclerOS-Platform-repo_0707061445-/pull/7`
 - State: open
 - Draft: true
 - Mergeable: true
@@ -52,9 +52,9 @@ Draft pull request:
 ## RC1 Decision
 
 RC1 has reached its first reproducible core working path in GitHub Actions.
-The auth/tenant/RBAC increment is now verified by successful push and
-pull-request runs against its exact commit. The composite release-evidence check
-remains pending until this evidence branch completes CI.
+The auth/tenant/RBAC increment and the composite release-evidence check are
+verified by successful push and pull-request runs against their exact code
+commits.
 
 This does not pass durable persistence or durable identity gates. PostgreSQL API
 repository wiring and a production `AuthService` implementation remain required

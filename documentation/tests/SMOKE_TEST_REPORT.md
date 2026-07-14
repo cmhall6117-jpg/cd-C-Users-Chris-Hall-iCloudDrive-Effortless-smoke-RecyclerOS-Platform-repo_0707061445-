@@ -66,10 +66,10 @@ RC1 jobs.
 
 ### Flutter Primary Path
 
-Result: current branch pending CI
+Result: passed in CI
 
-Inherited evidence: GitHub Actions `flutter` job succeeded on parent run
-`29321209939`.
+Evidence: GitHub Actions `flutter` job succeeded on current-branch run
+`29323035764`.
 
 Routes added:
 
@@ -96,5 +96,6 @@ mobile viewport through:
 7. Focus-point part selection and completion.
 8. Inventory creation.
 
-Current-branch `flutter analyze` and `flutter test` require GitHub Actions evidence
-because the workstation does not have a Flutter SDK on its executable path.
+GitHub Actions completed `flutter pub get`, `flutter analyze`, and `flutter test`.
+The full mobile-viewport workflow test passed after the Mission Control metric
+labels were constrained for narrow layouts.

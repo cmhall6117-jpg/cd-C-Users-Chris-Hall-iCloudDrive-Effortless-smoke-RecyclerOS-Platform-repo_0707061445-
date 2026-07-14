@@ -36,13 +36,13 @@ Next action: Implement the existing storage boundary against the consolidated Po
 
 ### DEF-RC1-003: Flutter SDK is unavailable locally
 
-Status: open for current branch
+Status: closed by CI evidence
 
 Evidence: `where flutter` and `where dart` found no executable on July 14, 2026. Earlier Flutter commands timed out without usable output.
 
 Impact: The Flutter baseline cannot run `flutter pub get`, `flutter analyze`, or `flutter test` locally.
 
-Next action: Require passing GitHub Actions output for the Flutter baseline branch. Install a local Flutter SDK separately if workstation execution is required.
+Resolution: GitHub Actions completed `flutter pub get`, `flutter analyze`, and `flutter test` successfully on run `29323035764`. Install a local Flutter SDK separately if workstation execution is required.
 
 ### DEF-RC1-004: Standard `python -m compileall` hangs locally
 

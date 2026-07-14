@@ -34,8 +34,20 @@ workflow:
 ## Validation Status
 
 Local Flutter execution is blocked because neither `flutter` nor `dart` is
-available on the workstation executable path. Current-branch GitHub Actions
-evidence is required before this baseline can pass its build gate.
+available on the workstation executable path.
+
+GitHub Actions run `29323035764` passed:
+
+- `flutter pub get`
+- `flutter analyze`
+- `flutter test`
+- backend tests
+- SQLite migrations
+- PostgreSQL migrations
+
+The initial widget-test run identified a Mission Control metric overflow at the
+430-pixel viewport. Commit `a2c27fe` constrained metric labels, and the complete
+rerun passed.
 
 ## Known Limitations
 

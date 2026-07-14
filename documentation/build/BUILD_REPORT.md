@@ -26,7 +26,7 @@ Local result:
 
 CI result:
 
-- GitHub Actions `backend` passed on current-branch run `29320807780`.
+- GitHub Actions `backend` passed on current-branch run `29323035764`.
 - The backend job includes dependency install, `python -m compileall src`, and `pytest -q tests`.
 
 ## Flutter
@@ -43,17 +43,16 @@ Local result:
 - `where dart`: no executable found.
 - `flutter pub get`, `flutter analyze`, and `flutter test`: blocked locally until an SDK is installed.
 
-Inherited CI result:
+CI result:
 
-- GitHub Actions `flutter` passed on parent-branch run `29321209939`.
+- GitHub Actions `flutter` passed on current-branch run `29323035764`.
 - The Flutter job includes `flutter pub get`, `flutter analyze`, and `flutter test`.
-- Current Flutter baseline CI is pending its draft pull request.
 
 ## CI
 
 GitHub Actions workflow added at `.github/workflows/rc1-ci.yml` for backend, SQLite migrations, PostgreSQL migrations, and Flutter checks.
 
-Parent backend baseline workflow run `29321209939` passed all jobs:
+Flutter baseline workflow run `29323035764` passed all jobs:
 
 - backend
 - sqlite-migrations
@@ -62,6 +61,6 @@ Parent backend baseline workflow run `29321209939` passed all jobs:
 
 ## Pull Request
 
-Draft pull request #3 remains open for the backend baseline.
+Draft pull request #4 is open against `codex/rc1-backend-baseline`.
 
 Flutter baseline PR text is available at `documentation/release/RC1_FLUTTER_BASELINE_PR.md`.

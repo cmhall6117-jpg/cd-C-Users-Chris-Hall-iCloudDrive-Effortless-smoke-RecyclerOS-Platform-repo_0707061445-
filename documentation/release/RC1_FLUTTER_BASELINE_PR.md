@@ -29,7 +29,8 @@ introduced behind the workflow controller without rebuilding the screens.
 
 - Local source and diff review: passed.
 - Local Flutter SDK: unavailable.
-- `flutter pub get`, `flutter analyze`, and `flutter test`: pending GitHub Actions.
+- `flutter pub get`, `flutter analyze`, and `flutter test`: passed on GitHub Actions run `29323035764`.
+- Backend, SQLite migration, and PostgreSQL migration jobs: passed on the same run.
 
 ## Known Limitations
 

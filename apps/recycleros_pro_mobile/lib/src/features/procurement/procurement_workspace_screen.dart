@@ -142,7 +142,7 @@ class _ProcurementWorkspaceScreenState
                 : () async {
                     final item = await ref
                         .read(rc1WorkflowProvider.notifier)
-                        .addToPickList(vehicle!.vehicleId);
+                        .addToPickList(vehicle.vehicleId);
                     if (!context.mounted) {
                       return;
                     }

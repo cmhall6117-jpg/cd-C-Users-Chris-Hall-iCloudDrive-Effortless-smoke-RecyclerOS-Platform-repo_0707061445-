@@ -1,18 +1,18 @@
 import os
 import re
 
-import psycopg
-from psycopg import sql
-
 from pilot_postgres_common import read_secret_setting
 
 
 def main() -> int:
-    database_url = read_secret_setting("DATABASE_URL")
     target_name = os.getenv("RECYCLEROS_RESTORE_DATABASE_NAME", "")
     if not re.fullmatch(r"[a-z][a-z0-9_]{2,62}", target_name):
         raise RuntimeError("RECYCLEROS_RESTORE_DATABASE_NAME is invalid.")
 
+    import psycopg
+    from psycopg import sql
+
+    database_url = read_secret_setting("DATABASE_URL")
     with psycopg.connect(database_url, autocommit=True) as conn, conn.cursor() as cursor:
         cursor.execute(
             "SELECT EXISTS (SELECT 1 FROM pg_database WHERE datname = %s)",

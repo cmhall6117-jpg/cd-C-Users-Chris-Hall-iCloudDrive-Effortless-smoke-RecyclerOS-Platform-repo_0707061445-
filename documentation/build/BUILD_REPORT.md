@@ -24,11 +24,10 @@ Local result:
 - `pytest -q services/api/tests`: 13 passed in 7.39 seconds.
 - PostgreSQL client dependencies were split into `services/api/requirements-postgres.txt` so backend tests and PostgreSQL migration checks can install only the dependencies they need in CI.
 
-Inherited CI result:
+CI result:
 
-- GitHub Actions `backend` passed on run `29289307269`.
+- GitHub Actions `backend` passed on current-branch run `29320807780`.
 - The backend job includes dependency install, `python -m compileall src`, and `pytest -q tests`.
-- Current branch CI is pending its draft pull request.
 
 ## Flutter
 
@@ -43,14 +42,14 @@ Local result:
 
 CI result:
 
-- GitHub Actions `flutter` passed on run `29289307269`.
+- GitHub Actions `flutter` passed on current-branch run `29320807780`.
 - The Flutter job includes `flutter pub get`, `flutter analyze`, and `flutter test`.
 
 ## CI
 
 GitHub Actions workflow added at `.github/workflows/rc1-ci.yml` for backend, SQLite migrations, PostgreSQL migrations, and Flutter checks.
 
-Latest PR workflow run `29289307269` passed all jobs:
+Backend baseline PR workflow run `29320807780` passed all jobs:
 
 - backend
 - sqlite-migrations
@@ -59,6 +58,6 @@ Latest PR workflow run `29289307269` passed all jobs:
 
 ## Pull Request
 
-Draft pull request #1 remains open for repository integration.
+Draft pull request #3 is open and mergeable against `codex/rc1-database-consolidation`.
 
 Backend baseline PR text is available at `documentation/release/RC1_BACKEND_BASELINE_PR.md`.

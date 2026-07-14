@@ -40,6 +40,11 @@ FastAPI OpenAPI startup check
 Result: passed; API version 0.2.0 and 10 paths registered
 ```
 
+## CI Evidence
+
+GitHub Actions run `29320807780` passed the backend, SQLite migrations,
+PostgreSQL migrations, and Flutter jobs for draft pull request #3.
+
 ## Known Limitation
 
 The active storage implementation is intentionally process-local. PostgreSQL

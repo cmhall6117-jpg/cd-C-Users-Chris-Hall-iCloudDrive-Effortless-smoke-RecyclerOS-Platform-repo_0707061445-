@@ -30,7 +30,7 @@ Result: passed locally and in inherited CI
 Evidence:
 
 - Local backend suite: 13 passed in 7.39 seconds.
-- GitHub Actions `backend` job succeeded on parent run `29289307269`.
+- GitHub Actions `backend` job succeeded on backend baseline run `29320807780`.
 
 Tests added:
 
@@ -60,6 +60,9 @@ Validated sequence:
 
 Evidence: `services/api/tests/test_rc1_workflow.py`; 13 tests passed across the
 full backend suite.
+
+GitHub Actions confirmation: backend baseline run `29320807780` passed all four
+RC1 jobs.
 
 ### Flutter Primary Path
 

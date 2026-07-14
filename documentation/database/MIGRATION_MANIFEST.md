@@ -58,8 +58,14 @@ SQLite clean initialization passed locally on July 13, 2026. Evidence is in `bui
 
 SQLite clean initialization with consolidation migration passed locally on July 14, 2026. The check now also verifies tenant columns on tenant-owned tables and confirms invalid tenant/workspace inserts are rejected.
 
+GitHub Actions repeated the clean SQLite initialization successfully on core
+working path PR run `29325554779`.
+
 ## PostgreSQL Result
 
-PostgreSQL local execution is blocked in this environment because Docker is not installed or not available on PATH. A GitHub Actions job and `tools/scripts/rc1_postgres_migrate.py` were added to run this gate in CI.
+PostgreSQL local execution is blocked in this environment because Docker is not
+installed or not available on PATH. GitHub Actions PR run `29325554779` applied
+all ten active migrations successfully against a clean PostgreSQL 16 service by
+using `tools/scripts/rc1_postgres_migrate.py`.
 
 The PostgreSQL consolidation migration creates the missing PostgreSQL `sync_queue` table for parity with SQLite and adds tenant validation triggers for tenant-owned records.

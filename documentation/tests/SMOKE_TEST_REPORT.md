@@ -184,3 +184,8 @@ hidden docs, security headers, and release identity in the hardened Linux image.
 Final local evidence: Python compilation passed, 46 backend tests passed with 2
 PostgreSQL-only tests skipped, and clean SQLite initialization passed all 10
 migrations plus tenant-column and mismatch-rejection checks.
+
+GitHub push run `29372078034` and pull-request run `29372080469` passed all
+eight jobs at `847a1bed5e9a438d3a85758954abdca1400525a6`, including the
+production container, PostgreSQL migration replay, manifest-verified restore,
+Flutter analyzer/tests, live core path, and composite release-evidence gate.

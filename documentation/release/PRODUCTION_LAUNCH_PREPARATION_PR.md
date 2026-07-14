@@ -17,6 +17,9 @@ shipping, or AI integrations.
 
 ## Evidence
 
-Local and GitHub evidence will be recorded in
-`PRODUCTION_RELEASE_EVIDENCE.md`. The pull request must remain draft while any
-external production launch gate is blocked.
+Local evidence passed with 46 backend tests and 2 PostgreSQL-only skips. Push
+run `29372078034` and pull-request run `29372080469` passed all eight jobs at
+`847a1bed5e9a438d3a85758954abdca1400525a6`.
+
+The pull request must remain draft while any external production launch gate is
+blocked. Full evidence is recorded in `PRODUCTION_RELEASE_EVIDENCE.md`.

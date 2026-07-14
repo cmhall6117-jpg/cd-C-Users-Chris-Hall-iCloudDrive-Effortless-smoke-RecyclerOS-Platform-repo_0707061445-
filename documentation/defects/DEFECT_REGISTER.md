@@ -266,9 +266,12 @@ and record the accountable business go/no-go decision.
 
 #### DEF-PROD-007: Production container gate awaits GitHub Actions evidence
 
-Status: open, repository blocker
+Status: closed by CI evidence
 
-Impact: The digest-pinned Compose model, migration ledger, owner bootstrap, and
-hardened multi-worker runtime are not yet proven on Linux.
+Impact: None remaining for repository-level production preparation.
 
-Next action: Run both push and pull-request workflows and record exact-head output.
+Resolution: Push run `29372078034` and pull-request run `29372080469` passed all
+eight jobs at `847a1bed5e9a438d3a85758954abdca1400525a6`. The production
+job validated Compose, image metadata, dependency integrity, clean migrations,
+owner bootstrap, two workers, readiness, release identity, headers, hidden docs,
+and login.

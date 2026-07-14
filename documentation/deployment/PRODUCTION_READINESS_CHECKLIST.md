@@ -5,15 +5,16 @@
 | Gate | Status | Evidence |
 | --- | --- | --- |
 | Backend compile and tests | Passed locally | Compilation passed; 46 tests passed and 2 PostgreSQL-only tests skipped. |
-| Flutter analysis and tests | Pending CI | Existing RC1 path retained. |
+| Flutter analysis and tests | Passed in CI | Push `29372078034`; PR `29372080469`. |
 | SQLite initialization | Passed locally | All 10 migrations, tenant columns, and mismatch rejection passed. |
-| PostgreSQL clean migration | Pending CI | Checksum ledger and replay gate added. |
-| Backup checksum and clean restore | Pending CI | Restore now verifies its manifest. |
-| Production image hardening | Pending CI | Non-root, read-only, dropped capabilities, bounded processes. |
-| Controlled initial owner | Pending CI | One-time audited owner bootstrap. |
+| PostgreSQL clean migration | Passed in CI | Checksum ledger and exact replay passed twice. |
+| Backup checksum and clean restore | Passed in CI | Manifest verified before clean restore. |
+| Production image hardening | Passed in CI | Non-root, read-only, dropped capabilities, bounded processes. |
+| Controlled initial owner | Passed in CI | One-time audited owner bootstrap and login. |
 | Production runtime policy | Passed locally | HTTPS origins, exact hosts, hidden docs, HSTS, release SHA. |
 | Immutable release record | Passed locally | Commit, image digest, and all 11 PostgreSQL migration checksums. |
 | Rollback runbook | Documented | Application and database paths are separate. |
+| Composite release gate | Passed in CI | All eight jobs passed in both trigger paths. |
 
 ## External Launch Gates
 

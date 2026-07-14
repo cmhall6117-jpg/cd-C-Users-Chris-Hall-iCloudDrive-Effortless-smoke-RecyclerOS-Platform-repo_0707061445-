@@ -108,8 +108,15 @@ PR text is available at
 - Configuration: mounted secret files and required production trusted hosts
 - Health: independent liveness and storage/auth readiness probes
 - Recovery: custom-format backup, SHA-256 manifest, guarded restore, data verification
-- Local backend result: 38 passed and 1 PostgreSQL-only test skipped in 16.27 seconds
-- Container, compose, and backup/restore execution: pending GitHub Actions
+- Local backend result: 38 passed and 1 PostgreSQL-only test skipped in 16.85 seconds
+- Container, compose, and backup/restore execution: passed in GitHub Actions
 
-The pilot readiness draft pull request is pending publication from
-`codex/pilot-deployment-readiness`.
+Push run `29369194654` and pull-request run `29369197183` passed all seven
+required jobs at commit `59bd74a78c39923ad99d583a00f352a57d8dfb95`.
+The pilot image built and reached PostgreSQL/auth readiness under a read-only
+filesystem with all capabilities dropped. Populated RC1 data was backed up,
+restored into a clean database, and verified.
+
+Draft pull request #9 is open against `codex/rc1-defect-closure`:
+
+`https://github.com/cmhall6117-jpg/cd-C-Users-Chris-Hall-iCloudDrive-Effortless-smoke-RecyclerOS-Platform-repo_0707061445-/pull/9`

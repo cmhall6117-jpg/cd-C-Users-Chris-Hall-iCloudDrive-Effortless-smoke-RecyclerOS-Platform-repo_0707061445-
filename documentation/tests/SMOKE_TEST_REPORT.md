@@ -141,7 +141,7 @@ clean PostgreSQL migration and restart job at commit
 
 ### Pilot Runtime and Operations
 
-Result: local checks passed; Linux container and restore evidence pending CI
+Result: passed locally and in Linux CI
 
 Local evidence:
 
@@ -154,6 +154,10 @@ Local evidence:
 - restore requires an exact target database confirmation
 - generated pilot secrets are never overwritten
 
-GitHub Actions will validate the compose model, build and run the non-root
-read-only image, wait for real PostgreSQL/auth readiness, back up populated RC1
-data, restore it into a clean database, and verify auth and workflow records.
+GitHub Actions validated the compose model, built and ran the non-root read-only
+image, waited for real PostgreSQL/auth readiness, backed up populated RC1 data,
+restored it into a clean database, and verified auth and workflow records.
+
+Evidence: push run `29369194654` and pull-request run `29369197183` completed
+those checks successfully at commit
+`59bd74a78c39923ad99d583a00f352a57d8dfb95`.

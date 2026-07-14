@@ -21,13 +21,12 @@ Local result:
 - Backend requirements are available in the ignored repository `.venv`.
 - `python -m compileall services/api/src`: passed.
 - FastAPI startup and OpenAPI route manifest check: passed with 11 paths.
-- `pytest -q services/api/tests`: 17 passed in 9.03 seconds.
+- `pytest -q services/api/tests`: 17 passed in 9.52 seconds on the final local run.
 - PostgreSQL client dependencies were split into `services/api/requirements-postgres.txt` so backend tests and PostgreSQL migration checks can install only the dependencies they need in CI.
 
 CI result:
 
-- Current-branch backend CI evidence is pending the first push and draft PR.
-- Inherited backend evidence remains Flutter baseline run `29323035764`.
+- GitHub Actions `backend` passed on PR run `29325554779`.
 - The backend job includes dependency install, `python -m compileall src`, and `pytest -q tests`.
 
 ## Flutter
@@ -48,24 +47,29 @@ Local result:
 
 CI result:
 
-- Current-branch GitHub Actions evidence is pending the first push and draft PR.
-- Inherited Flutter baseline evidence remains run `29323035764`.
+- `flutter pub get`, `flutter analyze`, and `flutter test` passed on PR run
+  `29325554779`.
+- The live Dio-to-FastAPI core path passed in the `core-integration` job on the
+  same run.
 
 ## CI
 
 GitHub Actions workflow added at `.github/workflows/rc1-ci.yml` for backend, SQLite migrations, PostgreSQL migrations, and Flutter checks.
 
-Inherited Flutter baseline workflow run `29323035764` passed all jobs. The core
-working path requires a new green run before its release gates are updated.
+Core working path PR workflow run `29325554779` passed all jobs:
 
 - backend
 - sqlite-migrations
 - postgres-migrations
 - flutter
+- core-integration
 
 ## Pull Request
 
-Draft pull request creation is pending the first core working path commit.
+Draft pull request #5 is open and mergeable against
+`codex/rc1-flutter-baseline`:
+
+`https://github.com/cmhall6117-jpg/cd-C-Users-Chris-Hall-iCloudDrive-Effortless-smoke-RecyclerOS-Platform-repo_0707061445-/pull/5`
 
 Core working path PR text is available at
 `documentation/release/RC1_CORE_WORKING_PATH_PR.md`.

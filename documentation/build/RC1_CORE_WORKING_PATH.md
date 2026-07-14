@@ -25,11 +25,13 @@ tenant-scoped FastAPI contracts:
 ## Validation
 
 - Backend source compilation: passed locally.
-- Backend tests: 17 passed locally in 9.03 seconds.
+- Backend tests: 17 passed locally in 9.52 seconds on the final local run.
 - Flutter SDK: unavailable locally.
-- Current-branch Flutter analyze and tests: pending GitHub Actions.
-- PostgreSQL and SQLite schemas: unchanged; current-branch CI pending.
-- Live Flutter-to-FastAPI smoke test: pending the next GitHub Actions run.
+- Flutter dependency resolution, analyze, and tests: passed on GitHub Actions PR
+  run `29325554779`.
+- PostgreSQL and SQLite clean migration checks: passed on the same run.
+- Live Flutter-to-FastAPI smoke test: passed in the `core-integration` job on the
+  same run.
 
 ## Deferred
 

@@ -25,12 +25,12 @@ PASS tenant mismatch rejected
 
 ### Backend Tenant Isolation
 
-Result: passed locally and in inherited CI
+Result: passed locally and in current CI
 
 Evidence:
 
-- Local backend suite: 17 passed in 9.03 seconds.
-- GitHub Actions `backend` job succeeded on backend baseline run `29320807780`.
+- Local backend suite: 17 passed in 9.52 seconds on the final local run.
+- GitHub Actions `backend` job succeeded on core working path run `29325554779`.
 
 Tests added:
 
@@ -64,7 +64,7 @@ Validated sequence:
 Evidence: `services/api/tests/test_rc1_workflow.py`; 17 tests passed across the
 full backend suite.
 
-GitHub Actions confirmation: backend baseline run `29320807780` passed all four
+GitHub Actions confirmation: core working path run `29325554779` passed all five
 RC1 jobs.
 
 ### Flutter Primary Path
@@ -72,7 +72,7 @@ RC1 jobs.
 Result: passed in CI
 
 Evidence: GitHub Actions `flutter` job succeeded on current-branch run
-`29323035764`.
+`29325554779`.
 
 Routes added:
 
@@ -103,5 +103,9 @@ The core working path now injects `FakeRc1Gateway` into the full mobile test and
 asserts all eight workflow calls carry `org-local` and `workspace-local`. A Dio
 transport test verifies required HTTP headers and API response mapping.
 
-Current-branch GitHub Actions evidence is pending. Inherited baseline evidence is
-run `29323035764` and does not pass the new integration gate by itself.
+GitHub Actions PR run `29325554779` passed `flutter pub get`, `flutter analyze`,
+and `flutter test`. The separate `core-integration` job started FastAPI and drove
+the production Dio gateway through all eight transitions over HTTP. It confirmed
+backend-generated opportunity, vehicle, and inventory codes, procurement
+analysis, persisted pick-list availability, harvest completion, and linked
+inventory creation.

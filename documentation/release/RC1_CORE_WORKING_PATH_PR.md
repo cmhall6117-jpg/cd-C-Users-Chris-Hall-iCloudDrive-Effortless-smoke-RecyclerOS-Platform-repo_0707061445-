@@ -17,11 +17,12 @@
 ## Validation
 
 - `python -m compileall services/api/src`: passed locally.
-- `pytest -q services/api/tests`: 17 passed locally in 9.03 seconds.
-- `flutter pub get`: pending GitHub Actions.
-- `flutter analyze`: pending GitHub Actions.
-- `flutter test`: pending GitHub Actions.
-- SQLite and PostgreSQL clean migration checks: pending current-branch CI.
+- `pytest -q services/api/tests`: 17 passed locally in 9.52 seconds.
+- `flutter pub get`: passed on GitHub Actions PR run `29325554779`.
+- `flutter analyze`: passed on the same run.
+- `flutter test`: passed on the same run.
+- Live Flutter-to-FastAPI smoke test: passed on the same run.
+- SQLite and PostgreSQL clean migration checks: passed on the same run.
 
 ## Known Limitations
 

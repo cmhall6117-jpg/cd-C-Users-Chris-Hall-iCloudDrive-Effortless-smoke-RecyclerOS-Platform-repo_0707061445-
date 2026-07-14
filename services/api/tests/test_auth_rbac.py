@@ -102,6 +102,16 @@ def test_login_rejects_invalid_credentials(client):
     assert response.headers["www-authenticate"] == "Bearer"
 
 
+def test_logout_revokes_local_session(client):
+    headers = _login(client, Role.OPERATOR)
+
+    logout = client.post("/v1/auth/logout", headers=headers)
+    me = client.get("/v1/auth/me", headers=headers)
+
+    assert logout.status_code == 204
+    assert me.status_code == 401
+
+
 @pytest.mark.parametrize(
     "headers",
     [
@@ -200,3 +210,11 @@ def test_expired_session_is_rejected():
 
     assert response.status_code == 401
     assert "expired" in response.json()["detail"]
+
+
+def test_production_mode_requires_durable_runtime(monkeypatch):
+    monkeypatch.setenv("RECYCLEROS_DEPLOYMENT_MODE", "production")
+    monkeypatch.delenv("DATABASE_URL", raising=False)
+
+    with pytest.raises(RuntimeError, match="requires DATABASE_URL"):
+        create_app()

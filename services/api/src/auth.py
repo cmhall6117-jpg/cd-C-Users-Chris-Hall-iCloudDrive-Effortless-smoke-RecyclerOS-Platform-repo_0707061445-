@@ -54,9 +54,13 @@ class AuthSession:
 
 
 class AuthService(Protocol):
+    storage_name: str
+
     def authenticate(self, email: str, password: str) -> AuthSession | None: ...
 
     def resolve(self, access_token: str) -> AuthenticatedIdentity | None: ...
+
+    def revoke(self, access_token: str) -> bool: ...
 
 
 @dataclass(frozen=True)
@@ -87,12 +91,12 @@ class LocalUser:
             display_name=display_name,
             memberships=memberships,
             password_salt=salt,
-            password_digest=_password_digest(password, salt, password_iterations),
+            password_digest=password_digest(password, salt, password_iterations),
             password_iterations=password_iterations,
         )
 
     def verifies(self, password: str) -> bool:
-        candidate = _password_digest(
+        candidate = password_digest(
             password,
             self.password_salt,
             self.password_iterations,
@@ -110,7 +114,7 @@ def _utc_now() -> datetime:
     return datetime.now(timezone.utc)
 
 
-def _password_digest(password: str, salt: bytes, iterations: int) -> bytes:
+def password_digest(password: str, salt: bytes, iterations: int) -> bytes:
     return hashlib.pbkdf2_hmac(
         "sha256",
         password.encode("utf-8"),
@@ -121,6 +125,8 @@ def _password_digest(password: str, salt: bytes, iterations: int) -> bytes:
 
 class LocalAuthService:
     """Replaceable RC1 auth boundary with process-local opaque sessions."""
+
+    storage_name = "memory"
 
     def __init__(
         self,
@@ -170,7 +176,7 @@ class LocalAuthService:
         )
         token = secrets.token_urlsafe(32)
         expires_at = now + self._session_ttl
-        self._sessions[_token_key(token)] = _StoredSession(
+        self._sessions[token_digest(token)] = _StoredSession(
             identity=identity,
             expires_at=expires_at,
         )
@@ -181,7 +187,7 @@ class LocalAuthService:
         )
 
     def resolve(self, access_token: str) -> AuthenticatedIdentity | None:
-        token_key = _token_key(access_token)
+        token_key = token_digest(access_token)
         session = self._sessions.get(token_key)
         if session is None:
             return None
@@ -190,6 +196,9 @@ class LocalAuthService:
             return None
         return session.identity
 
+    def revoke(self, access_token: str) -> bool:
+        return self._sessions.pop(token_digest(access_token), None) is not None
 
-def _token_key(access_token: str) -> str:
+
+def token_digest(access_token: str) -> str:
     return hashlib.sha256(access_token.encode("utf-8")).hexdigest()

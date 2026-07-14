@@ -26,16 +26,16 @@ Resolution: Backend requirements installed successfully in the ignored repositor
 
 ### DEF-RC1-010: Auth identities, memberships, and sessions are process-local
 
-Status: open
+Status: implemented; PostgreSQL CI verification pending
 
-Evidence: `LocalAuthService` loads one optional environment-backed operator and
-stores opaque session hashes in API process memory.
+Evidence: `PostgresAuthService` stores identities, memberships, token digests,
+expiry, revocation, login attempts, and audit events in PostgreSQL. The CI
+restart test is not yet complete.
 
-Impact: Authentication and RBAC are testable for RC1, but identities and
-sessions are lost on restart and cannot be managed across API replicas.
+Impact: No implementation blocker remains; remote clean-database evidence is
+required before closure.
 
-Next action: Implement the `AuthService` boundary with durable identity,
-membership, session, and audit storage before production release.
+Next action: Pass `test_postgres_runtime.py` in the clean PostgreSQL CI job.
 
 ### DEF-RC1-008: Core Flutter API integration awaits CI verification
 
@@ -53,13 +53,15 @@ GitHub Actions PR run `29325554779` then passed `flutter pub get`,
 
 ### DEF-RC1-007: Backend records are not durable across process restarts
 
-Status: open
+Status: implemented; PostgreSQL CI verification pending
 
-Evidence: FastAPI `create_app()` currently installs `InMemoryStore` by default.
+Evidence: FastAPI selects `PostgresStore` when `DATABASE_URL` is configured and
+production mode fails closed without it. The CI restart test is not yet complete.
 
-Impact: The RC1 workflow is functional and tenant-scoped within one API process, but created opportunities, vehicles, pick-list items, harvest sessions, and inventory items are lost when the process restarts.
+Impact: No implementation blocker remains; remote clean-database evidence is
+required before closure.
 
-Next action: Implement the existing storage boundary against the consolidated PostgreSQL schema and run the same workflow and tenant-isolation contract tests against it.
+Next action: Pass the full workflow across fresh app/store instances in CI.
 
 ### DEF-RC1-003: Flutter SDK is unavailable locally
 
@@ -85,31 +87,28 @@ Resolution: The bundled Python runtime completed `python -m compileall services/
 
 ### DEF-RC1-011: Local auth lacks production account defenses
 
-Status: open, non-blocking for the local RC1 path
+Status: implemented for RC1 scope; PostgreSQL CI verification pending
 
-Evidence: The local provider verifies PBKDF2 password hashes and expires opaque
-sessions, but does not implement login rate limiting, refresh, explicit
-revocation, password recovery, or enterprise SSO.
+Evidence: The PostgreSQL provider verifies PBKDF2 password hashes, rate-limits
+failed logins, expires and revokes opaque sessions, exposes logout, and records
+auth audit events. Refresh, password recovery, and live SSO remain intentionally
+deferred behind `AuthService`.
 
-Impact: The provider is suitable only for local RC1 integration and must not be
-treated as the production identity system.
+Impact: No RC1 implementation blocker remains; enterprise identity capabilities
+are outside this release scope.
 
-Next action: Keep live identity behind `AuthService`; add rate limiting and
-durable session controls with the selected production provider.
+Next action: Pass durable lockout, revocation, and audit checks in PostgreSQL CI.
 
 ### DEF-RC1-009: GitHub Actions use versions targeting deprecated Node.js 20
 
-Status: open, non-blocking
+Status: implemented; CI warning verification pending
 
-Evidence: Runs `29363973050` and `29364157746` report that
-`actions/checkout@v4` and
-`actions/setup-python@v5` target Node.js 20 and are being forced onto Node.js 24.
+Evidence: The workflow now uses `actions/checkout@v6` and
+`actions/setup-python@v6`. The first upgraded CI run is pending.
 
-Impact: All jobs pass today, but the workflow should adopt supported action
-major versions when available to remove future runner compatibility risk.
+Impact: No implementation blocker remains; CI must confirm runner compatibility.
 
-Next action: Upgrade the affected GitHub Actions versions in a focused CI
-maintenance change after confirming their release notes.
+Next action: Confirm the upgraded workflow completes without Node 20 warnings.
 
 ### DEF-RC1-006: Draft pull request cannot be opened without a GitHub remote
 

@@ -58,14 +58,14 @@ class _InventoryIntakeScreenState extends State<InventoryIntakeScreen> {
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<String>(
-            value: condition,
+            initialValue: condition,
             decoration: const InputDecoration(labelText: 'Condition', border: OutlineInputBorder()),
             items: conditions.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
             onChanged: (value) => setState(() => condition = value ?? condition),
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<String>(
-            value: status,
+            initialValue: status,
             decoration: const InputDecoration(labelText: 'Inventory Status', border: OutlineInputBorder()),
             items: statuses.map((s) => DropdownMenuItem(value: s, child: Text(s))).toList(),
             onChanged: (value) => setState(() => status = value ?? status),

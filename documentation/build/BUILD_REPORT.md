@@ -19,6 +19,12 @@ Local result:
 - Backend dependency installation is blocked by local pip timeout.
 - FastAPI startup and pytest are blocked until dependencies install.
 - Standard compileall is currently blocked by local command timeout.
+- PostgreSQL client dependencies were split into `services/api/requirements-postgres.txt` so backend tests and PostgreSQL migration checks can install only the dependencies they need in CI.
+
+CI result:
+
+- GitHub Actions `backend` passed on run `29289307269`.
+- The backend job includes dependency install, `python -m compileall src`, and `pytest -q tests`.
 
 ## Flutter
 
@@ -31,10 +37,24 @@ Local result:
 - `flutter analyze`: blocked by local command timeout.
 - `flutter test`: blocked by local command timeout.
 
+CI result:
+
+- GitHub Actions `flutter` passed on run `29289307269`.
+- The Flutter job includes `flutter pub get`, `flutter analyze`, and `flutter test`.
+
 ## CI
 
 GitHub Actions workflow added at `.github/workflows/rc1-ci.yml` for backend, SQLite migrations, PostgreSQL migrations, and Flutter checks.
 
+Latest PR workflow run `29289307269` passed all jobs:
+
+- backend
+- sqlite-migrations
+- postgres-migrations
+- flutter
+
 ## Pull Request
 
-Draft pull request creation is blocked because this newly initialized local monorepo has no configured GitHub remote. The local branch and commit are ready to push once the target repository is known.
+Draft pull request #1 is open and mergeable.
+
+Prepared PR text is available at `documentation/release/PULL_REQUEST_DRAFT.md`.

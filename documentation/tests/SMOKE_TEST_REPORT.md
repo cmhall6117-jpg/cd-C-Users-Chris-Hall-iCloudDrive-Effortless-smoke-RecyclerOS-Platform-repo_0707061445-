@@ -138,3 +138,22 @@ PostgreSQL migration job. It validates:
 Evidence: push run `29366652838` and pull-request run `29366685297` passed the
 clean PostgreSQL migration and restart job at commit
 `7beea835073e42e8f07b90afbf1c4687e972d734`.
+
+### Pilot Runtime and Operations
+
+Result: local checks passed; Linux container and restore evidence pending CI
+
+Local evidence:
+
+- 38 backend tests passed; 1 PostgreSQL-only test skipped
+- liveness remains available when dependency readiness fails
+- local readiness reports workflow storage and auth independently
+- production configuration requires trusted hosts
+- secret files are read without accepting ambiguous direct values
+- backup commands omit the database password
+- restore requires an exact target database confirmation
+- generated pilot secrets are never overwritten
+
+GitHub Actions will validate the compose model, build and run the non-root
+read-only image, wait for real PostgreSQL/auth readiness, back up populated RC1
+data, restore it into a clean database, and verify auth and workflow records.

@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - "codex/rc1-*"
+      - "codex/pilot-*"
 
 permissions:
   contents: read
@@ -67,6 +68,82 @@ jobs:
           DATABASE_URL: postgresql://recycleros:recycleros_test_password@localhost:5432/recycleros_test
           RECYCLEROS_DEPLOYMENT_MODE: production
           RECYCLEROS_LOCAL_OPERATOR_PASSWORD: postgres-runtime-password
+          RECYCLEROS_TRUSTED_HOSTS: testserver
+      - name: Verify pilot backup and restore
+        shell: bash
+        env:
+          DATABASE_URL: postgresql://recycleros:recycleros_test_password@localhost:5432/recycleros_test
+          RECYCLEROS_RESTORE_DATABASE_NAME: recycleros_restore_test
+          RECYCLEROS_RESTORE_DATABASE_URL: postgresql://recycleros:recycleros_test_password@localhost:5432/recycleros_restore_test
+          RECYCLEROS_RESTORE_CONFIRM: recycleros_restore_test
+        run: |
+          pg_dump --version
+          python tools/scripts/pilot_postgres_backup.py \
+            --output "$RUNNER_TEMP/recycleros-pilot.dump"
+          python tools/scripts/pilot_postgres_create_database.py
+          python tools/scripts/pilot_postgres_restore.py \
+            --backup "$RUNNER_TEMP/recycleros-pilot.dump"
+          RECYCLEROS_VERIFY_DATABASE_VARIABLE=RECYCLEROS_RESTORE_DATABASE_URL \
+            python tools/scripts/pilot_postgres_verify.py --require-runtime-data
+
+  pilot-container:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: recycleros_pilot
+          POSTGRES_USER: recycleros
+          POSTGRES_PASSWORD: pilot_ci_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v6
+      - name: Validate pilot compose configuration
+        shell: bash
+        env:
+          RECYCLEROS_TRUSTED_HOSTS: localhost,127.0.0.1
+        run: |
+          secret_dir="$RUNNER_TEMP/pilot-secrets"
+          mkdir -p "$secret_dir"
+          printf '%s' 'pilot_ci_password' > "$secret_dir/postgres_password"
+          printf '%s' 'postgresql://recycleros:pilot_ci_password@postgres:5432/recycleros_pilot' > "$secret_dir/database_url"
+          printf '%s' 'pilot_operator_password' > "$secret_dir/operator_password"
+          RECYCLEROS_PILOT_SECRET_DIR="$secret_dir" \
+            docker compose -f deploy/pilot/compose.yml config --quiet
+      - name: Build and smoke test hardened pilot image
+        shell: bash
+        run: |
+          docker build -f services/api/Dockerfile -t recycleros-api:pilot .
+          docker run --detach --name recycleros-pilot-api \
+            --network host \
+            --read-only \
+            --tmpfs /tmp:size=64m,mode=1777 \
+            --cap-drop ALL \
+            --security-opt no-new-privileges \
+            --env DATABASE_URL=postgresql://recycleros:pilot_ci_password@127.0.0.1:5432/recycleros_pilot \
+            --env RECYCLEROS_LOCAL_OPERATOR_PASSWORD=pilot_operator_password \
+            --env RECYCLEROS_DEPLOYMENT_MODE=production \
+            --env RECYCLEROS_TRUSTED_HOSTS=localhost,127.0.0.1 \
+            recycleros-api:pilot
+
+          for attempt in {1..20}; do
+            if [[ "$(docker inspect --format '{{.State.Health.Status}}' recycleros-pilot-api)" == "healthy" ]]; then
+              curl --fail http://127.0.0.1:8000/v1/health/ready
+              exit 0
+            fi
+            sleep 3
+          done
+
+          docker logs recycleros-pilot-api
+          exit 1
+      - if: ${{ always() }}
+        run: docker rm --force recycleros-pilot-api || true
 
   flutter:
     runs-on: ubuntu-latest
@@ -120,6 +197,7 @@ jobs:
       - postgres-migrations
       - flutter
       - core-integration
+      - pilot-container
     runs-on: ubuntu-latest
     steps:
       - name: Verify and summarize RC1 gates
@@ -130,6 +208,7 @@ jobs:
           POSTGRES_RESULT: ${{ needs['postgres-migrations'].result }}
           FLUTTER_RESULT: ${{ needs.flutter.result }}
           CORE_INTEGRATION_RESULT: ${{ needs['core-integration'].result }}
+          PILOT_CONTAINER_RESULT: ${{ needs['pilot-container'].result }}
         run: |
           run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
           {
@@ -149,6 +228,7 @@ jobs:
             echo "| postgres-migrations | ${POSTGRES_RESULT} |"
             echo "| flutter | ${FLUTTER_RESULT} |"
             echo "| core-integration | ${CORE_INTEGRATION_RESULT} |"
+            echo "| pilot-container | ${PILOT_CONTAINER_RESULT} |"
           } >> "$GITHUB_STEP_SUMMARY"
 
           for result in \
@@ -156,7 +236,8 @@ jobs:
             "$SQLITE_RESULT" \
             "$POSTGRES_RESULT" \
             "$FLUTTER_RESULT" \
-            "$CORE_INTEGRATION_RESULT"; do
+            "$CORE_INTEGRATION_RESULT" \
+            "$PILOT_CONTAINER_RESULT"; do
             if [[ "$result" != "success" ]]; then
               echo "Required RC1 gate did not pass: $result"
               exit 1

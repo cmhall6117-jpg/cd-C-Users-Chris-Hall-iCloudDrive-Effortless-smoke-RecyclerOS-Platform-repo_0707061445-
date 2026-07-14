@@ -14,4 +14,9 @@
 - PostgreSQL users, memberships, sessions, revocation state, login attempts, and auth audit events are durable across API restarts. Refresh tokens, password recovery, and enterprise SSO remain deferred.
 - `RECYCLEROS_DEPLOYMENT_MODE=production` requires `DATABASE_URL`; process-local providers are not an implicit production fallback.
 - The local operator password bootstraps a missing PostgreSQL account but does not rotate an existing credential during app startup.
+- The pilot API and PostgreSQL ports remain loopback-bound; remote access requires an independently managed TLS reverse proxy and DNS record.
+- Pilot runtime secrets are mounted through file references and are not committed, baked into the image, or written into evidence documents.
+- The API container applies idempotent RC1 migrations before starting one initial pilot worker.
+- Repository readiness does not imply a live pilot host, approved real secrets, off-host backup schedule, centralized alerts, or staffed support coverage.
+- Proposed pilot recovery targets are a 24-hour recovery point and 4-hour recovery time; business approval is still required.
 - The short repository path `repo_0707061445` is the authoritative monorepo because longer Windows paths interrupt deep generated file copies.

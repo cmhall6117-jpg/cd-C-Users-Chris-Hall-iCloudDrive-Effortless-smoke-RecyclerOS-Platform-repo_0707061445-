@@ -70,3 +70,22 @@ fail-closed selection, logout, login throttling, auth audit events, and Node 24
 GitHub Action majors. Local evidence is 28 passed and 1 PostgreSQL-only test
 skipped. GitHub then passed clean PostgreSQL restart coverage and every other
 required job on both trigger paths with zero check annotations.
+
+## Pilot Deployment Readiness
+
+| Gate | Status | Evidence |
+| --- | --- | --- |
+| Secret-backed runtime configuration | Passed locally | Secret-file and conflict tests. |
+| Production trusted-host enforcement | Passed locally | `test_pilot_runtime.py`. |
+| Liveness and dependency readiness | Passed locally | 16-path startup and health tests. |
+| Non-root read-only pilot image | Pending CI | `pilot-container` job. |
+| Secret-backed compose validation | Pending CI | `docker compose config --quiet`. |
+| Migration-first container startup | Pending CI | Real PostgreSQL container smoke. |
+| Populated backup and clean restore | Pending CI | PostgreSQL backup/restore rehearsal. |
+| Public DNS and TLS | Blocked external | `DEF-PILOT-001`. |
+| Real secret provisioning | Blocked external | `DEF-PILOT-002`. |
+| Off-host backup schedule | Blocked external | `DEF-PILOT-003`. |
+| Central log and alert routing | Blocked external | `DEF-PILOT-004`. |
+
+RC1 remains reproducible and green. Pilot deployment is no-go until automated
+pilot gates pass and the external blockers have owner-approved evidence.

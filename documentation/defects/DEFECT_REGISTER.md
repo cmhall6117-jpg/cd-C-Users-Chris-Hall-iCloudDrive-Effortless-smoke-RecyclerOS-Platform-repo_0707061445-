@@ -135,3 +135,68 @@ Evidence: Active migrations go from `006` to `022`.
 Impact: Numbering is non-contiguous, but no duplicate migration numbers are active.
 
 Next action: Keep the manifest explicit and avoid renumbering generated historical packages.
+
+## Pilot Deployment Readiness
+
+### High
+
+#### DEF-PILOT-001: Public ingress, DNS, and TLS are not provisioned
+
+Status: open, external blocker
+
+Evidence: The pilot compose stack intentionally binds API and PostgreSQL ports
+to loopback. No public hostname, certificate, or reverse proxy is configured.
+
+Impact: Remote pilot access must not begin.
+
+Next action: Provision the approved host, DNS, TLS reverse proxy, and certificate,
+then record external verification evidence.
+
+#### DEF-PILOT-002: Real pilot secrets are not provisioned
+
+Status: open, external blocker
+
+Evidence: The repository contains secret references and safe creation tooling,
+but no live values or approved access record.
+
+Impact: A real pilot environment cannot be started securely.
+
+Next action: Provision secrets in the approved password manager or secret store,
+restrict deployment access, and record rotation ownership.
+
+#### DEF-PILOT-003: Off-host backup operations are not configured
+
+Status: open, external blocker
+
+Evidence: Backup and restore tooling exists, but no encrypted destination,
+schedule, retention job, or restore owner is configured.
+
+Impact: A data-bearing pilot would lack an evidenced recovery process.
+
+Next action: Approve recovery targets, configure the encrypted off-host schedule,
+assign the restore owner, and complete a host-level restore rehearsal.
+
+### Medium
+
+#### DEF-PILOT-004: Central logs and readiness alerts are not routed
+
+Status: open, external blocker
+
+Evidence: The API exposes liveness and readiness, but no external log collector,
+monitor, or alert recipient is configured.
+
+Impact: An unattended pilot failure may not reach an operator promptly.
+
+Next action: Connect container logs and readiness probes to the approved
+monitoring service and test alert delivery.
+
+#### DEF-PILOT-005: Pilot container and recovery checks await CI
+
+Status: open
+
+Evidence: Local Python checks pass, but Docker is unavailable on this workstation.
+
+Impact: Repository-level pilot readiness is not yet evidenced on Linux.
+
+Next action: Pass `pilot-container` and the PostgreSQL backup/restore rehearsal in
+GitHub Actions.

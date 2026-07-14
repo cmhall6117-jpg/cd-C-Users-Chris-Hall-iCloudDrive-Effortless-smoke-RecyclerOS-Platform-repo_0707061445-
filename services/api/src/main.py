@@ -2,6 +2,7 @@ import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from auth import AuthService, LocalAuthService
 from postgres_auth import PostgresAuthService
 from postgres_store import PostgresStore
@@ -13,6 +14,7 @@ from routes.opportunities import router as opportunities_router
 from routes.pick_list import router as pick_list_router
 from routes.procurement import router as procurement_router
 from routes.vehicles import router as vehicles_router
+from runtime_config import read_config_value
 from store import InMemoryStore, WorkflowStore
 
 
@@ -20,7 +22,7 @@ def create_app(
     store: WorkflowStore | None = None,
     auth_service: AuthService | None = None,
 ) -> FastAPI:
-    database_url = os.getenv("DATABASE_URL")
+    database_url = read_config_value("DATABASE_URL")
     deployment_mode = os.getenv("RECYCLEROS_DEPLOYMENT_MODE", "development").casefold()
     if (
         deployment_mode == "production"
@@ -28,7 +30,18 @@ def create_app(
         and (store is None or auth_service is None)
     ):
         raise RuntimeError(
-            "Production mode requires DATABASE_URL for durable workflow and auth state."
+            "Production mode requires DATABASE_URL or DATABASE_URL_FILE for "
+            "durable workflow and auth state."
+        )
+
+    trusted_hosts = [
+        host.strip()
+        for host in os.getenv("RECYCLEROS_TRUSTED_HOSTS", "").split(",")
+        if host.strip()
+    ]
+    if deployment_mode == "production" and not trusted_hosts:
+        raise RuntimeError(
+            "Production mode requires RECYCLEROS_TRUSTED_HOSTS."
         )
 
     if store is None:
@@ -40,9 +53,13 @@ def create_app(
             else LocalAuthService.from_environment()
         )
 
-    app = FastAPI(title="RecyclerOS Platform API", version="0.4.0")
+    app = FastAPI(title="RecyclerOS Platform API", version="0.5.0")
     app.state.store = store
     app.state.auth_service = auth_service
+    app.add_middleware(
+        TrustedHostMiddleware,
+        allowed_hosts=trusted_hosts or ["*"],
+    )
     configured_origins = [
         origin.strip()
         for origin in os.getenv("RECYCLEROS_CORS_ORIGINS", "").split(",")

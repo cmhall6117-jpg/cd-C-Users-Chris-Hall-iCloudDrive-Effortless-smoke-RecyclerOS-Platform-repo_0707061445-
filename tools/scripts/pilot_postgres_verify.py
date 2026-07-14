@@ -1,8 +1,6 @@
 import argparse
 import os
 
-import psycopg
-
 from pilot_postgres_common import read_secret_setting
 
 
@@ -20,6 +18,8 @@ REQUIRED_TABLES = (
 
 
 def main() -> int:
+    import psycopg
+
     parser = argparse.ArgumentParser(description="Verify a RecyclerOS pilot database.")
     parser.add_argument("--require-runtime-data", action="store_true")
     args = parser.parse_args()

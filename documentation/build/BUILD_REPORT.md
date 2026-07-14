@@ -134,4 +134,6 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
 - Focused local result: 13 production and operations tests passed
 - Full local backend result: 46 passed and 2 PostgreSQL-only tests skipped
 - Python compilation and SQLite clean initialization: passed
-- GitHub Actions results: pending exact-head evidence run
+- GitHub Actions: all eight jobs passed on push run `29372078034` and
+  pull-request run `29372080469` at
+  `847a1bed5e9a438d3a85758954abdca1400525a6`

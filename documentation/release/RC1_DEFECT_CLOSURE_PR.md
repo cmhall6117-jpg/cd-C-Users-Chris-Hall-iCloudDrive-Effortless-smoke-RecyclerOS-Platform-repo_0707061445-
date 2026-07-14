@@ -24,6 +24,14 @@ secret references.
 
 ## CI Verification
 
-Pending the first push of `codex/rc1-defect-closure`. The draft pull request
-must remain a candidate until backend, SQLite, PostgreSQL, Flutter, live core
-integration, and composite release-evidence jobs pass on its exact head commit.
+At commit `7beea835073e42e8f07b90afbf1c4687e972d734`, push run
+`29366652838` and pull-request run `29366685297` passed:
+
+- backend compile and automated tests
+- SQLite clean initialization and tenant checks
+- all 11 PostgreSQL migrations plus durable restart coverage
+- Flutter dependency, analyzer, and test gates
+- authenticated live Flutter-to-FastAPI integration
+- composite release-evidence gate
+
+All check runs reported zero annotations after the Node 24 action upgrades.

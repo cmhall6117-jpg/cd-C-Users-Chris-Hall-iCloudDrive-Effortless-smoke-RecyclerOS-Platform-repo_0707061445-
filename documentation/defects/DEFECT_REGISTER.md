@@ -26,16 +26,16 @@ Resolution: Backend requirements installed successfully in the ignored repositor
 
 ### DEF-RC1-010: Auth identities, memberships, and sessions are process-local
 
-Status: implemented; PostgreSQL CI verification pending
+Status: closed by CI evidence
 
 Evidence: `PostgresAuthService` stores identities, memberships, token digests,
-expiry, revocation, login attempts, and audit events in PostgreSQL. The CI
-restart test is not yet complete.
+expiry, revocation, login attempts, and audit events in PostgreSQL. The restart
+test passed on push run `29366652838` and pull-request run `29366685297`.
 
-Impact: No implementation blocker remains; remote clean-database evidence is
-required before closure.
+Impact: None remaining for the RC1 durable auth/session gate.
 
-Next action: Pass `test_postgres_runtime.py` in the clean PostgreSQL CI job.
+Resolution: A bearer session remained valid across a fresh auth/app instance,
+then logout revocation remained effective across another fresh instance.
 
 ### DEF-RC1-008: Core Flutter API integration awaits CI verification
 
@@ -53,15 +53,17 @@ GitHub Actions PR run `29325554779` then passed `flutter pub get`,
 
 ### DEF-RC1-007: Backend records are not durable across process restarts
 
-Status: implemented; PostgreSQL CI verification pending
+Status: closed by CI evidence
 
 Evidence: FastAPI selects `PostgresStore` when `DATABASE_URL` is configured and
-production mode fails closed without it. The CI restart test is not yet complete.
+production mode fails closed without it. The complete opportunity-to-inventory
+workflow survived fresh store/app instances on push run `29366652838` and
+pull-request run `29366685297`.
 
-Impact: No implementation blocker remains; remote clean-database evidence is
-required before closure.
+Impact: None remaining for the RC1 durable workflow gate.
 
-Next action: Pass the full workflow across fresh app/store instances in CI.
+Resolution: Migration `026` and `test_postgres_runtime.py` passed against clean
+PostgreSQL 16 services in both trigger paths.
 
 ### DEF-RC1-003: Flutter SDK is unavailable locally
 
@@ -87,7 +89,7 @@ Resolution: The bundled Python runtime completed `python -m compileall services/
 
 ### DEF-RC1-011: Local auth lacks production account defenses
 
-Status: implemented for RC1 scope; PostgreSQL CI verification pending
+Status: closed for RC1 scope by CI evidence
 
 Evidence: The PostgreSQL provider verifies PBKDF2 password hashes, rate-limits
 failed logins, expires and revokes opaque sessions, exposes logout, and records
@@ -97,18 +99,22 @@ deferred behind `AuthService`.
 Impact: No RC1 implementation blocker remains; enterprise identity capabilities
 are outside this release scope.
 
-Next action: Pass durable lockout, revocation, and audit checks in PostgreSQL CI.
+Resolution: Durable lockout, revocation, expiry storage, and auth audit checks
+passed on runs `29366652838` and `29366685297`. Refresh, password recovery, and
+live SSO remain out of RC1 scope rather than release-gate defects.
 
 ### DEF-RC1-009: GitHub Actions use versions targeting deprecated Node.js 20
 
-Status: implemented; CI warning verification pending
+Status: closed by CI evidence
 
-Evidence: The workflow now uses `actions/checkout@v6` and
-`actions/setup-python@v6`. The first upgraded CI run is pending.
+Evidence: The workflow uses `actions/checkout@v6` and
+`actions/setup-python@v6`. Push run `29366652838` and pull-request run
+`29366685297` passed all jobs with zero check annotations.
 
-Impact: No implementation blocker remains; CI must confirm runner compatibility.
+Impact: None remaining.
 
-Next action: Confirm the upgraded workflow completes without Node 20 warnings.
+Resolution: Both official actions ran their Node 24 majors without the prior
+Node 20 warning annotations.
 
 ### DEF-RC1-006: Draft pull request cannot be opened without a GitHub remote
 

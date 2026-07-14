@@ -25,9 +25,9 @@ Local result:
 - Backend requirements are available in the ignored repository `.venv`.
 - `python -m compileall services/api/src`: passed.
 - FastAPI startup and OpenAPI route manifest check: passed with 14 paths.
-- `pytest -q services/api/tests`: 28 passed and 1 PostgreSQL-only test skipped in 13.59 seconds on the current local run.
+- `pytest -q services/api/tests`: 28 passed and 1 PostgreSQL-only test skipped in 14.00 seconds on the current local run.
 - SQLite clean initialization: passed all 10 client migrations, tenant-column checks, and tenant mismatch rejection.
-- PostgreSQL restart test: pending GitHub Actions because no local PostgreSQL service is available.
+- PostgreSQL restart test: passed in GitHub Actions against clean PostgreSQL 16 services.
 - PostgreSQL client dependencies were split into `services/api/requirements-postgres.txt` so backend tests and PostgreSQL migration checks can install only the dependencies they need in CI.
 
 Auth/tenant/RBAC baseline CI result:
@@ -70,6 +70,11 @@ to their Node 24 major versions. The PostgreSQL job now applies migration `026`
 and verifies the complete workflow, session persistence, logout revocation,
 login throttling, and auth audit records across three app instances.
 
+Defect-closure push run `29366652838` and pull-request run `29366685297`
+passed all six jobs at commit
+`7beea835073e42e8f07b90afbf1c4687e972d734`. Both runs used
+`actions/checkout@v6` and `actions/setup-python@v6` with zero check annotations.
+
 Auth/tenant/RBAC pull-request run `29363414967` passed all five prerequisite
 jobs at commit `9bf4490f91b914b05963208355218a863b632977`:
 
@@ -85,10 +90,9 @@ The composite gate passed on push run `29363973050` and pull-request run
 
 ## Pull Request
 
-Draft pull request #7 is open, green, and mergeable against
-`codex/rc1-auth-tenant-rbac`:
+Draft pull request #8 is open against `codex/rc1-cicd-release-evidence`:
 
-`https://github.com/cmhall6117-jpg/cd-C-Users-Chris-Hall-iCloudDrive-Effortless-smoke-RecyclerOS-Platform-repo_0707061445-/pull/7`
+`https://github.com/cmhall6117-jpg/cd-C-Users-Chris-Hall-iCloudDrive-Effortless-smoke-RecyclerOS-Platform-repo_0707061445-/pull/8`
 
 PR text is available at
-`documentation/release/RC1_CICD_RELEASE_EVIDENCE_PR.md`.
+`documentation/release/RC1_DEFECT_CLOSURE_PR.md`.

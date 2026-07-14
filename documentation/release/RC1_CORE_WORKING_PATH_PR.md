@@ -10,6 +10,8 @@
 - Added configurable local CORS handling and preflight tests.
 - Expanded the full Flutter workflow test to verify tenant context on all eight
   gateway operations.
+- Added a CI smoke test that starts FastAPI and drives the live Dio gateway
+  through the complete core path.
 - Enabled RC1 GitHub Actions on all `codex/rc1-*` branch pushes.
 
 ## Validation

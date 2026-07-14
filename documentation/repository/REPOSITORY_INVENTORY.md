@@ -945,6 +945,7 @@ copied from one source package:
 - `apps/recycleros_pro_mobile/lib/src/data/rc1_gateway.dart`
 - `apps/recycleros_pro_mobile/lib/src/data/dio_rc1_gateway.dart`
 - `apps/recycleros_pro_mobile/test/dio_rc1_gateway_test.dart`
+- `apps/recycleros_pro_mobile/test/live_rc1_gateway_test.dart`
 - `apps/recycleros_pro_mobile/test/support/fake_rc1_gateway.dart`
 - `services/api/tests/test_cors.py`
 - `documentation/build/RC1_CORE_WORKING_PATH.md`

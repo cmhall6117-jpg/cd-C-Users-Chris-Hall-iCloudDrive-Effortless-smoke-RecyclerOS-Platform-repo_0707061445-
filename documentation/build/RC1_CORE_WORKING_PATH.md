@@ -29,6 +29,7 @@ tenant-scoped FastAPI contracts:
 - Flutter SDK: unavailable locally.
 - Current-branch Flutter analyze and tests: pending GitHub Actions.
 - PostgreSQL and SQLite schemas: unchanged; current-branch CI pending.
+- Live Flutter-to-FastAPI smoke test: pending the next GitHub Actions run.
 
 ## Deferred
 

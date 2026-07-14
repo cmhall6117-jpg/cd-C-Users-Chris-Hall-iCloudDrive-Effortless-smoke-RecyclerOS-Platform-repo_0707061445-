@@ -954,6 +954,23 @@ copied from one source package:
 Existing VS-001 through VS-005 app and API files retain their package provenance
 and contain documented RC1 integration edits.
 
+### RC1 Auth, Tenant, and RBAC Integration
+
+The following files are authored by repository integration work rather than
+copied from a source package:
+
+- `services/api/src/auth.py`
+- `services/api/src/auth_dependencies.py`
+- `services/api/src/routes/auth.py`
+- `services/api/src/schemas/auth.py`
+- `services/api/tests/test_auth_rbac.py`
+- `apps/recycleros_pro_mobile/test/auth_rbac_ui_test.dart`
+- `documentation/security/RC1_AUTH_TENANT_RBAC.md`
+- `documentation/release/RC1_AUTH_TENANT_RBAC_PR.md`
+
+The active route, tenant, workflow, gateway, screen, test, and CI files retain
+their earlier provenance and contain documented auth/RBAC integration edits.
+
 - `apps/recycleros_pro_mobile/lib/main.dart`
 - `apps/recycleros_pro_mobile/lib/src/app/app_routes.dart`
 - `apps/recycleros_pro_mobile/lib/src/app/recycleros_app.dart`

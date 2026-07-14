@@ -6,7 +6,7 @@ default, while tests inject an in-memory fake gateway.
 
 ## Run
 
-Start the FastAPI service, then run Flutter:
+Start FastAPI with `RECYCLEROS_LOCAL_OPERATOR_PASSWORD` set, then run Flutter:
 
 ```text
 flutter pub get
@@ -32,5 +32,9 @@ flutter test
 
 Riverpod owns session UI state, `Rc1Gateway` defines workflow operations, and
 `DioRc1Gateway` maps API responses into the shared `recycleros_domain` models.
-Every workflow call sends `X-Organization-ID` and `X-Workspace-ID`. Login remains
-local; live SSO and offline SQLite synchronization are deferred.
+Login exchanges credentials for an opaque bearer token and server-owned tenant
+memberships. Workspace selection uses those memberships, and every workflow
+call sends the token plus `X-Organization-ID` and `X-Workspace-ID`. Viewer
+memberships are read-only in the UI, while the API remains authoritative for
+all roles. Live SSO, durable sessions, and offline SQLite synchronization are
+deferred behind the existing gateway and auth interfaces.

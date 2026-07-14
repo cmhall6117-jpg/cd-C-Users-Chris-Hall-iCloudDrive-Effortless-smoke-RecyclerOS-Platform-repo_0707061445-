@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
+from auth import Permission
 from dependencies import get_store
 from schemas.vehicle import VehicleCreate
 from store import InMemoryStore
-from tenant import TenantContext, require_tenant_context, validate_payload_tenant
+from tenant import TenantContext, require_permission, validate_payload_tenant
 
 router = APIRouter()
 
@@ -11,7 +12,7 @@ router = APIRouter()
 @router.post("", status_code=status.HTTP_201_CREATED)
 def create_vehicle(
     payload: VehicleCreate,
-    tenant: TenantContext = Depends(require_tenant_context),
+    tenant: TenantContext = Depends(require_permission(Permission.OPERATE)),
     store: InMemoryStore = Depends(get_store),
 ):
     validate_payload_tenant(payload, tenant)
@@ -28,7 +29,7 @@ def create_vehicle(
 @router.get("/{vehicle_code}")
 def get_vehicle(
     vehicle_code: str,
-    tenant: TenantContext = Depends(require_tenant_context),
+    tenant: TenantContext = Depends(require_permission(Permission.READ)),
     store: InMemoryStore = Depends(get_store),
 ):
     vehicle = store.get_vehicle(vehicle_code, tenant)

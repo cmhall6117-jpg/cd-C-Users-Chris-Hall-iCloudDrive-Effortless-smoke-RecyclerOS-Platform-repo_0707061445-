@@ -142,7 +142,9 @@ class _InventoryIntakeScreenState
                 const SizedBox(height: 12),
                 DropdownButtonFormField<InventoryStatus>(
                   initialValue: _status,
-                  decoration: const InputDecoration(labelText: 'Inventory Status'),
+                  decoration: const InputDecoration(
+                    labelText: 'Inventory Status',
+                  ),
                   items: InventoryStatus.values
                       .map(
                         (status) => DropdownMenuItem(
@@ -162,7 +164,9 @@ class _InventoryIntakeScreenState
                   alignment: Alignment.centerRight,
                   child: FilledButton.icon(
                     key: const Key('createInventory'),
-                    onPressed: state.isBusy ? null : _saveInventory,
+                    onPressed: state.isBusy || !state.canOperate
+                        ? null
+                        : _saveInventory,
                     icon: const Icon(Icons.inventory_2_outlined),
                     label: const Text('Create Inventory'),
                   ),

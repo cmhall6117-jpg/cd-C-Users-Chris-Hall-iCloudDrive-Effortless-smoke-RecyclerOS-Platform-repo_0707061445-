@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
+from auth import Permission
 from dependencies import get_store
 from schemas.opportunity import OpportunityCreate
 from store import InMemoryStore
-from tenant import TenantContext, require_tenant_context, validate_payload_tenant
+from tenant import TenantContext, require_permission, validate_payload_tenant
 
 router = APIRouter()
 
@@ -11,7 +12,7 @@ router = APIRouter()
 @router.post("", status_code=status.HTTP_201_CREATED)
 def create_opportunity(
     payload: OpportunityCreate,
-    tenant: TenantContext = Depends(require_tenant_context),
+    tenant: TenantContext = Depends(require_permission(Permission.OPERATE)),
     store: InMemoryStore = Depends(get_store),
 ):
     validate_payload_tenant(payload, tenant)
@@ -21,7 +22,7 @@ def create_opportunity(
 
 @router.get("")
 def list_opportunities(
-    tenant: TenantContext = Depends(require_tenant_context),
+    tenant: TenantContext = Depends(require_permission(Permission.READ)),
     store: InMemoryStore = Depends(get_store),
 ):
     return {
@@ -34,7 +35,7 @@ def list_opportunities(
 @router.get("/{opportunity_id}")
 def get_opportunity(
     opportunity_id: str,
-    tenant: TenantContext = Depends(require_tenant_context),
+    tenant: TenantContext = Depends(require_permission(Permission.READ)),
     store: InMemoryStore = Depends(get_store),
 ):
     opportunity = store.get_opportunity(opportunity_id, tenant)

@@ -5,12 +5,40 @@ import 'package:recycleros_pro_mobile/src/data/rc1_gateway.dart';
 
 void main() {
   test('sends tenant headers and maps a backend-created opportunity', () async {
-    RequestOptions? capturedRequest;
+    final capturedRequests = <RequestOptions>[];
     final dio = Dio(BaseOptions(baseUrl: 'http://127.0.0.1:8000'));
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
-          capturedRequest = options;
+          capturedRequests.add(options);
+          if (options.path == '/v1/auth/login') {
+            handler.resolve(
+              Response<dynamic>(
+                requestOptions: options,
+                statusCode: 200,
+                data: {
+                  'access_token': 'opaque-session-token',
+                  'token_type': 'bearer',
+                  'expires_at': '2026-07-14T20:00:00Z',
+                  'identity': {
+                    'user_id': 'user-local',
+                    'email': 'operator@effortlesssmoke.com',
+                    'display_name': 'Local Operator',
+                    'memberships': [
+                      {
+                        'organization_id': 'org-local',
+                        'organization_name': 'Effortless Smoke, LLC',
+                        'workspace_id': 'workspace-local',
+                        'workspace_name': 'RecyclerOS Operations',
+                        'role': 'operator',
+                      },
+                    ],
+                  },
+                },
+              ),
+            );
+            return;
+          }
           handler.resolve(
             Response<dynamic>(
               requestOptions: options,
@@ -38,6 +66,10 @@ void main() {
     );
     final gateway = DioRc1Gateway(dio: dio);
 
+    final session = await gateway.signIn(
+      email: 'operator@effortlesssmoke.com',
+      password: 'local-rc1',
+    );
     final opportunity = await gateway.createOpportunity(
       const TenantScope(
         organizationId: 'org-local',
@@ -49,9 +81,16 @@ void main() {
       model: 'F-150',
     );
 
-    expect(capturedRequest?.path, '/v1/opportunities');
-    expect(capturedRequest?.headers['X-Organization-ID'], 'org-local');
-    expect(capturedRequest?.headers['X-Workspace-ID'], 'workspace-local');
+    final opportunityRequest = capturedRequests.last;
+    expect(capturedRequests.first.path, '/v1/auth/login');
+    expect(session.memberships.single.role, 'operator');
+    expect(opportunityRequest.path, '/v1/opportunities');
+    expect(
+      opportunityRequest.headers['Authorization'],
+      'Bearer opaque-session-token',
+    );
+    expect(opportunityRequest.headers['X-Organization-ID'], 'org-local');
+    expect(opportunityRequest.headers['X-Workspace-ID'], 'workspace-local');
     expect(opportunity.opportunityId, 'opportunity-api-id');
     expect(opportunity.opportunityCode, 'OPP-000001');
   });

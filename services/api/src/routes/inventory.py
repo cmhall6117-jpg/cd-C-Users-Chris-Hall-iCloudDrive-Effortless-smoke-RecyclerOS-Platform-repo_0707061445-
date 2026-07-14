@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
+from auth import Permission
 from dependencies import get_store
 from schemas.inventory import InventoryCreate
 from store import InMemoryStore
-from tenant import TenantContext, require_tenant_context, validate_payload_tenant
+from tenant import TenantContext, require_permission, validate_payload_tenant
 
 router = APIRouter()
 
@@ -11,7 +12,7 @@ router = APIRouter()
 @router.post("", status_code=status.HTTP_201_CREATED)
 def create_inventory_item(
     payload: InventoryCreate,
-    tenant: TenantContext = Depends(require_tenant_context),
+    tenant: TenantContext = Depends(require_permission(Permission.OPERATE)),
     store: InMemoryStore = Depends(get_store),
 ):
     validate_payload_tenant(payload, tenant)
@@ -27,7 +28,7 @@ def create_inventory_item(
 
 @router.get("")
 def list_inventory_items(
-    tenant: TenantContext = Depends(require_tenant_context),
+    tenant: TenantContext = Depends(require_permission(Permission.READ)),
     store: InMemoryStore = Depends(get_store),
 ):
     return {

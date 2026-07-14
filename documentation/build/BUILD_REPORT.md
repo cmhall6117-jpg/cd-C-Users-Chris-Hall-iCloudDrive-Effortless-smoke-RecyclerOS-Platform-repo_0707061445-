@@ -69,15 +69,16 @@ jobs at commit `9bf4490f91b914b05963208355218a863b632977`:
 - flutter
 - core-integration
 
-Exact-head evidence for the new composite `release-evidence` job is pending
-publication of this branch.
+The composite gate passed on push run `29363973050` and pull-request run
+`29364157746` at commit
+`28eab96b8ed1ec8f03b2d4ecda6e1fea1fe5da53`.
 
 ## Pull Request
 
-Draft pull request #6 is open, green, and mergeable against
-`codex/rc1-core-working-path`:
+Draft pull request #7 is open, green, and mergeable against
+`codex/rc1-auth-tenant-rbac`:
 
-`https://github.com/cmhall6117-jpg/cd-C-Users-Chris-Hall-iCloudDrive-Effortless-smoke-RecyclerOS-Platform-repo_0707061445-/pull/6`
+`https://github.com/cmhall6117-jpg/cd-C-Users-Chris-Hall-iCloudDrive-Effortless-smoke-RecyclerOS-Platform-repo_0707061445-/pull/7`
 
-The CI/CD evidence PR will target `codex/rc1-auth-tenant-rbac`. Proposed text is
-available at `documentation/release/RC1_CICD_RELEASE_EVIDENCE_PR.md`.
+PR text is available at
+`documentation/release/RC1_CICD_RELEASE_EVIDENCE_PR.md`.

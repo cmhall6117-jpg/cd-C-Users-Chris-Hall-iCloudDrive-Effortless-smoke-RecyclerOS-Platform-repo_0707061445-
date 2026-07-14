@@ -115,5 +115,6 @@ failed login stays on the login screen and a viewer cannot create records.
 
 The authenticated `core-integration` job also passed on pull-request run
 `29363414967`, completing all eight live transitions with bearer and tenant
-context. Exact-head verification of the new composite release-evidence job is
-pending publication of `codex/rc1-cicd-release-evidence`.
+context. The new composite `release-evidence` job passed on push run
+`29363973050` and pull-request run `29364157746` at commit
+`28eab96b8ed1ec8f03b2d4ecda6e1fea1fe5da53`.

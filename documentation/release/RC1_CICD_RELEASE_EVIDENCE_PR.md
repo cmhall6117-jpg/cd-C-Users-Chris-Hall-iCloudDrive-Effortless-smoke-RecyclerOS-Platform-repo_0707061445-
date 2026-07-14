@@ -20,7 +20,9 @@ gate succeeded.
 
 The auth baseline passed push run `29363344692` and pull-request run
 `29363414967` at commit `9bf4490f91b914b05963208355218a863b632977`.
-This branch must pass all six jobs before its release-evidence gate is promoted.
+This branch then passed push run `29363973050` and pull-request run
+`29364157746` at commit `28eab96b8ed1ec8f03b2d4ecda6e1fea1fe5da53`,
+including the final release-evidence job.
 
 ## Remaining Blocks
 

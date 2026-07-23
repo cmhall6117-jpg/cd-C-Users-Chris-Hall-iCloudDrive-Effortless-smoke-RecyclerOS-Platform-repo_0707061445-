@@ -15,12 +15,17 @@
 | Immutable release record | Passed locally | Commit, image digest, and all 11 PostgreSQL migration checksums. |
 | Rollback runbook | Documented | Application and database paths are separate. |
 | Composite release gate | Passed in CI | All eight jobs passed in both trigger paths. |
+| Environment contract structure | Passed locally | Credential-free example and strict fixture validation. |
+| Public endpoint acceptance logic | Passed locally | TLS, release, health, headers, and hidden docs. |
+| Managed database acceptance logic | Passed locally | TLS, limited role, schema, owner, and migration ledger. |
+| Manual acceptance workflow | Configured, not run | Requires protected production environment and live target. |
 
 ## External Launch Gates
 
 | Gate | Status |
 | --- | --- |
 | Production account, host, network, DNS, and TLS approved | Blocked external |
+| Cloud provider, account, region, budget, and billing owner approved | Blocked external |
 | Approved registry image published and digest recorded | Blocked external |
 | Managed PostgreSQL provisioned with encryption and restricted access | Blocked external |
 | Point-in-time recovery, off-host backups, retention, and restore drill | Blocked external |
@@ -29,6 +34,7 @@
 | On-call, incident commander, rollback authority, and support process | Blocked external |
 | Privacy, retention, terms, and business launch approval | Blocked external |
 | Capacity and load target approved and tested in the target environment | Blocked external |
+| Manual production environment acceptance workflow passed | Blocked external |
 
 ## Decision
 

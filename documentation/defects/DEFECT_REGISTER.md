@@ -275,3 +275,51 @@ eight jobs at `847a1bed5e9a438d3a85758954abdca1400525a6`. The production
 job validated Compose, image metadata, dependency integrity, clean migrations,
 owner bootstrap, two workers, readiness, release identity, headers, hidden docs,
 and login.
+
+## Production Environment Provisioning
+
+### High
+
+#### DEF-ENV-001: Cloud provider and production account decision is unapproved
+
+Status: open, external blocker
+
+Evidence: No provider, account, region, budget, billing owner, or production
+domain is recorded. The environment example intentionally contains placeholders.
+
+Impact: Provider-specific infrastructure and billable resources must not be created.
+
+Next action: Select the provider and service mapping, approve expected cost and
+region, assign account ownership, and complete the credential-free contract.
+
+#### DEF-ENV-002: Protected production environment and live acceptance are absent
+
+Status: open, external blocker
+
+Evidence: The manual GitHub workflow exists, but the `production` environment,
+required reviewers, database secret, public endpoint, and managed database have
+not been configured.
+
+The database acceptance job also requires a protected self-hosted runner labelled
+`recycleros-production` inside the private database network and the dedicated
+`PRODUCTION_DATABASE_VERIFY_URL` environment secret.
+
+Impact: Repository tests cannot prove target-environment TLS, IAM, recovery,
+observability, or deployed release identity.
+
+Next action: Provision the approved target, configure GitHub environment
+protection, and pass `production-environment-acceptance.yml` with retained output.
+
+### Medium
+
+#### DEF-ENV-003: Provider-specific infrastructure as code is intentionally deferred
+
+Status: open, blocked by provider decision
+
+Evidence: A provider-neutral acceptance boundary is implemented; no AWS, Azure,
+Google Cloud, or other provider has authority to become the production baseline.
+
+Impact: Production resources are not reproducible from provider-specific IaC yet.
+
+Next action: After DEF-ENV-001 closes, implement the selected provider module
+against the committed contract without changing application behavior.

@@ -280,6 +280,25 @@ jobs:
       - if: ${{ always() }}
         run: docker rm --force recycleros-production-api || true
 
+  environment-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Validate credential-free environment contract
+        run: >-
+          python tools/scripts/production_environment_contract.py
+          --contract deploy/production/environment.example.json
+          --allow-placeholders
+      - name: Compile production acceptance tools
+        run: >-
+          python -m compileall -q
+          tools/scripts/production_environment_contract.py
+          tools/scripts/production_endpoint_verify.py
+          tools/scripts/production_database_verify.py
+
   flutter:
     runs-on: ubuntu-latest
     defaults:
@@ -334,6 +353,7 @@ jobs:
       - core-integration
       - pilot-container
       - production-container
+      - environment-contract
     runs-on: ubuntu-latest
     steps:
       - name: Verify and summarize RC1 gates
@@ -346,6 +366,7 @@ jobs:
           CORE_INTEGRATION_RESULT: ${{ needs['core-integration'].result }}
           PILOT_CONTAINER_RESULT: ${{ needs['pilot-container'].result }}
           PRODUCTION_CONTAINER_RESULT: ${{ needs['production-container'].result }}
+          ENVIRONMENT_CONTRACT_RESULT: ${{ needs['environment-contract'].result }}
         run: |
           run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
           {
@@ -367,6 +388,7 @@ jobs:
             echo "| core-integration | ${CORE_INTEGRATION_RESULT} |"
             echo "| pilot-container | ${PILOT_CONTAINER_RESULT} |"
             echo "| production-container | ${PRODUCTION_CONTAINER_RESULT} |"
+            echo "| environment-contract | ${ENVIRONMENT_CONTRACT_RESULT} |"
           } >> "$GITHUB_STEP_SUMMARY"
 
           for result in \
@@ -376,7 +398,8 @@ jobs:
             "$FLUTTER_RESULT" \
             "$CORE_INTEGRATION_RESULT" \
             "$PILOT_CONTAINER_RESULT" \
-            "$PRODUCTION_CONTAINER_RESULT"; do
+            "$PRODUCTION_CONTAINER_RESULT" \
+            "$ENVIRONMENT_CONTRACT_RESULT"; do
             if [[ "$result" != "success" ]]; then
               echo "Required RC1 gate did not pass: $result"
               exit 1

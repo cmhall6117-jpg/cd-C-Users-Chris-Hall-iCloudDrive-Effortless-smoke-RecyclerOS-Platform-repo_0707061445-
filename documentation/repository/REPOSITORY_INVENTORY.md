@@ -1249,3 +1249,19 @@ readiness edits.
 
 These files are repository-authored operational controls derived from the
 integrated RC1 path. They do not activate archived vertical slice packages.
+
+## Production Environment Provisioning Contributions
+
+- `.github/workflows/production-environment-acceptance.yml`
+- `deploy/production/environment.example.json`
+- `tools/scripts/production_environment_contract.py`
+- `tools/scripts/production_endpoint_verify.py`
+- `tools/scripts/production_database_verify.py`
+- `services/api/tests/test_production_environment.py`
+- `documentation/deployment/PRODUCTION_ENVIRONMENT_CONTRACT.md`
+- `documentation/deployment/PRODUCTION_ENVIRONMENT_PROVISIONING.md`
+- `documentation/release/PRODUCTION_ENVIRONMENT_PROVISIONING_PR.md`
+- `documentation/release/PRODUCTION_ENVIRONMENT_EVIDENCE.md`
+
+These files are provider-neutral and credential-free. They create no cloud or
+production resources.

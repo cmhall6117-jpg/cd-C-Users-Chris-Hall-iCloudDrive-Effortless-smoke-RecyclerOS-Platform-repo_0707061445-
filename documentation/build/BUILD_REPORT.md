@@ -137,3 +137,18 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
 - GitHub Actions: all eight jobs passed on push run `29372078034` and
   pull-request run `29372080469` at
   `847a1bed5e9a438d3a85758954abdca1400525a6`
+
+## Production Environment Provisioning Contract
+
+- Branch: `codex/production-environment-provisioning`
+- Provider model: cloud-neutral; no billable resources or credentials
+- Contract: `deploy/production/environment.example.json`
+- Validator: `tools/scripts/production_environment_contract.py`
+- Public acceptance: `tools/scripts/production_endpoint_verify.py`
+- Database acceptance: `tools/scripts/production_database_verify.py`
+- Manual workflow: `.github/workflows/production-environment-acceptance.yml`
+- Focused local result: 8 environment acceptance tests passed
+- Workflow YAML and placeholder-safe contract validation: passed locally
+- Full local backend result: 54 passed and 2 PostgreSQL-only tests skipped
+- Python compilation and SQLite clean initialization: passed
+- GitHub Actions results: pending exact-head evidence

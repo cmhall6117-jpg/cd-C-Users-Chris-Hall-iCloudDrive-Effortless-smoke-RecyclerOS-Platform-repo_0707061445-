@@ -26,3 +26,7 @@
 - PostgreSQL migrations are forward-only. Application rollback must remain compatible with the current schema; database restore requires a separate approved change.
 - The initial production owner uses the current durable local-account provider. Live SSO remains deferred and requires a separate product and security decision.
 - Repository-level production preparation does not imply a provisioned host, registry artifact, managed database, secrets, observability, on-call coverage, legal approval, or authority to open traffic.
+- No cloud provider, production account, region, domain, registry, secret manager, or monitoring service is approved yet; environment tooling must remain provider-neutral.
+- Provider selection and billable-resource creation require an explicit cost, account-ownership, region, and business approval decision outside repository CI.
+- The committed production environment contract contains decisions and evidence only. Credential-like fields are forbidden and live values remain in managed secrets.
+- GitHub production environment acceptance is manual, reviewer-gated, and read-only; it validates a deployed target but does not provision or deploy it.

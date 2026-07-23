@@ -189,3 +189,26 @@ GitHub push run `29372078034` and pull-request run `29372080469` passed all
 eight jobs at `847a1bed5e9a438d3a85758954abdca1400525a6`, including the
 production container, PostgreSQL migration replay, manifest-verified restore,
 Flutter analyzer/tests, live core path, and composite release-evidence gate.
+
+### Production Environment Acceptance Contract
+
+Result: focused local checks passed; live target blocked external
+
+Eight tests validate:
+
+- the checked-in example contract is structurally valid with placeholders
+- a placeholder contract cannot claim launch readiness
+- a complete approved contract passes strict validation
+- credential fields and public database access are rejected
+- expected public TLS, release, health, security headers, and hidden docs pass
+- expiring TLS and a wrong deployed release fail
+- managed PostgreSQL requires TLS, a limited role, version 16+, schema readiness,
+  active owner/admin membership, and the exact migration checksum ledger
+- empty owner fields and non-HTTPS browser origins fail structural validation
+
+Both CI workflow files parse locally. No live endpoint or managed database check
+was attempted because provider and environment resources are unselected.
+
+Final local repository evidence: Python compilation passed, 54 backend tests
+passed with 2 PostgreSQL-only tests skipped, and SQLite passed all 10 migrations
+plus tenant-column and mismatch-rejection checks.

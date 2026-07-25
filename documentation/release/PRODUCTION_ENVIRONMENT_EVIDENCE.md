@@ -4,6 +4,8 @@
 
 - Branch: `codex/production-environment-provisioning`
 - Base: `codex/production-launch-preparation`
+- Implementation commit: `fc3964011767be24adc5cba13ab00e6a9c71940d`
+- Draft pull request: `#11`
 - Provider: unselected
 - Live resources created: none
 - Production acceptance run: blocked until environment selection and provisioning
@@ -23,7 +25,7 @@
 | Python compilation | Passed locally | API, entrypoints, and tools compiled. |
 | Full backend suite | Passed locally | 54 passed; 2 PostgreSQL-only tests skipped. |
 | SQLite initialization | Passed locally | 10 migrations and tenant enforcement. |
-| Full GitHub CI suite | Pending | Exact-head push and PR evidence required. |
+| Full GitHub CI suite | Passed | Push run `30157982451` and pull-request run `30158133847`; all 9 jobs passed in both runs. |
 
 ## External Evidence Required
 

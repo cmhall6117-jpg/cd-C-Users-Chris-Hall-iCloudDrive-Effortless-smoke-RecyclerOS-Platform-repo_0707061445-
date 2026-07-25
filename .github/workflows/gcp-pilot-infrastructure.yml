@@ -1,0 +1,71 @@
+name: GCP Pilot Infrastructure
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: "Plan or apply the cost-bounded pilot foundation"
+        required: true
+        default: "plan"
+        type: choice
+        options:
+          - plan
+          - apply
+      approval:
+        description: "Type APPLY-PILOT to permit billable resource creation"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: gcp-pilot-infrastructure
+  cancel-in-progress: false
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    environment: gcp-pilot
+    steps:
+      - uses: actions/checkout@v6
+      - name: Enforce explicit apply confirmation
+        if: ${{ inputs.operation == 'apply' && inputs.approval != 'APPLY-PILOT' }}
+        run: |
+          echo "Apply requires the exact approval text APPLY-PILOT."
+          exit 1
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "1.14.6"
+      - name: Validate pilot contract
+        run: python tools/scripts/gcp_pilot_contract.py
+      - id: auth
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOYER_SERVICE_ACCOUNT }}
+      - name: Initialize pilot state
+        working-directory: deploy/gcp/pilot/environment
+        run: >-
+          terraform init
+          -backend-config="bucket=${{ vars.GCP_TERRAFORM_STATE_BUCKET }}"
+          -backend-config="prefix=pilot/environment"
+      - name: Create reviewed foundation plan
+        working-directory: deploy/gcp/pilot/environment
+        run: |
+          terraform plan \
+            -input=false \
+            -out=pilot-foundation.tfplan \
+            -var="project_id=recyleros-platform" \
+            -var="project_number=728951606960" \
+            -var="deploy_api=false" \
+            -var="allow_unauthenticated_api=false"
+      - name: Apply reviewed foundation plan
+        if: ${{ inputs.operation == 'apply' }}
+        working-directory: deploy/gcp/pilot/environment
+        run: terraform apply -input=false -auto-approve pilot-foundation.tfplan
+

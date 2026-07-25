@@ -26,9 +26,28 @@
 | Central logs and readiness alerts routed | Blocked external |
 | Pilot users, support owner, and rollback authority approved | Blocked external |
 
+## Google Cloud Pilot
+
+| Gate | Status | Evidence |
+| --- | --- | --- |
+| Project identity recorded | Passed | `recyleros-platform`, project number `728951606960`. |
+| Credential-free pilot contract | Passed locally | Validator reports structurally valid and not field-ready. |
+| Contract guardrail tests | Passed locally | 5 tests passed. |
+| Terraform format and provider validation | Passed locally; pending CI | Terraform 1.14.6 validated both roots against Google 7.41.0 and Random 3.9.0. |
+| Billing linked | Blocked external | No retained billing evidence. |
+| USD 100 budget alerts verified | Blocked external | Contract remains `budget_verified=false`. |
+| Keyless GitHub federation applied | Blocked external | Bootstrap is defined but has not been applied. |
+| Protected `gcp-pilot` environment | Blocked external | Reviewer and variables are not yet evidenced. |
+| Private Cloud SQL foundation | Blocked external | Apply requires `APPLY-PILOT` approval. |
+| Immutable Cloud Run release | Blocked external | Release requires `RELEASE-PILOT` approval. |
+| Monitoring alert delivery | Blocked external | Notification channel and delivery proof are absent. |
+| Restore rehearsal | Blocked external | Contract evidence remains `PENDING`. |
+
 ## Decision
 
-The repository is deployment-ready at commit
+The local-container pilot repository was deployment-ready at commit
 `59bd74a78c39923ad99d583a00f352a57d8dfb95`. A data-bearing or remotely
 accessible pilot remains no-go until every external prerequisite is assigned,
-configured, and evidenced.
+configured, and evidenced. The Google Cloud pilot definitions are a new
+candidate and require CI provider validation before their repository gate can
+pass.

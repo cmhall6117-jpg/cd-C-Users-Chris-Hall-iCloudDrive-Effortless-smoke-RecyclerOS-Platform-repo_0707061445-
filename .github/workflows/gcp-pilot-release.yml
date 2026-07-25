@@ -1,0 +1,97 @@
+name: GCP Pilot Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      approval:
+        description: "Type RELEASE-PILOT to build, publish, and expose this commit"
+        required: true
+        type: string
+      notification_channel_id:
+        description: "Cloud Monitoring notification channel resource name"
+        required: true
+        type: string
+      cors_origins:
+        description: "Optional comma-separated browser origins"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: gcp-pilot-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment: gcp-pilot
+    steps:
+      - uses: actions/checkout@v6
+      - name: Enforce explicit release confirmation
+        if: ${{ inputs.approval != 'RELEASE-PILOT' }}
+        run: |
+          echo "Release requires the exact approval text RELEASE-PILOT."
+          exit 1
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "1.14.6"
+      - name: Validate planned pilot contract
+        run: python tools/scripts/gcp_pilot_contract.py
+      - id: auth
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOYER_SERVICE_ACCOUNT }}
+      - uses: google-github-actions/setup-gcloud@v3
+      - name: Configure Artifact Registry authentication
+        run: gcloud auth configure-docker us-east4-docker.pkg.dev --quiet
+      - name: Build and publish immutable API image
+        shell: bash
+        run: |
+          image="us-east4-docker.pkg.dev/recyleros-platform/recycleros-pilot/api:${GITHUB_SHA}"
+          docker build \
+            --build-arg RECYCLEROS_BUILD_DATE="$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --build-arg RECYCLEROS_RELEASE_SHA="$GITHUB_SHA" \
+            -f services/api/Dockerfile \
+            -t "$image" .
+          docker push "$image"
+          digest="$(gcloud artifacts docker images describe "$image" --format='value(image_summary.digest)')"
+          test -n "$digest"
+          echo "RECYCLEROS_API_IMAGE=${image%:*}@${digest}" >> "$GITHUB_ENV"
+      - name: Initialize pilot state
+        working-directory: deploy/gcp/pilot/environment
+        run: >-
+          terraform init
+          -backend-config="bucket=${{ vars.GCP_TERRAFORM_STATE_BUCKET }}"
+          -backend-config="prefix=pilot/environment"
+      - name: Create immutable release plan
+        working-directory: deploy/gcp/pilot/environment
+        env:
+          TF_VAR_notification_channel_ids: '["${{ inputs.notification_channel_id }}"]'
+        run: |
+          terraform plan \
+            -input=false \
+            -out=pilot-release.tfplan \
+            -var="project_id=recyleros-platform" \
+            -var="project_number=728951606960" \
+            -var="deploy_api=true" \
+            -var="allow_unauthenticated_api=true" \
+            -var="api_image=${RECYCLEROS_API_IMAGE}" \
+            -var="release_sha=${GITHUB_SHA}" \
+            -var="cors_origins=${{ inputs.cors_origins }}"
+      - name: Apply immutable release plan
+        working-directory: deploy/gcp/pilot/environment
+        run: terraform apply -input=false -auto-approve pilot-release.tfplan
+      - name: Publish pilot endpoint
+        working-directory: deploy/gcp/pilot/environment
+        run: |
+          api_url="$(terraform output -raw api_url)"
+          echo "## GCP pilot released" >> "$GITHUB_STEP_SUMMARY"
+          echo "API: ${api_url}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Commit: \`${GITHUB_SHA}\`" >> "$GITHUB_STEP_SUMMARY"

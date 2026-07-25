@@ -149,8 +149,9 @@ to loopback. No public hostname, certificate, or reverse proxy is configured.
 
 Impact: Remote pilot access must not begin.
 
-Next action: Provision the approved host, DNS, TLS reverse proxy, and certificate,
-then record external verification evidence.
+Next action: Validate and apply the Google Cloud pilot foundation, then use the
+protected release workflow to provision the managed `run.app` TLS endpoint and
+record external verification evidence.
 
 #### DEF-PILOT-002: Real pilot secrets are not provisioned
 
@@ -161,8 +162,9 @@ but no live values or approved access record.
 
 Impact: A real pilot environment cannot be started securely.
 
-Next action: Provision secrets in the approved password manager or secret store,
-restrict deployment access, and record rotation ownership.
+Next action: Apply the Secret Manager resources through the protected workflow,
+restrict deployment access, import the operator credential into the approved
+password manager, and record rotation ownership.
 
 #### DEF-PILOT-003: Off-host backup operations are not configured
 
@@ -173,8 +175,8 @@ schedule, retention job, or restore owner is configured.
 
 Impact: A data-bearing pilot would lack an evidenced recovery process.
 
-Next action: Approve recovery targets, configure the encrypted off-host schedule,
-assign the restore owner, and complete a host-level restore rehearsal.
+Next action: Approve recovery targets, apply the Cloud SQL backup/PITR policy,
+assign the restore owner, and complete a target-project restore rehearsal.
 
 ### Medium
 
@@ -187,8 +189,8 @@ monitor, or alert recipient is configured.
 
 Impact: An unattended pilot failure may not reach an operator promptly.
 
-Next action: Connect container logs and readiness probes to the approved
-monitoring service and test alert delivery.
+Next action: Supply a verified Cloud Monitoring notification channel to the
+protected release workflow and test alert delivery.
 
 #### DEF-PILOT-005: Pilot container and recovery checks await CI
 
@@ -202,6 +204,47 @@ Impact: None remaining for repository-level pilot readiness.
 Resolution: The Linux image reached real readiness with a read-only filesystem,
 dropped capabilities, and no-new-privileges. The recovery rehearsal restored and
 verified auth, opportunity, and inventory data.
+
+#### DEF-PILOT-006: GCP Terraform definitions await provider validation
+
+Status: closed locally; pending CI evidence
+
+Evidence: A checksum-verified portable Terraform 1.14.6 initialized Google
+provider 7.41.0 and Random provider 3.9.0. Formatting passed and both the
+bootstrap and environment roots returned `Success! The configuration is valid.`
+
+Impact: No local provider-schema blocker remains. Billable infrastructure still
+must not be applied until external approvals and independent CI evidence pass.
+
+Resolution: Commit both provider lock files, push the branch, and retain a
+successful `gcp-pilot-iac` GitHub Actions run as independent evidence.
+
+#### DEF-PILOT-007: Billing and budget controls are not evidenced
+
+Status: open, external blocker
+
+Evidence: Project ID and number are recorded, but billing linkage and USD 100
+budget alert delivery have not been verified.
+
+Impact: Billable infrastructure must not be applied.
+
+Next action: Link the approved billing account, configure 50%, 80%, and 100%
+alerts, verify the recipients, and record the evidence without storing billing
+credentials in the repository.
+
+#### DEF-PILOT-008: Keyless deployment trust is not bootstrapped
+
+Status: open, external blocker
+
+Evidence: Workload Identity Federation, state storage, and least-scope deployer
+definitions exist under `deploy/gcp/pilot/bootstrap`, but no bootstrap output or
+protected GitHub environment is recorded.
+
+Impact: GitHub cannot safely plan or apply the pilot environment.
+
+Next action: Apply the bootstrap once from an authenticated administrator
+session, create the protected `gcp-pilot` environment, and record its three
+non-secret output variables.
 
 ## Production Launch Preparation
 

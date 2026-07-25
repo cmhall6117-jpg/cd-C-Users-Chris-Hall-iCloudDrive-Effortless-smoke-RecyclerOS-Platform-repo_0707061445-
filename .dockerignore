@@ -13,3 +13,9 @@ deploy/production/secrets
 **/*.pyc
 **/build
 coverage
+**/.terraform
+**/*.tfstate
+**/*.tfstate.*
+**/*.tfplan
+**/terraform.tfvars
+gha-creds-*.json

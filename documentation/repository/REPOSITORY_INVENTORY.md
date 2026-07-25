@@ -1265,3 +1265,20 @@ integrated RC1 path. They do not activate archived vertical slice packages.
 
 These files are provider-neutral and credential-free. They create no cloud or
 production resources.
+
+## Google Cloud Pilot Contributions
+
+- `.github/workflows/gcp-pilot-infrastructure.yml`
+- `.github/workflows/gcp-pilot-release.yml`
+- `deploy/gcp/pilot/pilot.contract.json`
+- `deploy/gcp/pilot/bootstrap/*`
+- `deploy/gcp/pilot/environment/*`
+- `tools/scripts/gcp_pilot_contract.py`
+- `services/api/tests/test_gcp_pilot_contract.py`
+- `documentation/deployment/GCP_PILOT_GITHUB_SETUP.md`
+- `documentation/deployment/GCP_PILOT_RUNBOOK.md`
+
+These are repository-authored operational controls for the existing RC1
+application. They create no additional vertical slice and contain no cloud
+credentials. The original generated packages and documentation remain
+preserved.

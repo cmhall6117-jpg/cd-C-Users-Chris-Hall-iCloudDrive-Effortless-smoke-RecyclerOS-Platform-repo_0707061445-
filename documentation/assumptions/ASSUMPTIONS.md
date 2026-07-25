@@ -30,3 +30,19 @@
 - Provider selection and billable-resource creation require an explicit cost, account-ownership, region, and business approval decision outside repository CI.
 - The committed production environment contract contains decisions and evidence only. Credential-like fields are forbidden and live values remain in managed secrets.
 - GitHub production environment acceptance is manual, reviewer-gated, and read-only; it validates a deployed target but does not provision or deploy it.
+- Google Cloud project `recyleros-platform` with project number `728951606960`
+  is selected only for the one-to-two-person field pilot. This does not approve
+  Google Cloud as the production provider.
+- The approved pilot region is `us-east4`; the project ID spelling is
+  authoritative even though it omits the second `c` in RecyclerOS.
+- The pilot operating target is USD 30-70 per month, with a USD 100 monthly
+  budget and USD 150 first-month review ceiling. Budget alerts notify but do not
+  cap spend.
+- The pilot accepts single-zone `db-g1-small` Cloud SQL availability. Shared-core
+  availability is an explicit pilot risk and is not a production SLA.
+- Field access remains prohibited until billing, budget alerts, GitHub
+  protection, monitoring delivery, support ownership, and restore evidence are
+  verified.
+- GitHub deployments use Workload Identity Federation restricted to the exact
+  repository and deployment branch. Static Google service account keys are
+  forbidden.

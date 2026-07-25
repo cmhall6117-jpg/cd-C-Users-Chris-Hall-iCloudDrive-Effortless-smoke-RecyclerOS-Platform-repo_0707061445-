@@ -90,3 +90,22 @@ required job on both trigger paths with zero check annotations.
 RC1 remains reproducible and green, and repository-level pilot deployment gates
 passed at commit `59bd74a78c39923ad99d583a00f352a57d8dfb95`. Pilot launch
 remains no-go until the external blockers have owner-approved evidence.
+
+## Google Cloud Pilot Evidence
+
+| Gate | Status | Evidence |
+| --- | --- | --- |
+| Project identity | Passed | `recyleros-platform`, `728951606960`. |
+| Credential-free contract | Passed locally | Structural validator returned valid. |
+| Cost and topology guardrail tests | Passed locally | 5 focused tests passed. |
+| Terraform formatting and validation | Passed locally; pending CI | Terraform 1.14.6 validated both provider roots. |
+| Billing and USD 100 budget | Blocked external | Verification is absent. |
+| Keyless GitHub trust | Blocked external | Bootstrap has not been applied. |
+| Protected deployment approval | Blocked external | `gcp-pilot` environment is not evidenced. |
+| Managed database and secrets | Blocked external | No infrastructure apply authorized. |
+| Immutable API release | Blocked external | No image published or endpoint created. |
+| Monitoring and restore evidence | Blocked external | Both remain pending. |
+
+Decision: the repository contains a validation candidate only. No Google Cloud
+pilot release gate is passed beyond project identity and local contract tests,
+and no live field testing is authorized.

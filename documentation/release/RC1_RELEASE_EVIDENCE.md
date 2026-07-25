@@ -98,7 +98,7 @@ remains no-go until the external blockers have owner-approved evidence.
 | Project identity | Passed | `recyleros-platform`, `728951606960`. |
 | Credential-free contract | Passed locally | Structural validator returned valid. |
 | Cost and topology guardrail tests | Passed locally | 5 focused tests passed. |
-| Terraform formatting and validation | Passed locally; pending CI | Terraform 1.14.6 validated both provider roots. |
+| Terraform formatting and validation | Passed | `gcp-pilot-iac` succeeded on run `30162538935`. |
 | Billing and USD 100 budget | Blocked external | Verification is absent. |
 | Keyless GitHub trust | Blocked external | Bootstrap has not been applied. |
 | Protected deployment approval | Blocked external | `gcp-pilot` environment is not evidenced. |
@@ -106,6 +106,12 @@ remains no-go until the external blockers have owner-approved evidence.
 | Immutable API release | Blocked external | No image published or endpoint created. |
 | Monitoring and restore evidence | Blocked external | Both remain pending. |
 
-Decision: the repository contains a validation candidate only. No Google Cloud
-pilot release gate is passed beyond project identity and local contract tests,
-and no live field testing is authorized.
+Decision: the repository and infrastructure-definition gates pass, but no live
+Google Cloud environment gate passes and no field testing is authorized.
+
+Repository reproducibility is passed at
+`8b24fae4d540834edf0c041a9b06c8d619fa7058`: pull-request run
+`30162538935` completed all 10 jobs successfully, including the composite
+release-evidence gate. Live environment gates remain blocked because the run
+validated definitions and application behavior but did not provision Google
+Cloud resources.

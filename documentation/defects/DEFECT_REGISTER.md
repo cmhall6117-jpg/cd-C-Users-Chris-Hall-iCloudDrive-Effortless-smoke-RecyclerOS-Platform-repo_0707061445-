@@ -207,17 +207,18 @@ verified auth, opportunity, and inventory data.
 
 #### DEF-PILOT-006: GCP Terraform definitions await provider validation
 
-Status: closed locally; pending CI evidence
+Status: closed by CI evidence
 
 Evidence: A checksum-verified portable Terraform 1.14.6 initialized Google
 provider 7.41.0 and Random provider 3.9.0. Formatting passed and both the
 bootstrap and environment roots returned `Success! The configuration is valid.`
 
-Impact: No local provider-schema blocker remains. Billable infrastructure still
-must not be applied until external approvals and independent CI evidence pass.
+Impact: No provider-schema blocker remains. Billable infrastructure still must
+not be applied until the external approval gates pass.
 
-Resolution: Commit both provider lock files, push the branch, and retain a
-successful `gcp-pilot-iac` GitHub Actions run as independent evidence.
+Resolution: `gcp-pilot-iac` passed contract validation, Terraform formatting,
+and both provider roots on pull-request run `30162538935` at
+`8b24fae4d540834edf0c041a9b06c8d619fa7058`.
 
 #### DEF-PILOT-007: Billing and budget controls are not evidenced
 

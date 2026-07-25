@@ -215,7 +215,7 @@ plus tenant-column and mismatch-rejection checks.
 
 ### Google Cloud Pilot Guardrails
 
-Result: contract and Terraform provider checks passed locally; CI pending
+Result: contract and Terraform provider checks passed locally and in CI
 
 Evidence:
 
@@ -232,5 +232,7 @@ Evidence:
 - SQLite initialized cleanly through all 10 migrations and tenant checks
 - no Google Cloud resource, credential, or secret was created
 
-The `gcp-pilot-iac` GitHub Actions job must independently reproduce Terraform
-format and provider validation before the infrastructure release gate passes.
+Pull-request run `30162538935` independently passed `gcp-pilot-iac`, backend,
+SQLite, PostgreSQL migration replay and restore, Flutter analyze/test, live core
+integration, both hardened container jobs, and the composite release-evidence
+gate at commit `8b24fae4d540834edf0c041a9b06c8d619fa7058`.

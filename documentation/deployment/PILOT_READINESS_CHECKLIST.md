@@ -33,7 +33,7 @@
 | Project identity recorded | Passed | `recyleros-platform`, project number `728951606960`. |
 | Credential-free pilot contract | Passed locally | Validator reports structurally valid and not field-ready. |
 | Contract guardrail tests | Passed locally | 5 tests passed. |
-| Terraform format and provider validation | Passed locally; pending CI | Terraform 1.14.6 validated both roots against Google 7.41.0 and Random 3.9.0. |
+| Terraform format and provider validation | Passed | Local validation and GitHub Actions run `30162538935`. |
 | Billing linked | Blocked external | No retained billing evidence. |
 | USD 100 budget alerts verified | Blocked external | Contract remains `budget_verified=false`. |
 | Keyless GitHub federation applied | Blocked external | Bootstrap is defined but has not been applied. |

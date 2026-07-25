@@ -1277,6 +1277,7 @@ production resources.
 - `services/api/tests/test_gcp_pilot_contract.py`
 - `documentation/deployment/GCP_PILOT_GITHUB_SETUP.md`
 - `documentation/deployment/GCP_PILOT_RUNBOOK.md`
+- `documentation/release/GCP_PILOT_ENVIRONMENT_PR.md`
 
 These are repository-authored operational controls for the existing RC1
 application. They create no additional vertical slice and contain no cloud

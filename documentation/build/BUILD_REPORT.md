@@ -170,4 +170,7 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
 - Live project, backup, endpoint, monitoring, and cost-control evidence: blocked external
 - Full local backend result: 63 passed and 2 PostgreSQL-only tests skipped
 - Python compilation and SQLite clean initialization: passed
-- GitHub Actions results: pending exact-head evidence
+- GitHub Actions: all 10 jobs passed on push run `30723893531` and
+  pull-request run `30724007217` at
+  `fbf1c5f09c5a1d8c69a9f4ca312bf9a189e3fd8f`
+- Draft pull request: `#13` against `codex/production-environment-provisioning`

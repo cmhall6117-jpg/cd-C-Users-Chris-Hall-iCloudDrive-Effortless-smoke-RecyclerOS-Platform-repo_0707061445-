@@ -236,3 +236,9 @@ attempted because no Railway project is approved or provisioned.
 Full local regression evidence: 63 backend tests passed with 2 PostgreSQL-only
 tests skipped, Python compilation passed, SQLite initialized all 10 migrations,
 and both GitHub workflow files parsed successfully.
+
+GitHub evidence: push run `30723893531` and pull-request run `30724007217`
+passed all 10 jobs at `fbf1c5f09c5a1d8c69a9f4ca312bf9a189e3fd8f`.
+This includes the Railway configuration gate, backend, clean SQLite and
+PostgreSQL, populated backup/restore, Flutter analyze/test, live core path,
+hardened pilot and production containers, and composite release evidence.

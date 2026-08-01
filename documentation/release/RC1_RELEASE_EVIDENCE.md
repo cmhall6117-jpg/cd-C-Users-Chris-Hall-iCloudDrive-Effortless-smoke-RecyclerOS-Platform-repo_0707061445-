@@ -100,7 +100,7 @@ remains no-go until the external blockers have owner-approved evidence.
 | Pre-provisioning no-go | Passed locally | Validator returned `field_ready: false`. |
 | Focused automated tests | Passed locally | 9 tests. |
 | Dynamic `PORT` healthcheck | Passed locally | Focused Dockerfile test. |
-| Full RC1 CI | Pending | Exact-head GitHub run has not completed. |
+| Full RC1 CI | Passed | Push run `30723893531` and PR run `30724007217` passed all 10 jobs. |
 | Railway account and budget controls | Blocked external | `DEF-RAILWAY-001`. |
 | Runtime, domain, and sealed variables | Blocked external | `DEF-RAILWAY-002`. |
 | Database backup and restore | Blocked external | `DEF-RAILWAY-003`. |
@@ -110,3 +110,9 @@ remains no-go until the external blockers have owner-approved evidence.
 No Railway release gate is marked passed on the strength of configuration alone.
 The provider-specific branch creates no resources and does not change the
 production-provider decision.
+
+CI evidence applies to implementation commit
+`fbf1c5f09c5a1d8c69a9f4ca312bf9a189e3fd8f` on draft pull request `#13`.
+Both trigger paths passed backend, SQLite, PostgreSQL migration/replay and
+restore, Flutter, live core integration, pilot and production containers,
+production contract, Railway pilot config, and composite release evidence.

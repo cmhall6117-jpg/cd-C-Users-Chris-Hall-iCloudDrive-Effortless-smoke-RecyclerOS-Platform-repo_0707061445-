@@ -26,7 +26,9 @@ vertical slice.
 - Python compile check: passed
 - full backend: 63 passed and 2 PostgreSQL-only tests skipped
 - SQLite clean initialization and workflow YAML parsing: passed
-- GitHub checks: pending exact-head evidence
+- GitHub checks: all 10 jobs passed on push run `30723893531` and
+  pull-request run `30724007217` at
+  `fbf1c5f09c5a1d8c69a9f4ca312bf9a189e3fd8f`
 
 ## External Blockers
 

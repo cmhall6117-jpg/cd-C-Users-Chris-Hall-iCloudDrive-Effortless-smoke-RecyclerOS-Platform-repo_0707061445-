@@ -46,7 +46,7 @@ configured, and evidenced.
 | Native and off-platform recovery | Blocked external | Backups and restore rehearsal are not evidenced. |
 | Public endpoint and sealed variables | Blocked external | Domain and live secrets do not exist. |
 | Monitoring and alert delivery | Blocked external | Uptime and cost alert delivery are not evidenced. |
-| Protected acceptance workflow | Pending CI/external | Workflow exists; GitHub environment and live target do not. |
+| Protected acceptance workflow | Passed repository CI; blocked external | Workflow parses and branch CI passed; GitHub environment and live target do not exist. |
 
 Railway field access remains no-go until the strict contract reports field-ready,
 the manual acceptance workflow passes, and all `DEF-RAILWAY-*` defects close.

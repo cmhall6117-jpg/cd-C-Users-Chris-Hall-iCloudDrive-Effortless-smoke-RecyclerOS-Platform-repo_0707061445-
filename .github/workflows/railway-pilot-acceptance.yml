@@ -1,0 +1,100 @@
+name: Railway Pilot Acceptance
+
+on:
+  workflow_dispatch:
+    inputs:
+      contract_path:
+        description: Committed credential-free Railway pilot contract
+        required: true
+        default: deploy/railway/pilot/pilot.contract.json
+        type: string
+      api_url:
+        description: Exact public Railway HTTPS origin from the contract
+        required: true
+        type: string
+      release_sha:
+        description: Exact 40-character deployed Git SHA from the contract
+        required: true
+        type: string
+      minimum_certificate_days:
+        description: Minimum acceptable TLS certificate lifetime
+        required: true
+        default: "14"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    environment: railway-pilot
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Validate approved Railway pilot contract
+        env:
+          CONTRACT_PATH: ${{ inputs.contract_path }}
+          EXPECTED_API_URL: ${{ inputs.api_url }}
+          EXPECTED_RELEASE_SHA: ${{ inputs.release_sha }}
+        run: >-
+          python tools/scripts/railway_pilot_contract.py
+          --contract "$CONTRACT_PATH"
+          --require-ready
+          --expect-api-url "$EXPECTED_API_URL"
+          --expect-release-sha "$EXPECTED_RELEASE_SHA"
+
+  public-endpoint:
+    environment: railway-pilot
+    needs: contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Verify Railway public HTTPS surface
+        env:
+          API_URL: ${{ inputs.api_url }}
+          EXPECTED_RELEASE_SHA: ${{ inputs.release_sha }}
+          MINIMUM_CERTIFICATE_DAYS: ${{ inputs.minimum_certificate_days }}
+        run: >-
+          python tools/scripts/production_endpoint_verify.py
+          --base-url "$API_URL"
+          --release-sha "$EXPECTED_RELEASE_SHA"
+          --minimum-certificate-days "$MINIMUM_CERTIFICATE_DAYS"
+          --output "$RUNNER_TEMP/railway-public-endpoint.json"
+      - name: Publish endpoint evidence
+        if: ${{ always() }}
+        run: cat "$RUNNER_TEMP/railway-public-endpoint.json" >> "$GITHUB_STEP_SUMMARY"
+
+  acceptance-evidence:
+    if: ${{ always() }}
+    environment: railway-pilot
+    needs:
+      - contract
+      - public-endpoint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Summarize Railway pilot acceptance
+        env:
+          CONTRACT_RESULT: ${{ needs.contract.result }}
+          ENDPOINT_RESULT: ${{ needs['public-endpoint'].result }}
+        run: |
+          {
+            echo "## Railway pilot acceptance"
+            echo
+            echo "| Gate | Result |"
+            echo "| --- | --- |"
+            echo "| contract | ${CONTRACT_RESULT} |"
+            echo "| public endpoint | ${ENDPOINT_RESULT} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          for result in "$CONTRACT_RESULT" "$ENDPOINT_RESULT"; do
+            if [[ "$result" != "success" ]]; then
+              echo "Railway pilot gate did not pass: $result"
+              exit 1
+            fi
+          done

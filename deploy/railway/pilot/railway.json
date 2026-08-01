@@ -1,0 +1,32 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "build": {
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "./services/api/Dockerfile",
+    "watchPatterns": [
+      "services/api/**",
+      "database/migrations/postgres/**",
+      "tools/scripts/rc1_postgres_migrate.py",
+      "deploy/railway/pilot/**"
+    ]
+  },
+  "deploy": {
+    "numReplicas": 1,
+    "healthcheckPath": "/v1/health/ready",
+    "healthcheckTimeout": 180,
+    "sleepApplication": true,
+    "runtime": "V2",
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 3,
+    "region": "us-east4-eqdc4a",
+    "limitOverride": {
+      "containers": {
+        "cpu": 1,
+        "memoryBytes": 536870912
+      }
+    },
+    "overlapSeconds": 0,
+    "drainingSeconds": 15,
+    "ipv6EgressEnabled": false
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "environment": "pilot",
+  "lifecycle": "planned",
+  "provider": {
+    "name": "railway",
+    "plan": "hobby",
+    "project_name": "recycleros-pilot",
+    "project_id": "PENDING",
+    "region": "us-east4-eqdc4a"
+  },
+  "cost_controls": {
+    "estimated_monthly_min_usd": 12,
+    "estimated_monthly_max_usd": 25,
+    "alert_usd": 20,
+    "hard_limit_usd": 30,
+    "alert_verified": false,
+    "hard_limit_verified": false
+  },
+  "runtime": {
+    "service_name": "recycleros-api",
+    "builder": "dockerfile",
+    "memory_mib": 512,
+    "cpu": 1,
+    "replicas": 1,
+    "serverless_sleep": true,
+    "healthcheck_path": "/v1/health/ready",
+    "public_access_enabled": false,
+    "api_url": "PENDING",
+    "release_commit": "PENDING"
+  },
+  "database": {
+    "service_name": "Postgres",
+    "engine": "postgresql",
+    "major_version": 16,
+    "storage_gib": 5,
+    "private_database_url": true,
+    "tcp_proxy_enabled": false,
+    "unmanaged_template_acknowledged": true,
+    "daily_backup_enabled": false,
+    "weekly_backup_enabled": false,
+    "off_platform_backup_enabled": false,
+    "restore_rehearsal_evidence": "PENDING"
+  },
+  "security": {
+    "sealed_variables": false,
+    "static_provider_tokens_in_github": false,
+    "exact_trusted_host": true,
+    "two_factor_authentication": false,
+    "deployment_branch": "codex/railway-pilot-environment"
+  },
+  "observability": {
+    "railway_logs_enabled": true,
+    "uptime_check_configured": false,
+    "alert_delivery_verified": false
+  },
+  "testing": {
+    "maximum_testers": 2,
+    "data_policy": "synthetic_or_authorized_pilot_only"
+  },
+  "approvals": {
+    "deployment": false,
+    "field_access": false,
+    "restore_owner_assigned": false,
+    "support_owner_assigned": false
+  }
+}

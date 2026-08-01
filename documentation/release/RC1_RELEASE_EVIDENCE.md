@@ -90,3 +90,23 @@ required job on both trigger paths with zero check annotations.
 RC1 remains reproducible and green, and repository-level pilot deployment gates
 passed at commit `59bd74a78c39923ad99d583a00f352a57d8dfb95`. Pilot launch
 remains no-go until the external blockers have owner-approved evidence.
+
+## Railway Pilot Alternative
+
+| Gate | Status | Evidence |
+| --- | --- | --- |
+| Railway config structure | Passed locally | Current official Railway JSON schema accepted `railway.json`. |
+| Credential-free contract | Passed locally | Validator returned `valid: true`. |
+| Pre-provisioning no-go | Passed locally | Validator returned `field_ready: false`. |
+| Focused automated tests | Passed locally | 9 tests. |
+| Dynamic `PORT` healthcheck | Passed locally | Focused Dockerfile test. |
+| Full RC1 CI | Pending | Exact-head GitHub run has not completed. |
+| Railway account and budget controls | Blocked external | `DEF-RAILWAY-001`. |
+| Runtime, domain, and sealed variables | Blocked external | `DEF-RAILWAY-002`. |
+| Database backup and restore | Blocked external | `DEF-RAILWAY-003`. |
+| Monitoring and protected acceptance | Blocked external | `DEF-RAILWAY-004`. |
+| Second unique tester identity | Blocked for tester two | `DEF-RAILWAY-005`. |
+
+No Railway release gate is marked passed on the strength of configuration alone.
+The provider-specific branch creates no resources and does not change the
+production-provider decision.

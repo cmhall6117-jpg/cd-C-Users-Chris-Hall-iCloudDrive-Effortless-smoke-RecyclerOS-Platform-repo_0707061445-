@@ -212,3 +212,27 @@ was attempted because provider and environment resources are unselected.
 Final local repository evidence: Python compilation passed, 54 backend tests
 passed with 2 PostgreSQL-only tests skipped, and SQLite passed all 10 migrations
 plus tenant-column and mismatch-rejection checks.
+
+### Railway Pilot Configuration
+
+Result: repository configuration passed; live target blocked external
+
+Local checks validate:
+
+- the planned credential-free Railway contract is structurally valid
+- the planned contract cannot claim field readiness
+- a completed contract can satisfy every readiness requirement
+- credential fields, cost drift, scale drift, and public database drift fail
+- database and platform variables remain service references, not literal secrets
+- acceptance URL and SHA inputs must match the committed deployment identity
+- the Docker healthcheck honors Railway's assigned `PORT`
+- `railway.json` passes Railway's current official JSON schema
+
+Focused evidence: 9 tests passed. The contract validator returned `valid: true`
+and `field_ready: false`, which is the required pre-provisioning result. Python
+compilation passed. No live endpoint, database, backup, or billing check was
+attempted because no Railway project is approved or provisioned.
+
+Full local regression evidence: 63 backend tests passed with 2 PostgreSQL-only
+tests skipped, Python compilation passed, SQLite initialized all 10 migrations,
+and both GitHub workflow files parsed successfully.

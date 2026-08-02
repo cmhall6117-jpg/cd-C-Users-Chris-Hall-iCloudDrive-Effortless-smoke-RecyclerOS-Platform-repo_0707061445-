@@ -26,12 +26,22 @@
 | Central logs and readiness alerts routed | Blocked external |
 | Pilot users, support owner, and rollback authority approved | Blocked external |
 
-## Decision
+## Google Cloud Pilot
 
-The repository is deployment-ready at commit
-`59bd74a78c39923ad99d583a00f352a57d8dfb95`. A data-bearing or remotely
-accessible pilot remains no-go until every external prerequisite is assigned,
-configured, and evidenced.
+| Gate | Status | Evidence |
+| --- | --- | --- |
+| Project identity recorded | Passed | `recyleros-platform`, project number `728951606960`. |
+| Credential-free pilot contract | Passed locally | Validator reports structurally valid and not field-ready. |
+| Contract guardrail tests | Passed locally | 5 tests passed. |
+| Terraform format and provider validation | Passed | Local validation and GitHub Actions run `30162538935`. |
+| Billing linked | Blocked external | No retained billing evidence. |
+| USD 100 budget alerts verified | Blocked external | Contract remains `budget_verified=false`. |
+| Keyless GitHub federation applied | Blocked external | Bootstrap is defined but has not been applied. |
+| Protected `gcp-pilot` environment | Blocked external | Reviewer and variables are not yet evidenced. |
+| Private Cloud SQL foundation | Blocked external | Apply requires `APPLY-PILOT` approval. |
+| Immutable Cloud Run release | Blocked external | Release requires `RELEASE-PILOT` approval. |
+| Monitoring alert delivery | Blocked external | Notification channel and delivery proof are absent. |
+| Restore rehearsal | Blocked external | Contract evidence remains `PENDING`. |
 
 ## Railway Pilot Alternative
 
@@ -50,3 +60,11 @@ configured, and evidenced.
 
 Railway field access remains no-go until the strict contract reports field-ready,
 the manual acceptance workflow passes, and all `DEF-RAILWAY-*` defects close.
+
+## Decision
+
+The local-container pilot repository was deployment-ready at commit
+`59bd74a78c39923ad99d583a00f352a57d8dfb95`. The Google Cloud and Railway
+definitions are credential-free deployment candidates only. A data-bearing or
+remotely accessible pilot remains no-go until the selected provider's external
+prerequisites are assigned, configured, and evidenced.

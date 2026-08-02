@@ -213,6 +213,30 @@ Final local repository evidence: Python compilation passed, 54 backend tests
 passed with 2 PostgreSQL-only tests skipped, and SQLite passed all 10 migrations
 plus tenant-column and mismatch-rejection checks.
 
+### Google Cloud Pilot Guardrails
+
+Result: contract and Terraform provider checks passed locally and in CI
+
+Evidence:
+
+- `gcp_pilot_contract.py` reported the planned contract structurally valid
+- the same report correctly marked field readiness false
+- 5 focused tests passed in 0.40 seconds
+- credential-like contract fields are rejected
+- cost, region, public database, and Cloud Run scale drift are rejected
+- Terraform 1.14.6 formatting passed
+- the bootstrap root validated against Google provider 7.41.0
+- the environment root validated against Google provider 7.41.0 and Random
+  provider 3.9.0
+- the complete backend suite passed 59 tests with 2 PostgreSQL-only skips
+- SQLite initialized cleanly through all 10 migrations and tenant checks
+- no Google Cloud resource, credential, or secret was created
+
+Pull-request run `30162538935` independently passed `gcp-pilot-iac`, backend,
+SQLite, PostgreSQL migration replay and restore, Flutter analyze/test, live core
+integration, both hardened container jobs, and the composite release-evidence
+gate at commit `8b24fae4d540834edf0c041a9b06c8d619fa7058`.
+
 ### Railway Pilot Configuration
 
 Result: repository configuration passed; live target blocked external

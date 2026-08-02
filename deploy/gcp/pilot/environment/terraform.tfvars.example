@@ -1,0 +1,11 @@
+project_id                    = "recyleros-platform"
+project_number                = "728951606960"
+region                        = "us-east4"
+deploy_api                    = false
+allow_unauthenticated_api     = false
+api_image                     = ""
+release_sha                   = ""
+cors_origins                  = ""
+notification_channel_ids      = []
+database_password_version     = 1
+operator_password_version     = 1

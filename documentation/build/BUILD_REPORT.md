@@ -2,7 +2,7 @@
 
 ## Repository
 
-- Branch: `codex/railway-pilot-environment`
+- Branch: `codex/gcp-pilot-environment`
 - Monorepo root: `repo_0707061445`
 - Source package archive: `archive/source_packages`
 - Repository inventory: `documentation/repository/REPOSITORY_INVENTORY.md`
@@ -152,6 +152,31 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
 - Full local backend result: 54 passed and 2 PostgreSQL-only tests skipped
 - Python compilation and SQLite clean initialization: passed
 - GitHub Actions results: pending exact-head evidence
+
+## Google Cloud Pilot Candidate
+
+- Branch: `codex/gcp-pilot-environment`
+- Project: `recyleros-platform` (`728951606960`)
+- Region: `us-east4`
+- Contract: credential-free, structurally valid, field-ready false
+- Focused local result: 5 GCP pilot contract tests passed
+- Infrastructure: separate bootstrap and repeatable environment Terraform roots
+- Database: private PostgreSQL 16 Enterprise, `db-g1-small`, 25 GiB,
+  single-zone pilot, deletion protection, backups, and point-in-time recovery
+- Runtime: immutable Cloud Run image, 1 vCPU, 1 GiB, min 0, max 2
+- Identity: GitHub Workload Identity Federation; no static account keys
+- Deployment: manual protected workflows with exact confirmation phrases
+- Terraform 1.14.6 format: passed locally
+- Terraform provider validation: both roots passed locally with Google 7.41.0
+  and Random 3.9.0
+- Full local backend result: 59 passed and 2 PostgreSQL-only tests skipped
+- Python compilation: passed
+- SQLite initialization: all 10 migrations, tenant columns, and mismatch
+  rejection passed
+- GitHub Actions: all 10 jobs passed on pull-request run `30162538935` at
+  `8b24fae4d540834edf0c041a9b06c8d619fa7058`
+- Draft pull request: `#12`
+- Google Cloud resources created: none
 
 ## Railway Pilot Alternative
 

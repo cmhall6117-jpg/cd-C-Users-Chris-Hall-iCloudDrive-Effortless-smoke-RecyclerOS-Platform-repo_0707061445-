@@ -1,5 +1,13 @@
 FROM python:3.12-slim
 
+ARG RECYCLEROS_BUILD_DATE=unknown
+ARG RECYCLEROS_RELEASE_SHA=unknown
+
+LABEL org.opencontainers.image.title="RecyclerOS Platform API" \
+    org.opencontainers.image.created="${RECYCLEROS_BUILD_DATE}" \
+    org.opencontainers.image.revision="${RECYCLEROS_RELEASE_SHA}" \
+    org.opencontainers.image.source="https://github.com/cmhall6117-jpg/recycleros-platform"
+
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONPATH=/app/services/api/src
@@ -16,6 +24,8 @@ RUN python -m pip install --no-cache-dir \
 
 COPY services/api/src /app/services/api/src
 COPY services/api/pilot_entrypoint.py /app/services/api/pilot_entrypoint.py
+COPY services/api/production_entrypoint.py /app/services/api/production_entrypoint.py
+COPY services/api/production_bootstrap.py /app/services/api/production_bootstrap.py
 COPY tools/scripts/rc1_postgres_migrate.py /app/tools/scripts/rc1_postgres_migrate.py
 COPY database/migrations/postgres /app/database/migrations/postgres
 

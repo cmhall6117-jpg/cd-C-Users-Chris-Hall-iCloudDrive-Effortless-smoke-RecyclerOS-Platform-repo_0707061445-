@@ -20,3 +20,9 @@
 - Repository readiness does not imply a live pilot host, approved real secrets, off-host backup schedule, centralized alerts, or staffed support coverage.
 - Proposed pilot recovery targets are a 24-hour recovery point and 4-hour recovery time; business approval is still required.
 - The short repository path `repo_0707061445` is the authoritative monorepo because longer Windows paths interrupt deep generated file copies.
+- Production uses the same RC1 application image as the pilot but separates schema migration and first-owner provisioning from API startup.
+- The production Compose configuration expects externally managed PostgreSQL and TLS termination; it does not run a production database or expose the API directly.
+- Production releases are identified by an exact Git SHA, image SHA-256 digest, and migration checksums. A mutable image tag alone is not release evidence.
+- PostgreSQL migrations are forward-only. Application rollback must remain compatible with the current schema; database restore requires a separate approved change.
+- The initial production owner uses the current durable local-account provider. Live SSO remains deferred and requires a separate product and security decision.
+- Repository-level production preparation does not imply a provisioned host, registry artifact, managed database, secrets, observability, on-call coverage, legal approval, or authority to open traffic.

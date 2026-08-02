@@ -102,3 +102,16 @@ secret-backed stack is in `deploy/pilot/compose.yml`. See
 `documentation/deployment/PILOT_DEPLOYMENT_RUNBOOK.md` before starting it. The
 stack binds both published ports to loopback and requires a separate TLS reverse
 proxy for remote access.
+
+## Production Runtime
+
+Production uses the same image with `services/api/production_entrypoint.py` and
+`deploy/production/compose.yml`. The production entrypoint does not apply
+migrations or bootstrap users. Those operations run as explicit one-shot
+services before API startup.
+
+Production requires durable PostgreSQL, exact trusted hosts, exact HTTPS browser
+origins, an explicit proxy allowlist, and a 40-character release SHA. API docs
+are disabled and security headers are enabled. See
+`documentation/deployment/PRODUCTION_DEPLOYMENT_RUNBOOK.md` for the controlled
+release, verification, and no-go process.

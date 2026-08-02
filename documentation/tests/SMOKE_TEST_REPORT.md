@@ -161,3 +161,31 @@ restored it into a clean database, and verified auth and workflow records.
 Evidence: push run `29369194654` and pull-request run `29369197183` completed
 those checks successfully at commit
 `59bd74a78c39923ad99d583a00f352a57d8dfb95`.
+
+### Production Runtime And Release Controls
+
+Result: full local backend and focused production checks passed; CI pending
+
+Local checks validate:
+
+- production rejects wildcard hosts, HTTP browser origins, and wildcard proxies
+- production hides docs and OpenAPI while returning HSTS and API security headers
+- health identifies the exact release SHA
+- migration runner reads secret files without accepting ambiguous sources
+- owner bootstrap requires a 16-character secret and exact email confirmation
+- restore rejects a backup whose SHA-256 manifest does not match
+- release manifest pins a complete image digest, commit, and all migration files
+- production Compose and GitHub Actions workflow parse as valid YAML
+
+The GitHub production container gate will additionally run clean PostgreSQL
+migrations, one-time owner provisioning, two Uvicorn workers, readiness, login,
+hidden docs, security headers, and release identity in the hardened Linux image.
+
+Final local evidence: Python compilation passed, 46 backend tests passed with 2
+PostgreSQL-only tests skipped, and clean SQLite initialization passed all 10
+migrations plus tenant-column and mismatch-rejection checks.
+
+GitHub push run `29372078034` and pull-request run `29372080469` passed all
+eight jobs at `847a1bed5e9a438d3a85758954abdca1400525a6`, including the
+production container, PostgreSQL migration replay, manifest-verified restore,
+Flutter analyzer/tests, live core path, and composite release-evidence gate.

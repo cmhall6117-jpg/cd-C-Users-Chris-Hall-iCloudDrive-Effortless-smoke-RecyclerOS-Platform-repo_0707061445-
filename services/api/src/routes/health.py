@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Request, status
 from fastapi.responses import JSONResponse
 
+from service_metadata import API_VERSION
+
 router = APIRouter()
 
 
@@ -9,7 +11,8 @@ def health_check(request: Request) -> dict[str, str]:
     return {
         "status": "ok",
         "service": "recycleros-api",
-        "version": "0.5.0",
+        "version": API_VERSION,
+        "release": request.app.state.release_sha,
         "storage": request.app.state.store.storage_name,
         "auth_storage": request.app.state.auth_service.storage_name,
     }

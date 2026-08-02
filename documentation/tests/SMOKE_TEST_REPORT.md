@@ -68,7 +68,8 @@ RC1 jobs.
 
 Result: passed in CI
 
-Evidence: GitHub Actions `flutter` job succeeded on run `29289307269`.
+Evidence: GitHub Actions `flutter` job succeeded on current-branch run
+`29323035764`.
 
 Routes added:
 
@@ -81,3 +82,20 @@ Routes added:
 - `/pick-list`
 - `/focus-point/:vehicleId`
 - `/inventory/intake`
+
+Full-path test added at
+`apps/recycleros_pro_mobile/test/rc1_workflow_test.dart`. It drives a 430 by 932
+mobile viewport through:
+
+1. Local sign-in validation.
+2. Workspace selection.
+3. Mission Control.
+4. Opportunity and vehicle creation.
+5. Procurement approval.
+6. Pick-list availability.
+7. Focus-point part selection and completion.
+8. Inventory creation.
+
+GitHub Actions completed `flutter pub get`, `flutter analyze`, and `flutter test`.
+The full mobile-viewport workflow test passed after the Mission Control metric
+labels were constrained for narrow layouts.

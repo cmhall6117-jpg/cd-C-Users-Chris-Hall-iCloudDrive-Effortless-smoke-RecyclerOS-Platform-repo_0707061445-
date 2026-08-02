@@ -1,25 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class WorkspaceSelectionScreen extends StatelessWidget {
+import '../../app/app_routes.dart';
+import '../../state/rc1_workflow.dart';
+import '../../widgets/rc1_scaffold.dart';
+
+class WorkspaceSelectionScreen extends ConsumerWidget {
   const WorkspaceSelectionScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Select Workspace')),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(rc1WorkflowProvider);
+
+    return Rc1Scaffold(
+      title: 'Select Workspace',
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         children: [
-          const Text('Effortless Smoke, LLC', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 12),
+          PageHeader(
+            title: state.organizationName,
+            detail: state.userEmail ?? 'Local RC1 user',
+          ),
+          const SizedBox(height: 20),
           Card(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             child: ListTile(
-              leading: const Icon(Icons.store),
-              title: const Text('RecyclerOS Operations'),
-              subtitle: const Text('Primary RC1 workspace'),
+              key: const Key('workspaceTile'),
+              contentPadding: const EdgeInsets.all(16),
+              leading: const Icon(Icons.warehouse_outlined),
+              title: Text(state.workspaceName),
+              subtitle: const Text('Primary workspace'),
               trailing: const Icon(Icons.chevron_right),
-              onTap: () => context.go('/mission-control'),
+              onTap: () {
+                ref.read(rc1WorkflowProvider.notifier).selectWorkspace();
+                context.go(AppPaths.missionControl);
+              },
             ),
           ),
         ],

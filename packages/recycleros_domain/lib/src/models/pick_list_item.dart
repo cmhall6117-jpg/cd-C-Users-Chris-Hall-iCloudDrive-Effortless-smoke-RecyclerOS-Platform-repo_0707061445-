@@ -1,5 +1,6 @@
 class PickListItem {
   final String pickListItemId;
+  final String vehicleId;
   final String yardName;
   final String row;
   final int year;
@@ -10,6 +11,7 @@ class PickListItem {
 
   const PickListItem({
     required this.pickListItemId,
+    required this.vehicleId,
     required this.yardName,
     required this.row,
     required this.year,

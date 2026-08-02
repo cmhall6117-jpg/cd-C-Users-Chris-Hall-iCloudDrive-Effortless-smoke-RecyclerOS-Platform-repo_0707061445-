@@ -2,7 +2,7 @@
 
 ## Repository
 
-- Branch: `codex/rc1-backend-baseline`
+- Branch: `codex/rc1-flutter-baseline`
 - Monorepo root: `repo_0707061445`
 - Source package archive: `archive/source_packages`
 - Repository inventory: `documentation/repository/REPOSITORY_INVENTORY.md`
@@ -26,30 +26,33 @@ Local result:
 
 CI result:
 
-- GitHub Actions `backend` passed on current-branch run `29320807780`.
+- GitHub Actions `backend` passed on current-branch run `29323035764`.
 - The backend job includes dependency install, `python -m compileall src`, and `pytest -q tests`.
 
 ## Flutter
 
 - App routes registered in `apps/recycleros_pro_mobile/lib/src/app/app_routes.dart`
 - Active path: login, workspace selection, mission control, opportunities, vehicle record, procurement, pick list, focus point, inventory intake
+- Shared workflow state: `apps/recycleros_pro_mobile/lib/src/state/rc1_workflow.dart`
+- Shared domain dependency: `packages/recycleros_domain`
+- Full-path test: `apps/recycleros_pro_mobile/test/rc1_workflow_test.dart`
 
 Local result:
 
-- `flutter pub get`: blocked by local command timeout.
-- `flutter analyze`: blocked by local command timeout.
-- `flutter test`: blocked by local command timeout.
+- `where flutter`: no executable found.
+- `where dart`: no executable found.
+- `flutter pub get`, `flutter analyze`, and `flutter test`: blocked locally until an SDK is installed.
 
 CI result:
 
-- GitHub Actions `flutter` passed on current-branch run `29320807780`.
+- GitHub Actions `flutter` passed on current-branch run `29323035764`.
 - The Flutter job includes `flutter pub get`, `flutter analyze`, and `flutter test`.
 
 ## CI
 
 GitHub Actions workflow added at `.github/workflows/rc1-ci.yml` for backend, SQLite migrations, PostgreSQL migrations, and Flutter checks.
 
-Backend baseline PR workflow run `29320807780` passed all jobs:
+Flutter baseline workflow run `29323035764` passed all jobs:
 
 - backend
 - sqlite-migrations
@@ -58,6 +61,6 @@ Backend baseline PR workflow run `29320807780` passed all jobs:
 
 ## Pull Request
 
-Draft pull request #3 is open and mergeable against `codex/rc1-database-consolidation`.
+Draft pull request #4 is open against `codex/rc1-backend-baseline`.
 
-Backend baseline PR text is available at `documentation/release/RC1_BACKEND_BASELINE_PR.md`.
+Flutter baseline PR text is available at `documentation/release/RC1_FLUTTER_BASELINE_PR.md`.

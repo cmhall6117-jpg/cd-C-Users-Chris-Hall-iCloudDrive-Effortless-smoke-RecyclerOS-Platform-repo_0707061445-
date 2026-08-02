@@ -189,3 +189,56 @@ GitHub push run `29372078034` and pull-request run `29372080469` passed all
 eight jobs at `847a1bed5e9a438d3a85758954abdca1400525a6`, including the
 production container, PostgreSQL migration replay, manifest-verified restore,
 Flutter analyzer/tests, live core path, and composite release-evidence gate.
+
+### Production Environment Acceptance Contract
+
+Result: focused local checks passed; live target blocked external
+
+Eight tests validate:
+
+- the checked-in example contract is structurally valid with placeholders
+- a placeholder contract cannot claim launch readiness
+- a complete approved contract passes strict validation
+- credential fields and public database access are rejected
+- expected public TLS, release, health, security headers, and hidden docs pass
+- expiring TLS and a wrong deployed release fail
+- managed PostgreSQL requires TLS, a limited role, version 16+, schema readiness,
+  active owner/admin membership, and the exact migration checksum ledger
+- empty owner fields and non-HTTPS browser origins fail structural validation
+
+Both CI workflow files parse locally. No live endpoint or managed database check
+was attempted because provider and environment resources are unselected.
+
+Final local repository evidence: Python compilation passed, 54 backend tests
+passed with 2 PostgreSQL-only tests skipped, and SQLite passed all 10 migrations
+plus tenant-column and mismatch-rejection checks.
+
+### Railway Pilot Configuration
+
+Result: repository configuration passed; live target blocked external
+
+Local checks validate:
+
+- the planned credential-free Railway contract is structurally valid
+- the planned contract cannot claim field readiness
+- a completed contract can satisfy every readiness requirement
+- credential fields, cost drift, scale drift, and public database drift fail
+- database and platform variables remain service references, not literal secrets
+- acceptance URL and SHA inputs must match the committed deployment identity
+- the Docker healthcheck honors Railway's assigned `PORT`
+- `railway.json` passes Railway's current official JSON schema
+
+Focused evidence: 9 tests passed. The contract validator returned `valid: true`
+and `field_ready: false`, which is the required pre-provisioning result. Python
+compilation passed. No live endpoint, database, backup, or billing check was
+attempted because no Railway project is approved or provisioned.
+
+Full local regression evidence: 63 backend tests passed with 2 PostgreSQL-only
+tests skipped, Python compilation passed, SQLite initialized all 10 migrations,
+and both GitHub workflow files parsed successfully.
+
+GitHub evidence: push run `30723893531` and pull-request run `30724007217`
+passed all 10 jobs at `fbf1c5f09c5a1d8c69a9f4ca312bf9a189e3fd8f`.
+This includes the Railway configuration gate, backend, clean SQLite and
+PostgreSQL, populated backup/restore, Flutter analyze/test, live core path,
+hardened pilot and production containers, and composite release evidence.

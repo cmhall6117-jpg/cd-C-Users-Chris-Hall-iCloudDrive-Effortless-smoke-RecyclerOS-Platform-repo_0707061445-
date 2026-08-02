@@ -1249,3 +1249,35 @@ readiness edits.
 
 These files are repository-authored operational controls derived from the
 integrated RC1 path. They do not activate archived vertical slice packages.
+
+## Production Environment Provisioning Contributions
+
+- `.github/workflows/production-environment-acceptance.yml`
+- `deploy/production/environment.example.json`
+- `tools/scripts/production_environment_contract.py`
+- `tools/scripts/production_endpoint_verify.py`
+- `tools/scripts/production_database_verify.py`
+- `services/api/tests/test_production_environment.py`
+- `documentation/deployment/PRODUCTION_ENVIRONMENT_CONTRACT.md`
+- `documentation/deployment/PRODUCTION_ENVIRONMENT_PROVISIONING.md`
+- `documentation/release/PRODUCTION_ENVIRONMENT_PROVISIONING_PR.md`
+- `documentation/release/PRODUCTION_ENVIRONMENT_EVIDENCE.md`
+
+These files are provider-neutral and credential-free. They create no cloud or
+production resources.
+
+## Railway Pilot Environment Contributions
+
+- `.github/workflows/railway-pilot-acceptance.yml`
+- `deploy/railway/pilot/railway.json`
+- `deploy/railway/pilot/variables.example`
+- `deploy/railway/pilot/pilot.contract.json`
+- `tools/scripts/railway_pilot_contract.py`
+- `services/api/tests/test_railway_pilot_contract.py`
+- `documentation/deployment/RAILWAY_PILOT_SETUP.md`
+- `documentation/deployment/RAILWAY_PILOT_RUNBOOK.md`
+- `documentation/release/RAILWAY_PILOT_ENVIRONMENT_PR.md`
+
+The branch also updates `services/api/Dockerfile` so the healthcheck honors the
+platform-assigned port, and extends RC1 CI and evidence documents. These files
+are credential-free, create no Railway resources, and activate no vertical slice.

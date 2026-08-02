@@ -2,7 +2,7 @@
 
 ## Repository
 
-- Branch: `codex/pilot-deployment-readiness`
+- Branch: `codex/railway-pilot-environment`
 - Monorepo root: `repo_0707061445`
 - Source package archive: `archive/source_packages`
 - Repository inventory: `documentation/repository/REPOSITORY_INVENTORY.md`
@@ -137,3 +137,40 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
 - GitHub Actions: all eight jobs passed on push run `29372078034` and
   pull-request run `29372080469` at
   `847a1bed5e9a438d3a85758954abdca1400525a6`
+
+## Production Environment Provisioning Contract
+
+- Branch: `codex/production-environment-provisioning`
+- Provider model: cloud-neutral; no billable resources or credentials
+- Contract: `deploy/production/environment.example.json`
+- Validator: `tools/scripts/production_environment_contract.py`
+- Public acceptance: `tools/scripts/production_endpoint_verify.py`
+- Database acceptance: `tools/scripts/production_database_verify.py`
+- Manual workflow: `.github/workflows/production-environment-acceptance.yml`
+- Focused local result: 8 environment acceptance tests passed
+- Workflow YAML and placeholder-safe contract validation: passed locally
+- Full local backend result: 54 passed and 2 PostgreSQL-only tests skipped
+- Python compilation and SQLite clean initialization: passed
+- GitHub Actions results: pending exact-head evidence
+
+## Railway Pilot Alternative
+
+- Branch: `codex/railway-pilot-environment`
+- Base: `codex/production-environment-provisioning`
+- Railway config: `deploy/railway/pilot/railway.json`
+- Credential-free contract: `deploy/railway/pilot/pilot.contract.json`
+- Variable references: `deploy/railway/pilot/variables.example`
+- Validator: `tools/scripts/railway_pilot_contract.py`
+- Manual acceptance: `.github/workflows/railway-pilot-acceptance.yml`
+- Runtime: one US East replica, one worker, 512 MiB memory limit, serverless sleep
+- Database: private PostgreSQL 16 reference; public TCP proxy disabled at rest
+- Focused local result: 9 Railway tests passed
+- Official Railway JSON schema validation: passed locally
+- Planned contract validation: passed and correctly reported `field_ready: false`
+- Live project, backup, endpoint, monitoring, and cost-control evidence: blocked external
+- Full local backend result: 63 passed and 2 PostgreSQL-only tests skipped
+- Python compilation and SQLite clean initialization: passed
+- GitHub Actions: all 10 jobs passed on push run `30723893531` and
+  pull-request run `30724007217` at
+  `fbf1c5f09c5a1d8c69a9f4ca312bf9a189e3fd8f`
+- Draft pull request: `#13` against `codex/production-environment-provisioning`

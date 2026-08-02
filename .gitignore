@@ -17,3 +17,4 @@ deploy/production/secrets/*
 !deploy/production/secrets/.gitignore
 deploy/production/production.env
 build_artifacts/production_releases/
+build_artifacts/production_environment/

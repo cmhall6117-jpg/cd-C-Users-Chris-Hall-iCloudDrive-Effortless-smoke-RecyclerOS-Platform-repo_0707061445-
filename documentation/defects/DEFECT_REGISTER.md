@@ -203,6 +203,73 @@ Resolution: The Linux image reached real readiness with a read-only filesystem,
 dropped capabilities, and no-new-privileges. The recovery rehearsal restored and
 verified auth, opportunity, and inventory data.
 
+## Railway Pilot Environment
+
+### High
+
+#### DEF-RAILWAY-001: Railway account, project, and budget controls are absent
+
+Status: open, external blocker
+
+Evidence: The contract is `planned`; project ID, billing approval, alert
+verification, and hard-limit verification are pending. No resource was created.
+
+Impact: A live or billable Railway pilot is not authorized.
+
+Next action: Approve the Hobby account owner and current pricing, create
+`recycleros-pilot`, set the USD 20 alert and USD 30 hard limit, then retain
+non-secret verification.
+
+#### DEF-RAILWAY-002: Railway runtime, domain, and sealed variables are absent
+
+Status: open, external blocker
+
+Evidence: The API URL and release commit are pending and
+`sealed_variables` is false.
+
+Impact: Remote pilot login and endpoint acceptance cannot run.
+
+Next action: Configure the GitHub-backed API service, private database reference,
+exact Railway domain, sealed operator secret, and approved deployment commit.
+
+#### DEF-RAILWAY-003: Railway database recovery is not evidenced
+
+Status: open, external blocker
+
+Evidence: Daily, weekly, and off-platform backups are false and the restore
+rehearsal reference is pending. Railway's database template is unmanaged.
+
+Impact: A data-bearing field pilot would lack an approved recovery path.
+
+Next action: Pin PostgreSQL 16, enable native backups, create an encrypted
+off-platform dump, restore it into a clean target, and record the rehearsal.
+
+### Medium
+
+#### DEF-RAILWAY-004: Railway monitoring and protected acceptance are absent
+
+Status: open, external blocker
+
+Evidence: Uptime monitoring, alert delivery, GitHub `railway-pilot` environment,
+and field/support approvals are not configured.
+
+Impact: Failures or spending changes may not reach an accountable operator.
+
+Next action: Configure and test uptime, readiness, cost alerting, owners, and the
+protected manual acceptance workflow.
+
+#### DEF-RAILWAY-005: A second field tester lacks a separate account path
+
+Status: open, scope limitation
+
+Evidence: The existing pilot bootstrap creates one durable local operator and
+the project has no user-administration workflow in the active RC1 path.
+
+Impact: One named tester can be assigned; a second must not share credentials.
+
+Next action: Pilot with one named operator or separately approve a minimal,
+audited account-provisioning operation before adding the second tester.
+
 ## Production Launch Preparation
 
 ### High
@@ -275,3 +342,51 @@ eight jobs at `847a1bed5e9a438d3a85758954abdca1400525a6`. The production
 job validated Compose, image metadata, dependency integrity, clean migrations,
 owner bootstrap, two workers, readiness, release identity, headers, hidden docs,
 and login.
+
+## Production Environment Provisioning
+
+### High
+
+#### DEF-ENV-001: Cloud provider and production account decision is unapproved
+
+Status: open, external blocker
+
+Evidence: No provider, account, region, budget, billing owner, or production
+domain is recorded. The environment example intentionally contains placeholders.
+
+Impact: Provider-specific infrastructure and billable resources must not be created.
+
+Next action: Select the provider and service mapping, approve expected cost and
+region, assign account ownership, and complete the credential-free contract.
+
+#### DEF-ENV-002: Protected production environment and live acceptance are absent
+
+Status: open, external blocker
+
+Evidence: The manual GitHub workflow exists, but the `production` environment,
+required reviewers, database secret, public endpoint, and managed database have
+not been configured.
+
+The database acceptance job also requires a protected self-hosted runner labelled
+`recycleros-production` inside the private database network and the dedicated
+`PRODUCTION_DATABASE_VERIFY_URL` environment secret.
+
+Impact: Repository tests cannot prove target-environment TLS, IAM, recovery,
+observability, or deployed release identity.
+
+Next action: Provision the approved target, configure GitHub environment
+protection, and pass `production-environment-acceptance.yml` with retained output.
+
+### Medium
+
+#### DEF-ENV-003: Provider-specific infrastructure as code is intentionally deferred
+
+Status: open, blocked by provider decision
+
+Evidence: A provider-neutral acceptance boundary is implemented; no AWS, Azure,
+Google Cloud, or other provider has authority to become the production baseline.
+
+Impact: Production resources are not reproducible from provider-specific IaC yet.
+
+Next action: After DEF-ENV-001 closes, implement the selected provider module
+against the committed contract without changing application behavior.

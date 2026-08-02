@@ -2,7 +2,7 @@
 
 ## Repository
 
-- Branch: `codex/rc1-defect-closure`
+- Branch: `codex/pilot-deployment-readiness`
 - Monorepo root: `repo_0707061445`
 - Source package archive: `archive/source_packages`
 - Repository inventory: `documentation/repository/REPOSITORY_INVENTORY.md`
@@ -96,3 +96,27 @@ Draft pull request #8 is open against `codex/rc1-cicd-release-evidence`:
 
 PR text is available at
 `documentation/release/RC1_DEFECT_CLOSURE_PR.md`.
+
+## Pilot Deployment Readiness
+
+- API version: `0.5.0`
+- OpenAPI paths: 16
+- Pilot image: `services/api/Dockerfile`
+- Pilot stack: `deploy/pilot/compose.yml`
+- Startup: ordered PostgreSQL migrations, then Uvicorn
+- Runtime: non-root image, read-only filesystem, dropped capabilities, no-new-privileges
+- Configuration: mounted secret files and required production trusted hosts
+- Health: independent liveness and storage/auth readiness probes
+- Recovery: custom-format backup, SHA-256 manifest, guarded restore, data verification
+- Local backend result: 38 passed and 1 PostgreSQL-only test skipped in 16.85 seconds
+- Container, compose, and backup/restore execution: passed in GitHub Actions
+
+Push run `29369194654` and pull-request run `29369197183` passed all seven
+required jobs at commit `59bd74a78c39923ad99d583a00f352a57d8dfb95`.
+The pilot image built and reached PostgreSQL/auth readiness under a read-only
+filesystem with all capabilities dropped. Populated RC1 data was backed up,
+restored into a clean database, and verified.
+
+Draft pull request #9 is open against `codex/rc1-defect-closure`:
+
+`https://github.com/cmhall6117-jpg/cd-C-Users-Chris-Hall-iCloudDrive-Effortless-smoke-RecyclerOS-Platform-repo_0707061445-/pull/9`

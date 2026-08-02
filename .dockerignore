@@ -1,0 +1,14 @@
+.git
+.github
+.venv
+archive
+apps
+build_artifacts
+documentation
+packages
+deploy/pilot/secrets
+**/__pycache__
+**/.pytest_cache
+**/*.pyc
+**/build
+coverage

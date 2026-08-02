@@ -12,6 +12,7 @@ from auth import (
     password_digest,
     token_digest,
 )
+from runtime_config import read_config_value
 
 
 def _utc_now() -> datetime:
@@ -54,7 +55,7 @@ class PostgresAuthService:
                 minutes=int(os.getenv("RECYCLEROS_AUTH_LOCKOUT_MINUTES", "15"))
             ),
         )
-        bootstrap_password = os.getenv("RECYCLEROS_LOCAL_OPERATOR_PASSWORD")
+        bootstrap_password = read_config_value("RECYCLEROS_LOCAL_OPERATOR_PASSWORD")
         if bootstrap_password:
             service.bootstrap_local_operator(bootstrap_password)
         return service
@@ -68,6 +69,32 @@ class PostgresAuthService:
                 "PostgreSQL runtime requires services/api/requirements-postgres.txt"
             ) from exc
         return psycopg.connect(self._database_url, row_factory=dict_row)
+
+    def check_readiness(self) -> bool:
+        with self._connect() as conn, conn.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT
+                    to_regclass('public.auth_users') IS NOT NULL
+                    AND to_regclass('public.auth_tenant_memberships') IS NOT NULL
+                    AND to_regclass('public.auth_sessions') IS NOT NULL
+                    AS schema_ready
+                """
+            )
+            if not cursor.fetchone()["schema_ready"]:
+                return False
+            cursor.execute(
+                """
+                SELECT EXISTS (
+                    SELECT 1
+                    FROM auth_users auth_user
+                    JOIN auth_tenant_memberships membership
+                      ON membership.user_id = auth_user.id
+                    WHERE auth_user.active = true
+                ) AS operator_ready
+                """
+            )
+            return bool(cursor.fetchone()["operator_ready"])
 
     @staticmethod
     def _audit(

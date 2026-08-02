@@ -998,6 +998,36 @@ Existing auth, store, route, workflow, CI, migration, build, test, defect, and
 release files retain their earlier provenance and contain documented defect
 closure edits.
 
+### Pilot Deployment Readiness Integration
+
+The following files are authored by repository integration work rather than
+copied from a source package:
+
+- `.dockerignore`
+- `deploy/pilot/compose.yml`
+- `deploy/pilot/pilot.env.example`
+- `deploy/pilot/secrets/.gitignore`
+- `services/api/Dockerfile`
+- `services/api/pilot_entrypoint.py`
+- `services/api/src/runtime_config.py`
+- `services/api/tests/test_pilot_operations.py`
+- `services/api/tests/test_pilot_runtime.py`
+- `tools/scripts/pilot_prepare_secrets.py`
+- `tools/scripts/pilot_postgres_common.py`
+- `tools/scripts/pilot_postgres_backup.py`
+- `tools/scripts/pilot_postgres_create_database.py`
+- `tools/scripts/pilot_postgres_restore.py`
+- `tools/scripts/pilot_postgres_verify.py`
+- `documentation/deployment/PILOT_DEPLOYMENT_RUNBOOK.md`
+- `documentation/deployment/PILOT_READINESS_CHECKLIST.md`
+- `documentation/operations/BACKUP_RESTORE_RUNBOOK.md`
+- `documentation/security/PILOT_SECRETS_REGISTER.md`
+- `documentation/release/PILOT_DEPLOYMENT_READINESS_PR.md`
+
+Existing runtime, health, CI, assumptions, build, test, defect, release, and
+inventory files retain their earlier provenance and contain documented pilot
+readiness edits.
+
 - `apps/recycleros_pro_mobile/lib/main.dart`
 - `apps/recycleros_pro_mobile/lib/src/app/app_routes.dart`
 - `apps/recycleros_pro_mobile/lib/src/app/recycleros_app.dart`

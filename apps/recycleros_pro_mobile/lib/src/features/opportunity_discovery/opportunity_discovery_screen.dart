@@ -33,21 +33,32 @@ class _OpportunityDiscoveryScreenState
     super.dispose();
   }
 
-  void _createOpportunity() {
+  Future<void> _createOpportunity() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-    final opportunity =
-        ref.read(rc1WorkflowProvider.notifier).createOpportunity(
-              title: _titleController.text,
-              vin: _vinController.text,
-              year: int.tryParse(_yearController.text),
-              make: _makeController.text,
-              model: _modelController.text,
-            );
+    final opportunity = await ref
+        .read(rc1WorkflowProvider.notifier)
+        .createOpportunity(
+          title: _titleController.text,
+          vin: _vinController.text,
+          year: int.tryParse(_yearController.text),
+          make: _makeController.text,
+          model: _modelController.text,
+        );
+    if (!mounted) {
+      return;
+    }
     FocusScope.of(context).unfocus();
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('${opportunity.opportunityCode} created.')),
+      SnackBar(
+        content: Text(
+          opportunity == null
+              ? ref.read(rc1WorkflowProvider).errorMessage ??
+                  'Opportunity could not be created.'
+              : '${opportunity.opportunityCode} created.',
+        ),
+      ),
     );
   }
 
@@ -133,7 +144,7 @@ class _OpportunityDiscoveryScreenState
                   alignment: Alignment.centerRight,
                   child: FilledButton.icon(
                     key: const Key('createOpportunity'),
-                    onPressed: _createOpportunity,
+                    onPressed: state.isBusy ? null : _createOpportunity,
                     icon: const Icon(Icons.add),
                     label: const Text('Create Opportunity'),
                   ),
@@ -187,12 +198,32 @@ class _OpportunityDiscoveryScreenState
                         key: ValueKey(
                           'createVehicle-${opportunity.opportunityCode}',
                         ),
-                        onPressed: () {
-                          final vehicle = ref
+                        onPressed: state.isBusy
+                            ? null
+                            : () async {
+                                final vehicle = await ref
                               .read(rc1WorkflowProvider.notifier)
                               .createVehicleRecord(opportunity.opportunityId);
-                          context.go(AppPaths.vehicle(vehicle.vehicleCode));
-                        },
+                                if (!context.mounted) {
+                                  return;
+                                }
+                                if (vehicle != null) {
+                                  context.go(
+                                    AppPaths.vehicle(vehicle.vehicleCode),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        ref
+                                                .read(rc1WorkflowProvider)
+                                                .errorMessage ??
+                                            'Vehicle could not be created.',
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
                         icon: const Icon(Icons.directions_car_outlined),
                         label: const Text('Create Vehicle Record'),
                       ),

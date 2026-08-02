@@ -24,6 +24,20 @@ Resolution: Backend requirements installed successfully in the ignored repositor
 
 ## High
 
+### DEF-RC1-008: Core Flutter API integration awaits CI verification
+
+Status: closed by CI evidence
+
+Evidence: The workstation has no Flutter or Dart executable, so the new Dio
+gateway, asynchronous workflow controller, and injected fake tests cannot be
+analyzed or executed locally.
+
+Impact: None remaining for the reproducible Flutter build gate.
+
+Resolution: An initial analyzer warning was corrected in commit `71c2aa9`.
+GitHub Actions PR run `29325554779` then passed `flutter pub get`,
+`flutter analyze`, `flutter test`, and the live Flutter-to-FastAPI smoke test.
+
 ### DEF-RC1-007: Backend records are not durable across process restarts
 
 Status: open
@@ -55,6 +69,19 @@ Impact: RC1 cannot mark the requested compile gate passed with clean command com
 Resolution: The bundled Python runtime completed `python -m compileall services/api/src` locally on July 14, 2026. GitHub Actions also succeeded on run `29289307269`.
 
 ## Medium
+
+### DEF-RC1-009: GitHub Actions use versions targeting deprecated Node.js 20
+
+Status: open, non-blocking
+
+Evidence: Run `29325554779` reports that `actions/checkout@v4` and
+`actions/setup-python@v5` target Node.js 20 and are being forced onto Node.js 24.
+
+Impact: All jobs pass today, but the workflow should adopt supported action
+major versions when available to remove future runner compatibility risk.
+
+Next action: Upgrade the affected GitHub Actions versions in a focused CI
+maintenance change after confirming their release notes.
 
 ### DEF-RC1-006: Draft pull request cannot be opened without a GitHub remote
 

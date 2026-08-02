@@ -138,3 +138,43 @@ def test_cross_tenant_linked_resource_is_rejected(client):
     )
 
     assert response.status_code == 404
+
+
+def test_cross_tenant_pick_list_update_is_not_disclosed(client):
+    opportunity = client.post(
+        "/v1/opportunities",
+        headers=TENANT_HEADERS,
+        json={"title": "Availability source"},
+    ).json()
+    vehicle = client.post(
+        "/v1/vehicles",
+        headers=TENANT_HEADERS,
+        json={"opportunity_id": opportunity["opportunity_id"], "make": "Ford"},
+    ).json()
+    pick_list_item = client.post(
+        "/v1/pick-list",
+        headers=TENANT_HEADERS,
+        json={"vehicle_id": vehicle["vehicle_id"], "yard_name": "RC1 Yard"},
+    ).json()
+
+    response = client.patch(
+        f"/v1/pick-list/{pick_list_item['pick_list_item_id']}/availability",
+        headers=OTHER_TENANT_HEADERS,
+        json={"availability_status": "available"},
+    )
+
+    assert response.status_code == 404
+
+
+def test_pick_list_update_rejects_mismatched_payload_tenant(client):
+    response = client.patch(
+        "/v1/pick-list/unknown/availability",
+        headers=TENANT_HEADERS,
+        json={
+            "organization_id": "org-other",
+            "workspace_id": "workspace-ops",
+            "availability_status": "available",
+        },
+    )
+
+    assert response.status_code == 403

@@ -40,19 +40,35 @@ class _InventoryIntakeScreenState
     super.dispose();
   }
 
-  void _saveInventory() {
+  Future<void> _saveInventory() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-    final item = ref.read(rc1WorkflowProvider.notifier).createInventoryItem(
+    final item = await ref
+        .read(rc1WorkflowProvider.notifier)
+        .createInventoryItem(
           partName: _partNameController.text,
           storageLocation: _locationController.text,
           condition: _condition,
           status: _status,
         );
+    if (!mounted) {
+      return;
+    }
+    if (item == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            ref.read(rc1WorkflowProvider).errorMessage ??
+                'Inventory could not be created.',
+          ),
+        ),
+      );
+      return;
+    }
     setState(() => _lastInventoryCode = item.inventoryCode);
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('${item.inventoryCode} saved locally.')),
+      SnackBar(content: Text('${item.inventoryCode} saved.')),
     );
   }
 
@@ -146,7 +162,7 @@ class _InventoryIntakeScreenState
                   alignment: Alignment.centerRight,
                   child: FilledButton.icon(
                     key: const Key('createInventory'),
-                    onPressed: _saveInventory,
+                    onPressed: state.isBusy ? null : _saveInventory,
                     icon: const Icon(Icons.inventory_2_outlined),
                     label: const Text('Create Inventory'),
                   ),

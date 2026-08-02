@@ -27,9 +27,11 @@ class _FocusPointScreenState extends ConsumerState<FocusPointScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (mounted) {
-        ref.read(rc1WorkflowProvider.notifier).startFocusPoint(widget.vehicleId);
+        await ref
+            .read(rc1WorkflowProvider.notifier)
+            .startFocusPoint(widget.vehicleId);
       }
     });
   }
@@ -123,13 +125,27 @@ class _FocusPointScreenState extends ConsumerState<FocusPointScreen> {
           const SizedBox(height: 12),
           FilledButton.icon(
             key: const Key('completeFocus'),
-            onPressed: state.selectedParts.isEmpty
+            onPressed: state.selectedParts.isEmpty || state.isBusy
                 ? null
-                : () {
-                    ref
+                : () async {
+                    final session = await ref
                         .read(rc1WorkflowProvider.notifier)
                         .completeFocusPoint();
-                    context.go(AppPaths.inventoryIntake);
+                    if (!context.mounted) {
+                      return;
+                    }
+                    if (session != null) {
+                      context.go(AppPaths.inventoryIntake);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            ref.read(rc1WorkflowProvider).errorMessage ??
+                                'Focus Point could not be completed.',
+                          ),
+                        ),
+                      );
+                    }
                   },
             icon: const Icon(Icons.check),
             label: const Text('Complete Focus Point'),

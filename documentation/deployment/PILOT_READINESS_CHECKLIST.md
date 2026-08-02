@@ -43,11 +43,28 @@
 | Monitoring alert delivery | Blocked external | Notification channel and delivery proof are absent. |
 | Restore rehearsal | Blocked external | Contract evidence remains `PENDING`. |
 
+## Railway Pilot Alternative
+
+| Gate | Status | Evidence |
+| --- | --- | --- |
+| Config as code | Passed locally | Official Railway schema and repository validator passed. |
+| Credential-free contract | Passed locally | Planned contract is valid and not field-ready. |
+| Dynamic platform port | Passed locally | Docker healthcheck and API entrypoint use `PORT`. |
+| Budget envelope | Planned | USD 12-25 estimate, USD 20 alert, USD 30 hard limit. |
+| Railway account and project | Blocked external | No approved account or billable resource exists. |
+| Private PostgreSQL 16 | Blocked external | Service and volume are not provisioned. |
+| Native and off-platform recovery | Blocked external | Backups and restore rehearsal are not evidenced. |
+| Public endpoint and sealed variables | Blocked external | Domain and live secrets do not exist. |
+| Monitoring and alert delivery | Blocked external | Uptime and cost alert delivery are not evidenced. |
+| Protected acceptance workflow | Passed repository CI; blocked external | Workflow parses and branch CI passed; GitHub environment and live target do not exist. |
+
+Railway field access remains no-go until the strict contract reports field-ready,
+the manual acceptance workflow passes, and all `DEF-RAILWAY-*` defects close.
+
 ## Decision
 
 The local-container pilot repository was deployment-ready at commit
-`59bd74a78c39923ad99d583a00f352a57d8dfb95`. A data-bearing or remotely
-accessible pilot remains no-go until every external prerequisite is assigned,
-configured, and evidenced. The Google Cloud pilot definitions are a new
-candidate and require CI provider validation before their repository gate can
-pass.
+`59bd74a78c39923ad99d583a00f352a57d8dfb95`. The Google Cloud and Railway
+definitions are credential-free deployment candidates only. A data-bearing or
+remotely accessible pilot remains no-go until the selected provider's external
+prerequisites are assigned, configured, and evidenced.

@@ -2,7 +2,7 @@
 
 ## Repository
 
-- Branch: `codex/pilot-deployment-readiness`
+- Branch: `codex/gcp-pilot-environment`
 - Monorepo root: `repo_0707061445`
 - Source package archive: `archive/source_packages`
 - Repository inventory: `documentation/repository/REPOSITORY_INVENTORY.md`
@@ -177,3 +177,25 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
   `8b24fae4d540834edf0c041a9b06c8d619fa7058`
 - Draft pull request: `#12`
 - Google Cloud resources created: none
+
+## Railway Pilot Alternative
+
+- Branch: `codex/railway-pilot-environment`
+- Base: `codex/production-environment-provisioning`
+- Railway config: `deploy/railway/pilot/railway.json`
+- Credential-free contract: `deploy/railway/pilot/pilot.contract.json`
+- Variable references: `deploy/railway/pilot/variables.example`
+- Validator: `tools/scripts/railway_pilot_contract.py`
+- Manual acceptance: `.github/workflows/railway-pilot-acceptance.yml`
+- Runtime: one US East replica, one worker, 512 MiB memory limit, serverless sleep
+- Database: private PostgreSQL 16 reference; public TCP proxy disabled at rest
+- Focused local result: 9 Railway tests passed
+- Official Railway JSON schema validation: passed locally
+- Planned contract validation: passed and correctly reported `field_ready: false`
+- Live project, backup, endpoint, monitoring, and cost-control evidence: blocked external
+- Full local backend result: 63 passed and 2 PostgreSQL-only tests skipped
+- Python compilation and SQLite clean initialization: passed
+- GitHub Actions: all 10 jobs passed on push run `30723893531` and
+  pull-request run `30724007217` at
+  `fbf1c5f09c5a1d8c69a9f4ca312bf9a189e3fd8f`
+- Draft pull request: `#13` against `codex/production-environment-provisioning`

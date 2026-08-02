@@ -115,3 +115,29 @@ Repository reproducibility is passed at
 release-evidence gate. Live environment gates remain blocked because the run
 validated definitions and application behavior but did not provision Google
 Cloud resources.
+
+## Railway Pilot Alternative
+
+| Gate | Status | Evidence |
+| --- | --- | --- |
+| Railway config structure | Passed locally | Current official Railway JSON schema accepted `railway.json`. |
+| Credential-free contract | Passed locally | Validator returned `valid: true`. |
+| Pre-provisioning no-go | Passed locally | Validator returned `field_ready: false`. |
+| Focused automated tests | Passed locally | 9 tests. |
+| Dynamic `PORT` healthcheck | Passed locally | Focused Dockerfile test. |
+| Full RC1 CI | Passed | Push run `30723893531` and PR run `30724007217` passed all 10 jobs. |
+| Railway account and budget controls | Blocked external | `DEF-RAILWAY-001`. |
+| Runtime, domain, and sealed variables | Blocked external | `DEF-RAILWAY-002`. |
+| Database backup and restore | Blocked external | `DEF-RAILWAY-003`. |
+| Monitoring and protected acceptance | Blocked external | `DEF-RAILWAY-004`. |
+| Second unique tester identity | Blocked for tester two | `DEF-RAILWAY-005`. |
+
+No Railway release gate is marked passed on the strength of configuration alone.
+The provider-specific branch creates no resources and does not change the
+production-provider decision.
+
+CI evidence applies to implementation commit
+`fbf1c5f09c5a1d8c69a9f4ca312bf9a189e3fd8f` on draft pull request `#13`.
+Both trigger paths passed backend, SQLite, PostgreSQL migration/replay and
+restore, Flutter, live core integration, pilot and production containers,
+production contract, Railway pilot config, and composite release evidence.

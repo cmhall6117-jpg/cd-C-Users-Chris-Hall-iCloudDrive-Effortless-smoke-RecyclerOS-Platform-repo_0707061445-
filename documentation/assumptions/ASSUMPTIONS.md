@@ -46,3 +46,9 @@
 - GitHub deployments use Workload Identity Federation restricted to the exact
   repository and deployment branch. Static Google service account keys are
   forbidden.
+- Railway is a controlled pilot alternative, not the approved production provider, and no Railway account or billable resource is implied by repository configuration.
+- The Railway planning envelope is USD 12-25 monthly with a USD 20 alert and USD 30 hard limit; field access remains blocked if the plan cannot enforce or evidence those controls.
+- The Railway API uses one US East replica, one worker, serverless sleep, a 512 MiB memory limit, and private PostgreSQL networking for a maximum of two testers.
+- Railway's PostgreSQL template is unmanaged. Native volume backups require a separate encrypted off-platform logical backup and restore rehearsal before field use.
+- The initial Railway pilot starts with one named operator and no credential sharing; a second tester requires a separate durable identity.
+- Railway and GitHub acceptance workflows contain no provider deployment token and cannot create, mutate, or delete live resources.

@@ -1283,3 +1283,19 @@ These are repository-authored operational controls for the existing RC1
 application. They create no additional vertical slice and contain no cloud
 credentials. The original generated packages and documentation remain
 preserved.
+
+## Railway Pilot Environment Contributions
+
+- `.github/workflows/railway-pilot-acceptance.yml`
+- `deploy/railway/pilot/railway.json`
+- `deploy/railway/pilot/variables.example`
+- `deploy/railway/pilot/pilot.contract.json`
+- `tools/scripts/railway_pilot_contract.py`
+- `services/api/tests/test_railway_pilot_contract.py`
+- `documentation/deployment/RAILWAY_PILOT_SETUP.md`
+- `documentation/deployment/RAILWAY_PILOT_RUNBOOK.md`
+- `documentation/release/RAILWAY_PILOT_ENVIRONMENT_PR.md`
+
+The branch also updates `services/api/Dockerfile` so the healthcheck honors the
+platform-assigned port, and extends RC1 CI and evidence documents. These files
+are credential-free, create no Railway resources, and activate no vertical slice.

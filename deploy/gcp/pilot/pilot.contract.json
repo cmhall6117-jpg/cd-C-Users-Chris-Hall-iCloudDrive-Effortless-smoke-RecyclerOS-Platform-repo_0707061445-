@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "environment": "pilot",
+  "lifecycle": "planned",
+  "provider": {
+    "name": "gcp",
+    "project_id": "recyleros-platform",
+    "project_number": "728951606960",
+    "region": "us-east4"
+  },
+  "cost_controls": {
+    "monthly_budget_usd": 100,
+    "first_month_ceiling_usd": 150,
+    "alert_percentages": [
+      50,
+      80,
+      100
+    ],
+    "budget_verified": false
+  },
+  "runtime": {
+    "service": "cloud-run",
+    "cpu": 1,
+    "memory": "1Gi",
+    "minimum_instances": 0,
+    "maximum_instances": 2,
+    "concurrency": 20,
+    "public_access_enabled": false
+  },
+  "database": {
+    "service": "cloud-sql",
+    "engine": "postgresql",
+    "major_version": 16,
+    "tier": "db-g1-small",
+    "storage_gib": 25,
+    "high_availability": false,
+    "publicly_accessible": false,
+    "deletion_protection": true,
+    "backup_retention_days": 14,
+    "point_in_time_recovery": true,
+    "restore_rehearsal_evidence": "PENDING"
+  },
+  "security": {
+    "secret_manager": "google-secret-manager",
+    "workload_identity_federation": true,
+    "static_service_account_keys": false,
+    "terraform_write_only_secrets": true
+  },
+  "observability": {
+    "logging": "cloud-logging",
+    "monitoring": "cloud-monitoring",
+    "uptime_check_provisioned": false,
+    "alert_delivery_verified": false
+  },
+  "testing": {
+    "maximum_testers": 2,
+    "data_policy": "synthetic_or_authorized_pilot_only"
+  },
+  "approvals": {
+    "infrastructure_apply": false,
+    "field_access": false,
+    "restore_owner_assigned": false,
+    "support_owner_assigned": false
+  }
+}

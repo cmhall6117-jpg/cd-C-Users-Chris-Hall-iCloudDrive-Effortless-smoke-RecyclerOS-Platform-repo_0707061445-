@@ -4,6 +4,7 @@ on:
   pull_request:
   push:
     branches:
+      - "codex/gcp-*"
       - "codex/rc1-*"
       - "codex/pilot-*"
       - "codex/production-*"
@@ -300,6 +301,31 @@ jobs:
           tools/scripts/production_endpoint_verify.py
           tools/scripts/production_database_verify.py
 
+  gcp-pilot-iac:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "1.14.6"
+      - name: Validate credential-free GCP pilot contract
+        run: python tools/scripts/gcp_pilot_contract.py
+      - name: Check Terraform formatting
+        run: terraform fmt -check -recursive deploy/gcp/pilot
+      - name: Validate bootstrap root
+        working-directory: deploy/gcp/pilot/bootstrap
+        run: |
+          terraform init -backend=false
+          terraform validate
+      - name: Validate environment root
+        working-directory: deploy/gcp/pilot/environment
+        run: |
+          terraform init -backend=false
+          terraform validate
+
   railway-pilot-config:
     runs-on: ubuntu-latest
     steps:
@@ -370,6 +396,7 @@ jobs:
       - pilot-container
       - production-container
       - environment-contract
+      - gcp-pilot-iac
       - railway-pilot-config
     runs-on: ubuntu-latest
     steps:
@@ -384,6 +411,7 @@ jobs:
           PILOT_CONTAINER_RESULT: ${{ needs['pilot-container'].result }}
           PRODUCTION_CONTAINER_RESULT: ${{ needs['production-container'].result }}
           ENVIRONMENT_CONTRACT_RESULT: ${{ needs['environment-contract'].result }}
+          GCP_PILOT_IAC_RESULT: ${{ needs['gcp-pilot-iac'].result }}
           RAILWAY_PILOT_CONFIG_RESULT: ${{ needs['railway-pilot-config'].result }}
         run: |
           run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
@@ -407,6 +435,7 @@ jobs:
             echo "| pilot-container | ${PILOT_CONTAINER_RESULT} |"
             echo "| production-container | ${PRODUCTION_CONTAINER_RESULT} |"
             echo "| environment-contract | ${ENVIRONMENT_CONTRACT_RESULT} |"
+            echo "| gcp-pilot-iac | ${GCP_PILOT_IAC_RESULT} |"
             echo "| railway-pilot-config | ${RAILWAY_PILOT_CONFIG_RESULT} |"
           } >> "$GITHUB_STEP_SUMMARY"
 
@@ -419,6 +448,7 @@ jobs:
             "$PILOT_CONTAINER_RESULT" \
             "$PRODUCTION_CONTAINER_RESULT" \
             "$ENVIRONMENT_CONTRACT_RESULT" \
+            "$GCP_PILOT_IAC_RESULT" \
             "$RAILWAY_PILOT_CONFIG_RESULT"; do
             if [[ "$result" != "success" ]]; then
               echo "Required RC1 gate did not pass: $result"

@@ -1,0 +1,5 @@
+project_id         = "recyleros-platform"
+project_number     = "728951606960"
+state_bucket_name  = "recyleros-platform-728951606960-tfstate"
+github_repository  = "cmhall6117-jpg/cd-C-Users-Chris-Hall-iCloudDrive-Effortless-smoke-RecyclerOS-Platform-repo_0707061445-"
+github_deploy_ref  = "refs/heads/codex/gcp-pilot-environment"

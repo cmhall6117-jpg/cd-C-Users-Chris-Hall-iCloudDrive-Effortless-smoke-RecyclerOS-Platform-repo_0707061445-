@@ -18,3 +18,9 @@ deploy/production/secrets/*
 deploy/production/production.env
 build_artifacts/production_releases/
 build_artifacts/production_environment/
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+terraform.tfvars
+gha-creds-*.json

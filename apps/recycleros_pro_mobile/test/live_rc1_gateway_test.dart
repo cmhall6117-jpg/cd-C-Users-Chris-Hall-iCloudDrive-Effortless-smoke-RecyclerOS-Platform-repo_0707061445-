@@ -4,16 +4,22 @@ import 'package:recycleros_pro_mobile/src/data/dio_rc1_gateway.dart';
 import 'package:recycleros_pro_mobile/src/data/rc1_gateway.dart';
 
 const _liveApiEnabled = bool.fromEnvironment('RECYCLEROS_LIVE_API_TEST');
+const _testPassword = String.fromEnvironment('RECYCLEROS_TEST_PASSWORD');
 
 void main() {
   test(
     'completes the RC1 path against a running FastAPI service',
     () async {
-      const tenant = TenantScope(
-        organizationId: 'org-live-test',
-        workspaceId: 'workspace-live-test',
-      );
       final gateway = DioRc1Gateway();
+      final session = await gateway.signIn(
+        email: 'operator@effortlesssmoke.com',
+        password: _testPassword,
+      );
+      final membership = session.memberships.single;
+      final tenant = TenantScope(
+        organizationId: membership.organizationId,
+        workspaceId: membership.workspaceId,
+      );
 
       final opportunity = await gateway.createOpportunity(
         tenant,

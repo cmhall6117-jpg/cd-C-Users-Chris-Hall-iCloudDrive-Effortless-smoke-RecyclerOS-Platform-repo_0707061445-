@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
+from auth import Permission
 from dependencies import get_store
 from schemas.pick_list import PickListAvailabilityUpdate, PickListItemCreate
 from store import InMemoryStore
-from tenant import TenantContext, require_tenant_context, validate_payload_tenant
+from tenant import TenantContext, require_permission, validate_payload_tenant
 
 router = APIRouter()
 
@@ -11,7 +12,7 @@ router = APIRouter()
 @router.post("", status_code=status.HTTP_201_CREATED)
 def create_pick_list_item(
     payload: PickListItemCreate,
-    tenant: TenantContext = Depends(require_tenant_context),
+    tenant: TenantContext = Depends(require_permission(Permission.OPERATE)),
     store: InMemoryStore = Depends(get_store),
 ):
     validate_payload_tenant(payload, tenant)
@@ -27,7 +28,7 @@ def create_pick_list_item(
 
 @router.get("")
 def list_pick_list_items(
-    tenant: TenantContext = Depends(require_tenant_context),
+    tenant: TenantContext = Depends(require_permission(Permission.READ)),
     store: InMemoryStore = Depends(get_store),
 ):
     return {
@@ -41,7 +42,7 @@ def list_pick_list_items(
 def update_pick_list_availability(
     pick_list_item_id: str,
     payload: PickListAvailabilityUpdate,
-    tenant: TenantContext = Depends(require_tenant_context),
+    tenant: TenantContext = Depends(require_permission(Permission.OPERATE)),
     store: InMemoryStore = Depends(get_store),
 ):
     validate_payload_tenant(payload, tenant)

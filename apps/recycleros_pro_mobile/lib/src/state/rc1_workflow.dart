@@ -13,11 +13,16 @@ final rc1WorkflowProvider =
 
 class Rc1WorkflowState {
   const Rc1WorkflowState({
+    this.userId,
     this.userEmail,
-    this.organizationId = 'org-local',
-    this.organizationName = 'Effortless Smoke, LLC',
-    this.workspaceId = 'workspace-local',
-    this.workspaceName = 'RecyclerOS Operations',
+    this.displayName,
+    this.sessionExpiresAt,
+    this.memberships = const [],
+    this.organizationId = '',
+    this.organizationName = '',
+    this.workspaceId = '',
+    this.workspaceName = '',
+    this.workspaceRole = '',
     this.workspaceSelected = false,
     this.opportunities = const [],
     this.activeOpportunityId,
@@ -31,11 +36,16 @@ class Rc1WorkflowState {
     this.errorMessage,
   });
 
+  final String? userId;
   final String? userEmail;
+  final String? displayName;
+  final DateTime? sessionExpiresAt;
+  final List<TenantMembership> memberships;
   final String organizationId;
   final String organizationName;
   final String workspaceId;
   final String workspaceName;
+  final String workspaceRole;
   final bool workspaceSelected;
   final List<Opportunity> opportunities;
   final String? activeOpportunityId;
@@ -57,13 +67,28 @@ class Rc1WorkflowState {
     return null;
   }
 
+  bool get canOperate => const {
+        'owner',
+        'admin',
+        'operator',
+      }.contains(workspaceRole);
+
   TenantScope get tenant => TenantScope(
         organizationId: organizationId,
         workspaceId: workspaceId,
       );
 
   Rc1WorkflowState copyWith({
+    String? userId,
     String? userEmail,
+    String? displayName,
+    DateTime? sessionExpiresAt,
+    List<TenantMembership>? memberships,
+    String? organizationId,
+    String? organizationName,
+    String? workspaceId,
+    String? workspaceName,
+    String? workspaceRole,
     bool? workspaceSelected,
     List<Opportunity>? opportunities,
     String? activeOpportunityId,
@@ -78,11 +103,16 @@ class Rc1WorkflowState {
     bool clearError = false,
   }) {
     return Rc1WorkflowState(
+      userId: userId ?? this.userId,
       userEmail: userEmail ?? this.userEmail,
-      organizationId: organizationId,
-      organizationName: organizationName,
-      workspaceId: workspaceId,
-      workspaceName: workspaceName,
+      displayName: displayName ?? this.displayName,
+      sessionExpiresAt: sessionExpiresAt ?? this.sessionExpiresAt,
+      memberships: memberships ?? this.memberships,
+      organizationId: organizationId ?? this.organizationId,
+      organizationName: organizationName ?? this.organizationName,
+      workspaceId: workspaceId ?? this.workspaceId,
+      workspaceName: workspaceName ?? this.workspaceName,
+      workspaceRole: workspaceRole ?? this.workspaceRole,
       workspaceSelected: workspaceSelected ?? this.workspaceSelected,
       opportunities: opportunities ?? this.opportunities,
       activeOpportunityId: activeOpportunityId ?? this.activeOpportunityId,
@@ -104,12 +134,50 @@ class Rc1WorkflowController extends StateNotifier<Rc1WorkflowState> {
 
   final Rc1Gateway _gateway;
 
-  void signIn(String email) {
-    state = state.copyWith(userEmail: email.trim());
+  Future<AuthSession?> signIn(String email, String password) async {
+    _startRequest();
+    try {
+      final session = await _gateway.signIn(
+        email: email.trim(),
+        password: password,
+      );
+      if (session.memberships.isEmpty) {
+        throw const Rc1GatewayException(
+          'This account has no RecyclerOS workspace access.',
+        );
+      }
+      final firstMembership = session.memberships.first;
+      state = state.copyWith(
+        userId: session.userId,
+        userEmail: session.email,
+        displayName: session.displayName,
+        sessionExpiresAt: session.expiresAt,
+        memberships: session.memberships,
+        organizationId: firstMembership.organizationId,
+        organizationName: firstMembership.organizationName,
+        workspaceId: firstMembership.workspaceId,
+        workspaceName: firstMembership.workspaceName,
+        workspaceRole: firstMembership.role,
+        workspaceSelected: false,
+        isBusy: false,
+        clearError: true,
+      );
+      return session;
+    } on Object catch (error) {
+      _failRequest(error);
+      return null;
+    }
   }
 
-  void selectWorkspace() {
-    state = state.copyWith(workspaceSelected: true);
+  void selectWorkspace(TenantMembership membership) {
+    state = state.copyWith(
+      organizationId: membership.organizationId,
+      organizationName: membership.organizationName,
+      workspaceId: membership.workspaceId,
+      workspaceName: membership.workspaceName,
+      workspaceRole: membership.role,
+      workspaceSelected: true,
+    );
   }
 
   Future<Opportunity?> createOpportunity({

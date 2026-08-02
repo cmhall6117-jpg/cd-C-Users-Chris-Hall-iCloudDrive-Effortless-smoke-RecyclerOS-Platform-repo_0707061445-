@@ -78,7 +78,10 @@ class _OpportunityDiscoveryScreenState
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          const PageHeader(title: 'New Opportunity', detail: 'Manual acquisition lead'),
+          const PageHeader(
+            title: 'New Opportunity',
+            detail: 'Manual acquisition lead',
+          ),
           const SizedBox(height: 20),
           Form(
             key: _formKey,
@@ -144,7 +147,9 @@ class _OpportunityDiscoveryScreenState
                   alignment: Alignment.centerRight,
                   child: FilledButton.icon(
                     key: const Key('createOpportunity'),
-                    onPressed: state.isBusy ? null : _createOpportunity,
+                    onPressed: state.isBusy || !state.canOperate
+                        ? null
+                        : _createOpportunity,
                     icon: const Icon(Icons.add),
                     label: const Text('Create Opportunity'),
                   ),
@@ -198,12 +203,14 @@ class _OpportunityDiscoveryScreenState
                         key: ValueKey(
                           'createVehicle-${opportunity.opportunityCode}',
                         ),
-                        onPressed: state.isBusy
+                        onPressed: state.isBusy || !state.canOperate
                             ? null
                             : () async {
                                 final vehicle = await ref
-                              .read(rc1WorkflowProvider.notifier)
-                              .createVehicleRecord(opportunity.opportunityId);
+                                    .read(rc1WorkflowProvider.notifier)
+                                    .createVehicleRecord(
+                                      opportunity.opportunityId,
+                                    );
                                 if (!context.mounted) {
                                   return;
                                 }

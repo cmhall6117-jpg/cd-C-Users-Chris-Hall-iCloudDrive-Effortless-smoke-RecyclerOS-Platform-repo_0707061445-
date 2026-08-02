@@ -24,6 +24,19 @@ Resolution: Backend requirements installed successfully in the ignored repositor
 
 ## High
 
+### DEF-RC1-010: Auth identities, memberships, and sessions are process-local
+
+Status: open
+
+Evidence: `LocalAuthService` loads one optional environment-backed operator and
+stores opaque session hashes in API process memory.
+
+Impact: Authentication and RBAC are testable for RC1, but identities and
+sessions are lost on restart and cannot be managed across API replicas.
+
+Next action: Implement the `AuthService` boundary with durable identity,
+membership, session, and audit storage before production release.
+
 ### DEF-RC1-008: Core Flutter API integration awaits CI verification
 
 Status: closed by CI evidence
@@ -69,6 +82,20 @@ Impact: RC1 cannot mark the requested compile gate passed with clean command com
 Resolution: The bundled Python runtime completed `python -m compileall services/api/src` locally on July 14, 2026. GitHub Actions also succeeded on run `29289307269`.
 
 ## Medium
+
+### DEF-RC1-011: Local auth lacks production account defenses
+
+Status: open, non-blocking for the local RC1 path
+
+Evidence: The local provider verifies PBKDF2 password hashes and expires opaque
+sessions, but does not implement login rate limiting, refresh, explicit
+revocation, password recovery, or enterprise SSO.
+
+Impact: The provider is suitable only for local RC1 integration and must not be
+treated as the production identity system.
+
+Next action: Keep live identity behind `AuthService`; add rate limiting and
+durable session controls with the selected production provider.
 
 ### DEF-RC1-009: GitHub Actions use versions targeting deprecated Node.js 20
 

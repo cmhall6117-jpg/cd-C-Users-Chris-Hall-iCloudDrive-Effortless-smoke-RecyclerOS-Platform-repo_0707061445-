@@ -2,6 +2,10 @@ import 'package:recycleros_domain/recycleros_domain.dart';
 import 'package:recycleros_pro_mobile/src/data/rc1_gateway.dart';
 
 class FakeRc1Gateway implements Rc1Gateway {
+  FakeRc1Gateway({this.role = 'operator', this.signInError});
+
+  final String role;
+  final String? signInError;
   final List<TenantScope> seenTenants = [];
 
   int _opportunitySequence = 0;
@@ -15,6 +19,31 @@ class FakeRc1Gateway implements Rc1Gateway {
 
   void _record(TenantScope tenant) {
     seenTenants.add(tenant);
+  }
+
+  @override
+  Future<AuthSession> signIn({
+    required String email,
+    required String password,
+  }) async {
+    if (signInError != null) {
+      throw Rc1GatewayException(signInError!);
+    }
+    return AuthSession(
+      userId: 'user-local',
+      email: email,
+      displayName: 'Local Operator',
+      expiresAt: _now.add(const Duration(hours: 8)),
+      memberships: [
+        TenantMembership(
+          organizationId: 'org-local',
+          organizationName: 'Effortless Smoke, LLC',
+          workspaceId: 'workspace-local',
+          workspaceName: 'RecyclerOS Operations',
+          role: role,
+        ),
+      ],
+    );
   }
 
   @override

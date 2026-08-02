@@ -20,26 +20,47 @@ class WorkspaceSelectionScreen extends ConsumerWidget {
         children: [
           PageHeader(
             title: state.organizationName,
-            detail: state.userEmail ?? 'Local RC1 user',
+            detail: state.displayName ?? state.userEmail ?? 'RecyclerOS user',
           ),
           const SizedBox(height: 20),
-          Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            child: ListTile(
-              key: const Key('workspaceTile'),
-              contentPadding: const EdgeInsets.all(16),
-              leading: const Icon(Icons.warehouse_outlined),
-              title: Text(state.workspaceName),
-              subtitle: const Text('Primary workspace'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                ref.read(rc1WorkflowProvider.notifier).selectWorkspace();
-                context.go(AppPaths.missionControl);
-              },
+          for (var index = 0; index < state.memberships.length; index++)
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: ListTile(
+                key: index == 0
+                    ? const Key('workspaceTile')
+                    : ValueKey(
+                        'workspace-${state.memberships[index].workspaceId}',
+                      ),
+                contentPadding: const EdgeInsets.all(16),
+                leading: const Icon(Icons.warehouse_outlined),
+                title: Text(state.memberships[index].workspaceName),
+                subtitle: Text(
+                  '${state.memberships[index].organizationName}  |  '
+                  '${_roleLabel(state.memberships[index].role)}',
+                ),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  ref
+                      .read(rc1WorkflowProvider.notifier)
+                      .selectWorkspace(state.memberships[index]);
+                  context.go(AppPaths.missionControl);
+                },
+              ),
             ),
-          ),
+          if (state.memberships.isEmpty)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 24),
+              child: Text('No workspace access is assigned.'),
+            ),
         ],
       ),
     );
+  }
+
+  static String _roleLabel(String role) {
+    return '${role[0].toUpperCase()}${role.substring(1)}';
   }
 }

@@ -71,7 +71,7 @@ class PickListScreen extends ConsumerWidget {
                       selected: item.availabilityStatus == 'pending'
                           ? const <String>{}
                           : <String>{item.availabilityStatus},
-                      onSelectionChanged: state.isBusy
+                      onSelectionChanged: state.isBusy || !state.canOperate
                           ? null
                           : (selection) async {
                         if (selection.isEmpty) {
@@ -100,7 +100,8 @@ class PickListScreen extends ConsumerWidget {
                       alignment: Alignment.centerRight,
                       child: FilledButton.icon(
                         key: ValueKey('openFocus-${item.pickListItemId}'),
-                        onPressed: item.availabilityStatus == 'available'
+                        onPressed: item.availabilityStatus == 'available' &&
+                                state.canOperate
                             ? () => context.go(
                                   AppPaths.focusPoint(item.vehicleId),
                                 )

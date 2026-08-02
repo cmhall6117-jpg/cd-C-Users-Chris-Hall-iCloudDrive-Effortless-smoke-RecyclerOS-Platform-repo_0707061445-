@@ -88,6 +88,8 @@ jobs:
         working-directory: apps/recycleros_pro_mobile
       - name: Run live Flutter-to-FastAPI smoke test
         shell: bash
+        env:
+          RECYCLEROS_LOCAL_OPERATOR_PASSWORD: local-ci-rc1
         run: |
           PYTHONPATH=services/api/src python -m uvicorn main:app \
             --app-dir services/api/src --host 127.0.0.1 --port 8000 \
@@ -98,4 +100,5 @@ jobs:
             http://127.0.0.1:8000/v1/health
           cd apps/recycleros_pro_mobile
           flutter test --dart-define=RECYCLEROS_LIVE_API_TEST=true \
+            --dart-define=RECYCLEROS_TEST_PASSWORD=local-ci-rc1 \
             test/live_rc1_gateway_test.dart

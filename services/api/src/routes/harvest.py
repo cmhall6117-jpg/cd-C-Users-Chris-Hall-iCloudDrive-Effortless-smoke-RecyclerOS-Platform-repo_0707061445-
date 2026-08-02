@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
+from auth import Permission
 from dependencies import get_store
 from store import InMemoryStore
-from tenant import TenantContext, require_tenant_context
+from tenant import TenantContext, require_permission
 
 router = APIRouter()
 
@@ -10,7 +11,7 @@ router = APIRouter()
 @router.post("/focus-point/start", status_code=status.HTTP_201_CREATED)
 def start_focus_point(
     vehicle_id: str,
-    tenant: TenantContext = Depends(require_tenant_context),
+    tenant: TenantContext = Depends(require_permission(Permission.OPERATE)),
     store: InMemoryStore = Depends(get_store),
 ):
     session = store.start_harvest_session(vehicle_id, tenant)
@@ -25,7 +26,7 @@ def start_focus_point(
 @router.post("/focus-point/complete")
 def complete_focus_point(
     harvest_session_id: str,
-    tenant: TenantContext = Depends(require_tenant_context),
+    tenant: TenantContext = Depends(require_permission(Permission.OPERATE)),
     store: InMemoryStore = Depends(get_store),
 ):
     session = store.complete_harvest_session(harvest_session_id, tenant)

@@ -23,17 +23,23 @@ PASS tenant columns present
 PASS tenant mismatch rejected
 ```
 
-### Backend Tenant Isolation
+### Backend Authentication, RBAC, and Tenant Isolation
 
 Result: passed locally and in current CI
 
 Evidence:
 
-- Local backend suite: 17 passed in 9.52 seconds on the final local run.
-- GitHub Actions `backend` job succeeded on core working path run `29325554779`.
+- Local backend suite: 26 passed in 12.95 seconds on the current local run.
+- Current-branch GitHub Actions evidence is pending publication.
 
 Tests added:
 
+- valid credentials return an opaque session and server-owned memberships
+- invalid credentials and missing, invalid, or expired bearer tokens are rejected
+- unassigned organization/workspace pairs are rejected
+- viewer may read but may not operate
+- owner, admin, and operator may operate
+- client-supplied role spoofing is ignored
 - missing tenant context rejected for opportunities
 - matching tenant context accepted for opportunity creation
 - mismatched organization rejected
@@ -61,18 +67,17 @@ Validated sequence:
 6. Focus-point start and complete.
 7. Inventory create and list.
 
-Evidence: `services/api/tests/test_rc1_workflow.py`; 17 tests passed across the
+Evidence: `services/api/tests/test_rc1_workflow.py`; 26 tests passed across the
 full backend suite.
 
-GitHub Actions confirmation: core working path run `29325554779` passed all five
-RC1 jobs.
+GitHub Actions confirmation for this auth/RBAC increment is pending publication.
 
 ### Flutter Primary Path
 
-Result: passed in CI
+Result: pending current-branch CI
 
-Evidence: GitHub Actions `flutter` job succeeded on current-branch run
-`29325554779`.
+Evidence: The previous core-path Flutter job succeeded on run `29325554779`.
+Current-branch evidence is pending publication.
 
 Routes added:
 
@@ -90,7 +95,7 @@ Full-path test added at
 `apps/recycleros_pro_mobile/test/rc1_workflow_test.dart`. It drives a 430 by 932
 mobile viewport through:
 
-1. Local sign-in validation.
+1. API credential exchange and server-owned workspace selection.
 2. Workspace selection.
 3. Mission Control.
 4. Opportunity and vehicle creation.
@@ -99,13 +104,11 @@ mobile viewport through:
 7. Focus-point part selection and completion.
 8. Inventory creation.
 
-The core working path now injects `FakeRc1Gateway` into the full mobile test and
+The app injects `FakeRc1Gateway` into the full mobile test and
 asserts all eight workflow calls carry `org-local` and `workspace-local`. A Dio
-transport test verifies required HTTP headers and API response mapping.
+transport test verifies login response mapping, bearer authorization, required
+tenant headers, and API response mapping. A focused widget test verifies that a
+failed login stays on the login screen and a viewer cannot create records.
 
-GitHub Actions PR run `29325554779` passed `flutter pub get`, `flutter analyze`,
-and `flutter test`. The separate `core-integration` job started FastAPI and drove
-the production Dio gateway through all eight transitions over HTTP. It confirmed
-backend-generated opportunity, vehicle, and inventory codes, procurement
-analysis, persisted pick-list availability, harvest completion, and linked
-inventory creation.
+The previous core path passed on run `29325554779`. Current-branch Flutter and
+authenticated live integration evidence is pending publication.

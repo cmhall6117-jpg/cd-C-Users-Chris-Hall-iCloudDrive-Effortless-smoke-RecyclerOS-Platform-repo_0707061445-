@@ -46,7 +46,9 @@ class _FocusPointScreenState extends ConsumerState<FocusPointScreen> {
         .toList();
     final item = matchingItems.isEmpty ? null : matchingItems.first;
 
-    if (vehicle == null || vehicle.vehicleId != widget.vehicleId || item == null) {
+    if (vehicle == null ||
+        vehicle.vehicleId != widget.vehicleId ||
+        item == null) {
       return Rc1Scaffold(
         title: 'Focus Point',
         body: Center(
@@ -118,14 +120,18 @@ class _FocusPointScreenState extends ConsumerState<FocusPointScreen> {
               contentPadding: EdgeInsets.zero,
               title: Text(part),
               value: state.selectedParts.contains(part),
-              onChanged: (value) => ref
-                  .read(rc1WorkflowProvider.notifier)
-                  .togglePart(part, value ?? false),
+              onChanged: state.canOperate
+                  ? (value) => ref
+                      .read(rc1WorkflowProvider.notifier)
+                      .togglePart(part, value ?? false)
+                  : null,
             ),
           const SizedBox(height: 12),
           FilledButton.icon(
             key: const Key('completeFocus'),
-            onPressed: state.selectedParts.isEmpty || state.isBusy
+            onPressed: state.selectedParts.isEmpty ||
+                    state.isBusy ||
+                    !state.canOperate
                 ? null
                 : () async {
                     final session = await ref

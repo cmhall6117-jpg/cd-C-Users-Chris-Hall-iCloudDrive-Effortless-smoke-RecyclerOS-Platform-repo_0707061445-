@@ -2,6 +2,8 @@ import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from auth import AuthService, LocalAuthService
+from routes.auth import router as auth_router
 from routes.harvest import router as harvest_router
 from routes.health import router as health_router
 from routes.inventory import router as inventory_router
@@ -12,9 +14,13 @@ from routes.vehicles import router as vehicles_router
 from store import InMemoryStore
 
 
-def create_app(store: InMemoryStore | None = None) -> FastAPI:
-    app = FastAPI(title="RecyclerOS Platform API", version="0.2.0")
+def create_app(
+    store: InMemoryStore | None = None,
+    auth_service: AuthService | None = None,
+) -> FastAPI:
+    app = FastAPI(title="RecyclerOS Platform API", version="0.3.0")
     app.state.store = store or InMemoryStore()
+    app.state.auth_service = auth_service or LocalAuthService.from_environment()
     configured_origins = [
         origin.strip()
         for origin in os.getenv("RECYCLEROS_CORS_ORIGINS", "").split(",")
@@ -31,12 +37,14 @@ def create_app(store: InMemoryStore | None = None) -> FastAPI:
         allow_methods=["GET", "POST", "PATCH", "OPTIONS"],
         allow_headers=[
             "Accept",
+            "Authorization",
             "Content-Type",
             "X-Organization-ID",
             "X-Workspace-ID",
         ],
     )
     app.include_router(health_router, prefix="/v1/health", tags=["health"])
+    app.include_router(auth_router, prefix="/v1/auth", tags=["auth"])
     app.include_router(
         opportunities_router, prefix="/v1/opportunities", tags=["opportunities"]
     )

@@ -971,6 +971,18 @@ copied from a source package:
 The active route, tenant, workflow, gateway, screen, test, and CI files retain
 their earlier provenance and contain documented auth/RBAC integration edits.
 
+### RC1 CI/CD Release Evidence Integration
+
+The following files are authored by repository integration work rather than
+copied from a source package:
+
+- `.github/workflows/rc1-ci.yml` (`release-evidence` composite gate)
+- `documentation/release/RC1_CICD_RELEASE_EVIDENCE.md`
+- `documentation/release/RC1_CICD_RELEASE_EVIDENCE_PR.md`
+
+Existing build, smoke-test, defect, release, and inventory records retain their
+earlier provenance and contain documented CI/CD evidence updates.
+
 - `apps/recycleros_pro_mobile/lib/main.dart`
 - `apps/recycleros_pro_mobile/lib/src/app/app_routes.dart`
 - `apps/recycleros_pro_mobile/lib/src/app/recycleros_app.dart`

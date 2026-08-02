@@ -101,7 +101,8 @@ durable session controls with the selected production provider.
 
 Status: open, non-blocking
 
-Evidence: Run `29325554779` reports that `actions/checkout@v4` and
+Evidence: Runs `29363973050` and `29364157746` report that
+`actions/checkout@v4` and
 `actions/setup-python@v5` target Node.js 20 and are being forced onto Node.js 24.
 
 Impact: All jobs pass today, but the workflow should adopt supported action

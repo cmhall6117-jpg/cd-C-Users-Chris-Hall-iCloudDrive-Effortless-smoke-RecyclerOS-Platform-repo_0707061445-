@@ -2,7 +2,7 @@
 
 ## Repository
 
-- Branch: `codex/rc1-auth-tenant-rbac`
+- Branch: `codex/rc1-cicd-release-evidence`
 - Monorepo root: `repo_0707061445`
 - Source package archive: `archive/source_packages`
 - Repository inventory: `documentation/repository/REPOSITORY_INVENTORY.md`
@@ -22,13 +22,14 @@ Local result:
 - Backend requirements are available in the ignored repository `.venv`.
 - `python -m compileall services/api/src`: passed.
 - FastAPI startup and OpenAPI route manifest check: passed with 13 paths.
-- `pytest -q services/api/tests`: 26 passed in 12.95 seconds on the current local run.
+- `pytest -q services/api/tests`: 26 passed in 13.42 seconds on the current local run.
 - PostgreSQL client dependencies were split into `services/api/requirements-postgres.txt` so backend tests and PostgreSQL migration checks can install only the dependencies they need in CI.
 
-Current branch CI result:
+Auth/tenant/RBAC baseline CI result:
 
-- Pending publication of `codex/rc1-auth-tenant-rbac`.
-- The previous core working path remains green on run `29325554779`.
+- Pull-request run `29363414967` passed `python -m compileall src` and the
+  complete 26-test backend suite at commit
+  `9bf4490f91b914b05963208355218a863b632977`.
 
 ## Flutter
 
@@ -47,18 +48,20 @@ Local result:
 - `where dart`: no executable found.
 - `flutter pub get`, `flutter analyze`, and `flutter test`: blocked locally until an SDK is installed.
 
-Current branch CI result:
+Auth/tenant/RBAC baseline CI result:
 
-- Pending publication. GitHub Actions will run `flutter pub get`,
-  `flutter analyze`, `flutter test`, and the authenticated live
-  Dio-to-FastAPI path.
+- Pull-request run `29363414967` passed `flutter pub get`, `flutter analyze`,
+  `flutter test`, and the authenticated live Dio-to-FastAPI path.
 
 ## CI
 
-GitHub Actions workflow added at `.github/workflows/rc1-ci.yml` for backend, SQLite migrations, PostgreSQL migrations, and Flutter checks.
+GitHub Actions workflow at `.github/workflows/rc1-ci.yml` runs backend, SQLite,
+PostgreSQL, Flutter, and authenticated core-integration checks. This branch adds
+a final `release-evidence` job that summarizes the exact run, commit, event, and
+prerequisite results, then fails unless all five required jobs passed.
 
-Core working path PR workflow run `29325554779` passed all jobs before this
-auth/RBAC increment. Current-branch CI evidence is pending publication.
+Auth/tenant/RBAC pull-request run `29363414967` passed all five prerequisite
+jobs at commit `9bf4490f91b914b05963208355218a863b632977`:
 
 - backend
 - sqlite-migrations
@@ -66,12 +69,16 @@ auth/RBAC increment. Current-branch CI evidence is pending publication.
 - flutter
 - core-integration
 
+The composite gate passed on push run `29363973050` and pull-request run
+`29364157746` at commit
+`28eab96b8ed1ec8f03b2d4ecda6e1fea1fe5da53`.
+
 ## Pull Request
 
-Draft pull request #5 is the green base for this branch. The auth/tenant/RBAC
-draft pull request is pending publication against `codex/rc1-core-working-path`.
+Draft pull request #7 is open, green, and mergeable against
+`codex/rc1-auth-tenant-rbac`:
 
-`https://github.com/cmhall6117-jpg/cd-C-Users-Chris-Hall-iCloudDrive-Effortless-smoke-RecyclerOS-Platform-repo_0707061445-/pull/5`
+`https://github.com/cmhall6117-jpg/cd-C-Users-Chris-Hall-iCloudDrive-Effortless-smoke-RecyclerOS-Platform-repo_0707061445-/pull/7`
 
-Proposed auth/tenant/RBAC PR text is available at
-`documentation/release/RC1_AUTH_TENANT_RBAC_PR.md`.
+PR text is available at
+`documentation/release/RC1_CICD_RELEASE_EVIDENCE_PR.md`.

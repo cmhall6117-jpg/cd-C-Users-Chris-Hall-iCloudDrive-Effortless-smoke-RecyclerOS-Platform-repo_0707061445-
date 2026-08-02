@@ -26,16 +26,16 @@ Resolution: Backend requirements installed successfully in the ignored repositor
 
 ### DEF-RC1-010: Auth identities, memberships, and sessions are process-local
 
-Status: open
+Status: closed by CI evidence
 
-Evidence: `LocalAuthService` loads one optional environment-backed operator and
-stores opaque session hashes in API process memory.
+Evidence: `PostgresAuthService` stores identities, memberships, token digests,
+expiry, revocation, login attempts, and audit events in PostgreSQL. The restart
+test passed on push run `29366652838` and pull-request run `29366685297`.
 
-Impact: Authentication and RBAC are testable for RC1, but identities and
-sessions are lost on restart and cannot be managed across API replicas.
+Impact: None remaining for the RC1 durable auth/session gate.
 
-Next action: Implement the `AuthService` boundary with durable identity,
-membership, session, and audit storage before production release.
+Resolution: A bearer session remained valid across a fresh auth/app instance,
+then logout revocation remained effective across another fresh instance.
 
 ### DEF-RC1-008: Core Flutter API integration awaits CI verification
 
@@ -53,13 +53,17 @@ GitHub Actions PR run `29325554779` then passed `flutter pub get`,
 
 ### DEF-RC1-007: Backend records are not durable across process restarts
 
-Status: open
+Status: closed by CI evidence
 
-Evidence: FastAPI `create_app()` currently installs `InMemoryStore` by default.
+Evidence: FastAPI selects `PostgresStore` when `DATABASE_URL` is configured and
+production mode fails closed without it. The complete opportunity-to-inventory
+workflow survived fresh store/app instances on push run `29366652838` and
+pull-request run `29366685297`.
 
-Impact: The RC1 workflow is functional and tenant-scoped within one API process, but created opportunities, vehicles, pick-list items, harvest sessions, and inventory items are lost when the process restarts.
+Impact: None remaining for the RC1 durable workflow gate.
 
-Next action: Implement the existing storage boundary against the consolidated PostgreSQL schema and run the same workflow and tenant-isolation contract tests against it.
+Resolution: Migration `026` and `test_postgres_runtime.py` passed against clean
+PostgreSQL 16 services in both trigger paths.
 
 ### DEF-RC1-003: Flutter SDK is unavailable locally
 
@@ -85,31 +89,32 @@ Resolution: The bundled Python runtime completed `python -m compileall services/
 
 ### DEF-RC1-011: Local auth lacks production account defenses
 
-Status: open, non-blocking for the local RC1 path
+Status: closed for RC1 scope by CI evidence
 
-Evidence: The local provider verifies PBKDF2 password hashes and expires opaque
-sessions, but does not implement login rate limiting, refresh, explicit
-revocation, password recovery, or enterprise SSO.
+Evidence: The PostgreSQL provider verifies PBKDF2 password hashes, rate-limits
+failed logins, expires and revokes opaque sessions, exposes logout, and records
+auth audit events. Refresh, password recovery, and live SSO remain intentionally
+deferred behind `AuthService`.
 
-Impact: The provider is suitable only for local RC1 integration and must not be
-treated as the production identity system.
+Impact: No RC1 implementation blocker remains; enterprise identity capabilities
+are outside this release scope.
 
-Next action: Keep live identity behind `AuthService`; add rate limiting and
-durable session controls with the selected production provider.
+Resolution: Durable lockout, revocation, expiry storage, and auth audit checks
+passed on runs `29366652838` and `29366685297`. Refresh, password recovery, and
+live SSO remain out of RC1 scope rather than release-gate defects.
 
 ### DEF-RC1-009: GitHub Actions use versions targeting deprecated Node.js 20
 
-Status: open, non-blocking
+Status: closed by CI evidence
 
-Evidence: Runs `29363973050` and `29364157746` report that
-`actions/checkout@v4` and
-`actions/setup-python@v5` target Node.js 20 and are being forced onto Node.js 24.
+Evidence: The workflow uses `actions/checkout@v6` and
+`actions/setup-python@v6`. Push run `29366652838` and pull-request run
+`29366685297` passed all jobs with zero check annotations.
 
-Impact: All jobs pass today, but the workflow should adopt supported action
-major versions when available to remove future runner compatibility risk.
+Impact: None remaining.
 
-Next action: Upgrade the affected GitHub Actions versions in a focused CI
-maintenance change after confirming their release notes.
+Resolution: Both official actions ran their Node 24 majors without the prior
+Node 20 warning annotations.
 
 ### DEF-RC1-006: Draft pull request cannot be opened without a GitHub remote
 

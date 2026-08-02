@@ -1,14 +1,69 @@
 from copy import deepcopy
 from datetime import datetime, timezone
 from threading import RLock
-from typing import Any
+from typing import Any, Protocol
 from uuid import uuid4
 
 from tenant import TenantContext
 
 
+class WorkflowStore(Protocol):
+    storage_name: str
+
+    def create_opportunity(
+        self, tenant: TenantContext, values: dict[str, Any]
+    ) -> dict[str, Any]: ...
+
+    def list_opportunities(self, tenant: TenantContext) -> list[dict[str, Any]]: ...
+
+    def get_opportunity(
+        self, opportunity_id: str, tenant: TenantContext
+    ) -> dict[str, Any] | None: ...
+
+    def create_vehicle(
+        self, tenant: TenantContext, values: dict[str, Any]
+    ) -> dict[str, Any] | None: ...
+
+    def get_vehicle(
+        self, vehicle_identifier: str, tenant: TenantContext
+    ) -> dict[str, Any] | None: ...
+
+    def get_or_create_procurement_analysis(
+        self, opportunity_id: str, tenant: TenantContext
+    ) -> dict[str, Any] | None: ...
+
+    def create_pick_list_item(
+        self, tenant: TenantContext, values: dict[str, Any]
+    ) -> dict[str, Any] | None: ...
+
+    def list_pick_list_items(self, tenant: TenantContext) -> list[dict[str, Any]]: ...
+
+    def update_pick_list_availability(
+        self,
+        pick_list_item_id: str,
+        availability_status: str,
+        tenant: TenantContext,
+    ) -> dict[str, Any] | None: ...
+
+    def start_harvest_session(
+        self, vehicle_id: str, tenant: TenantContext
+    ) -> dict[str, Any] | None: ...
+
+    def complete_harvest_session(
+        self, harvest_session_id: str, tenant: TenantContext
+    ) -> dict[str, Any] | None: ...
+
+    def create_inventory_item(
+        self, tenant: TenantContext, values: dict[str, Any]
+    ) -> dict[str, Any] | None: ...
+
+    def list_inventory_items(self, tenant: TenantContext) -> list[dict[str, Any]]: ...
+
+
 class InMemoryStore:
     """Process-local RC1 store behind the API's persistence boundary."""
+
+    storage_name = "memory"
 
     def __init__(self) -> None:
         self._lock = RLock()

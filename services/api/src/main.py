@@ -3,6 +3,8 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from auth import AuthService, LocalAuthService
+from postgres_auth import PostgresAuthService
+from postgres_store import PostgresStore
 from routes.auth import router as auth_router
 from routes.harvest import router as harvest_router
 from routes.health import router as health_router
@@ -11,16 +13,36 @@ from routes.opportunities import router as opportunities_router
 from routes.pick_list import router as pick_list_router
 from routes.procurement import router as procurement_router
 from routes.vehicles import router as vehicles_router
-from store import InMemoryStore
+from store import InMemoryStore, WorkflowStore
 
 
 def create_app(
-    store: InMemoryStore | None = None,
+    store: WorkflowStore | None = None,
     auth_service: AuthService | None = None,
 ) -> FastAPI:
-    app = FastAPI(title="RecyclerOS Platform API", version="0.3.0")
-    app.state.store = store or InMemoryStore()
-    app.state.auth_service = auth_service or LocalAuthService.from_environment()
+    database_url = os.getenv("DATABASE_URL")
+    deployment_mode = os.getenv("RECYCLEROS_DEPLOYMENT_MODE", "development").casefold()
+    if (
+        deployment_mode == "production"
+        and not database_url
+        and (store is None or auth_service is None)
+    ):
+        raise RuntimeError(
+            "Production mode requires DATABASE_URL for durable workflow and auth state."
+        )
+
+    if store is None:
+        store = PostgresStore(database_url) if database_url else InMemoryStore()
+    if auth_service is None:
+        auth_service = (
+            PostgresAuthService.from_environment(database_url)
+            if database_url
+            else LocalAuthService.from_environment()
+        )
+
+    app = FastAPI(title="RecyclerOS Platform API", version="0.4.0")
+    app.state.store = store
+    app.state.auth_service = auth_service
     configured_origins = [
         origin.strip()
         for origin in os.getenv("RECYCLEROS_CORS_ORIGINS", "").split(",")

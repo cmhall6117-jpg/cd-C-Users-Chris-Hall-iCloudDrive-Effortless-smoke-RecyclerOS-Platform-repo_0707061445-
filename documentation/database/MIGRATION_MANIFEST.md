@@ -12,6 +12,7 @@
 - 023_local_integration_bundle.sql
 - 024_rc1_tenant_scope.sql
 - 025_rc1_database_consolidation.sql
+- 026_rc1_durable_runtime.sql
 
 ## SQLite Order
 
@@ -33,6 +34,8 @@
 - Number gaps exist between `006` and `022`; these gaps are intentionally preserved because intermediate generated slices were not merged into the active RC1 path.
 - `024_rc1_tenant_scope.sql` was added instead of rewriting generated migrations.
 - `025_rc1_database_consolidation.sql` consolidates tenant seed data, sync queue parity, tenant indexes, and database-level tenant/workspace enforcement.
+- `026_rc1_durable_runtime.sql` adds durable workflow code sequences and PostgreSQL auth users, credentials, memberships, sessions, login attempts, and audit events.
+- Migration `026` has no SQLite counterpart because server-side credentials and sessions do not belong in the offline client database.
 
 ## Tenant Scope
 
@@ -64,8 +67,9 @@ working path PR run `29325554779`.
 ## PostgreSQL Result
 
 PostgreSQL local execution is blocked in this environment because Docker is not
-installed or not available on PATH. GitHub Actions PR run `29325554779` applied
-all ten active migrations successfully against a clean PostgreSQL 16 service by
-using `tools/scripts/rc1_postgres_migrate.py`.
+installed or not available on PATH. Earlier GitHub Actions evidence applied the
+first ten active migrations successfully. Push run `29366652838` and
+pull-request run `29366685297` applied all eleven active migrations against
+clean PostgreSQL 16 services, then passed the durable workflow/auth restart test.
 
 The PostgreSQL consolidation migration creates the missing PostgreSQL `sync_queue` table for parity with SQLite and adds tenant validation triggers for tenant-owned records.

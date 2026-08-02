@@ -39,7 +39,8 @@ X-Workspace-ID: workspace-local
 
 `GET /v1/auth/me` returns the authenticated identity and server-owned tenant
 memberships. A request is accepted only when the organization/workspace pair is
-one of those memberships. Client-supplied role values are ignored.
+one of those memberships. Client-supplied role values are ignored. Use
+`POST /v1/auth/logout` to revoke the current bearer session.
 
 RC1 permissions are:
 
@@ -60,9 +61,25 @@ $env:PYTHONPATH = "services\api\src"
 
 ## Persistence Boundary
 
-RC1 currently uses the process-local `InMemoryStore` implementation. The API
-factory accepts a store instance so a PostgreSQL implementation can replace it
-without changing route contracts. Records are not durable across API restarts.
-Local users, memberships, and sessions are also process-local. `AuthService` is
-the replacement boundary for durable identity or enterprise SSO; refresh,
-revocation, rate limiting, and live SSO are not part of this RC1 increment.
+Without `DATABASE_URL`, RC1 uses process-local workflow and auth implementations
+for development and unit tests. When `DATABASE_URL` is set, the API selects the
+PostgreSQL workflow and auth providers. Production mode fails closed if the
+durable database is missing:
+
+```powershell
+$env:DATABASE_URL = "postgresql://user:password@localhost:5432/recycleros"
+$env:RECYCLEROS_DEPLOYMENT_MODE = "production"
+$env:RECYCLEROS_LOCAL_OPERATOR_PASSWORD = Read-Host "Initial operator password"
+```
+
+The operator secret bootstraps the account only when it does not exist; app
+restarts do not rotate an existing credential. PostgreSQL stores users,
+memberships, opaque token digests, revocation state, login attempts, and auth
+audit events. The optional controls are:
+
+- `RECYCLEROS_SESSION_TTL_HOURS` (default `8`)
+- `RECYCLEROS_AUTH_MAX_FAILURES` (default `5`)
+- `RECYCLEROS_AUTH_LOCKOUT_MINUTES` (default `15`)
+
+Live SSO, password recovery, refresh tokens, and external identity credentials
+remain deferred behind `AuthService`.

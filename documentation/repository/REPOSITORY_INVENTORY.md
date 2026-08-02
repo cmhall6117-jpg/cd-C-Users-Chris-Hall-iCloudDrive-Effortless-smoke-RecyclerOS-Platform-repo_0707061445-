@@ -983,6 +983,21 @@ copied from a source package:
 Existing build, smoke-test, defect, release, and inventory records retain their
 earlier provenance and contain documented CI/CD evidence updates.
 
+### RC1 Defect Closure Integration
+
+The following files are authored by repository integration work rather than
+copied from a source package:
+
+- `database/migrations/postgres/026_rc1_durable_runtime.sql`
+- `services/api/src/postgres_store.py`
+- `services/api/src/postgres_auth.py`
+- `services/api/tests/test_postgres_runtime.py`
+- `documentation/release/RC1_DEFECT_CLOSURE_PR.md`
+
+Existing auth, store, route, workflow, CI, migration, build, test, defect, and
+release files retain their earlier provenance and contain documented defect
+closure edits.
+
 - `apps/recycleros_pro_mobile/lib/main.dart`
 - `apps/recycleros_pro_mobile/lib/src/app/app_routes.dart`
 - `apps/recycleros_pro_mobile/lib/src/app/recycleros_app.dart`

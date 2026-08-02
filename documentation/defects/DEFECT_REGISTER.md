@@ -14,15 +14,25 @@ Resolution: GitHub Actions `postgres-migrations` succeeded on run `29289307269`.
 
 ### DEF-RC1-002: Backend dependency installation is not reproducible locally yet
 
-Status: closed by CI evidence
+Status: closed
 
 Evidence: `pip install -r services/api/requirements.txt` timed out after the `psycopg` pin was corrected.
 
 Impact: FastAPI startup import and automated pytest execution could not be completed locally.
 
-Resolution: GitHub Actions `backend` succeeded on run `29289307269`. PostgreSQL-only dependency installation remains split into `services/api/requirements-postgres.txt`.
+Resolution: Backend requirements installed successfully in the ignored repository `.venv` on July 14, 2026. The local backend suite then passed all 13 tests. PostgreSQL-only dependencies remain split into `services/api/requirements-postgres.txt`.
 
 ## High
+
+### DEF-RC1-007: Backend records are not durable across process restarts
+
+Status: open
+
+Evidence: FastAPI `create_app()` currently installs `InMemoryStore` by default.
+
+Impact: The RC1 workflow is functional and tenant-scoped within one API process, but created opportunities, vehicles, pick-list items, harvest sessions, and inventory items are lost when the process restarts.
+
+Next action: Implement the existing storage boundary against the consolidated PostgreSQL schema and run the same workflow and tenant-isolation contract tests against it.
 
 ### DEF-RC1-003: Flutter SDK commands hang locally
 
@@ -36,13 +46,13 @@ Resolution: GitHub Actions `flutter` succeeded on run `29289307269`.
 
 ### DEF-RC1-004: Standard `python -m compileall` hangs locally
 
-Status: closed by CI evidence
+Status: closed
 
 Evidence: `python -m compileall services/api/src` emitted compile activity but did not exit before timeout. A previous backend syntax check passed before the environment degraded.
 
 Impact: RC1 cannot mark the requested compile gate passed with clean command completion.
 
-Resolution: GitHub Actions `backend` succeeded on run `29289307269`, including `python -m compileall src`.
+Resolution: The bundled Python runtime completed `python -m compileall services/api/src` locally on July 14, 2026. GitHub Actions also succeeded on run `29289307269`.
 
 ## Medium
 

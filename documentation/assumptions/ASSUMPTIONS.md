@@ -5,4 +5,6 @@
 - Login and workspace selection are local scaffold screens only; live SSO and enterprise identity are deferred.
 - Payment, marketplace publishing, shipping, SSO, and AI credentials remain out of scope for RC1 and must stay behind future interfaces or secret references.
 - Tenant context for API calls is represented by `X-Organization-ID` and `X-Workspace-ID` headers.
+- The backend baseline uses an injectable, process-local store to validate RC1 workflow contracts; durable PostgreSQL API persistence is the next backend increment.
+- Cross-tenant resource lookups return `404` so the API does not disclose whether another tenant owns a requested record.
 - The short repository path `repo_0707061445` is the authoritative monorepo because longer Windows paths interrupt deep generated file copies.

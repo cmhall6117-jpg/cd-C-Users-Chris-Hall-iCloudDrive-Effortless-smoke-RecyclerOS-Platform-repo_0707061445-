@@ -36,6 +36,44 @@ def main() -> int:
             )
         ]
         lines.append("TABLES " + ", ".join(tables))
+        tenant_tables = [
+            "vehicles",
+            "opportunities",
+            "business_events",
+            "sync_queue",
+            "vehicle_timeline",
+            "procurement_analyses",
+            "procurement_scenarios",
+            "pick_list_items",
+            "harvest_sessions",
+            "harvested_parts",
+            "storage_locations",
+            "inventory_items",
+            "integration_smoke_test_runs",
+            "integration_issues",
+        ]
+        for table in tenant_tables:
+            columns = {row[1] for row in conn.execute(f"pragma table_info({table})")}
+            missing = {"organization_id", "workspace_id"} - columns
+            if missing:
+                ok = False
+                lines.append(f"FAIL {table}: missing tenant columns {', '.join(sorted(missing))}")
+        if ok:
+            lines.append("PASS tenant columns present")
+        try:
+            conn.execute(
+                """
+                insert into vehicles (
+                    id, vehicle_code, created_at, organization_id, workspace_id
+                ) values (
+                    'veh-bad-tenant', 'VEH-BAD-TENANT', datetime('now'), 'org-local', 'workspace-missing'
+                )
+                """
+            )
+            ok = False
+            lines.append("FAIL tenant mismatch trigger did not reject invalid vehicle workspace")
+        except sqlite3.IntegrityError:
+            lines.append("PASS tenant mismatch rejected")
 
     conn.close()
     report_path.write_text("\n".join(lines) + "\n", encoding="utf-8")

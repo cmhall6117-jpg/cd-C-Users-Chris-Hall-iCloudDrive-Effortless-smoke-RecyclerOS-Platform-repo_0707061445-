@@ -18,6 +18,9 @@ PASS 006_inventory_intake.sql
 PASS 022_integration_readiness.sql
 PASS 023_local_integration_bundle.sql
 PASS 024_rc1_tenant_scope.sql
+PASS 025_rc1_database_consolidation.sql
+PASS tenant columns present
+PASS tenant mismatch rejected
 ```
 
 ### Backend Tenant Isolation

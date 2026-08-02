@@ -11,6 +11,7 @@
 - 022_integration_readiness.sql
 - 023_local_integration_bundle.sql
 - 024_rc1_tenant_scope.sql
+- 025_rc1_database_consolidation.sql
 
 ## SQLite Order
 
@@ -23,6 +24,7 @@
 - 022_integration_readiness.sql
 - 023_local_integration_bundle.sql
 - 024_rc1_tenant_scope.sql
+- 025_rc1_database_consolidation.sql
 
 ## Normalization Findings
 
@@ -30,6 +32,7 @@
 - No duplicate migration numbers were found in the active SQLite set.
 - Number gaps exist between `006` and `022`; these gaps are intentionally preserved because intermediate generated slices were not merged into the active RC1 path.
 - `024_rc1_tenant_scope.sql` was added instead of rewriting generated migrations.
+- `025_rc1_database_consolidation.sql` consolidates tenant seed data, sync queue parity, tenant indexes, and database-level tenant/workspace enforcement.
 
 ## Tenant Scope
 
@@ -53,6 +56,10 @@ The RC1 normalization migration adds `organization_id` and `workspace_id` to ten
 
 SQLite clean initialization passed locally on July 13, 2026. Evidence is in `build_artifacts/sqlite_init_report.txt`.
 
+SQLite clean initialization with consolidation migration passed locally on July 14, 2026. The check now also verifies tenant columns on tenant-owned tables and confirms invalid tenant/workspace inserts are rejected.
+
 ## PostgreSQL Result
 
 PostgreSQL local execution is blocked in this environment because Docker is not installed or not available on PATH. A GitHub Actions job and `tools/scripts/rc1_postgres_migrate.py` were added to run this gate in CI.
+
+The PostgreSQL consolidation migration creates the missing PostgreSQL `sync_queue` table for parity with SQLite and adds tenant validation triggers for tenant-owned records.

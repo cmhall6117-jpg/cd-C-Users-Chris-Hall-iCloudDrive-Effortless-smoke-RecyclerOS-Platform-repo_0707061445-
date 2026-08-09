@@ -85,3 +85,17 @@ reapplying edited migration history.
 The first ledger-enabled run replays the existing idempotent migration set and
 records all eleven active files. Production CI must prove both the clean run and
 the subsequent all-skip replay before the gate may pass.
+
+## Railway PostgreSQL Execution
+
+Railway API deployment `9ccd3586-b57f-4567-937f-0a6864d0d624` applied all
+eleven active migrations against PostgreSQL 16 before application startup on
+August 2, 2026. Runtime logs reported `PASS` for migrations 001 through 006 and
+022 through 026, including tenant scope, database consolidation, and durable
+runtime. `/v1/health/ready` then reported both storage and auth ready.
+
+The active database deployment is
+`9a092ef2-5f58-4cc8-92db-03f0af74b8d5`. Its manifest pins
+`ghcr.io/railwayapp-templates/postgres-ssl:16`, one `us-east4-eqdc4a` replica,
+and mount path `/var/lib/postgresql/data` on a 5,000 MiB volume. No public
+database domain or TCP proxy is configured.

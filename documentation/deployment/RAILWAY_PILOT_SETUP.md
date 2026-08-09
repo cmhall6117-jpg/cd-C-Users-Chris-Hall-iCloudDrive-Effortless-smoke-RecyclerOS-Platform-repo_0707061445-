@@ -59,8 +59,14 @@ off-platform logical backup and an evidenced restore rehearsal.
    approved password manager. Set it only as the sealed Railway variable
    `RECYCLEROS_LOCAL_OPERATOR_PASSWORD`.
 9. Confirm `DATABASE_URL` is a reference to the `Postgres` service and
-   `RECYCLEROS_TRUSTED_HOSTS` resolves to the exact Railway public domain.
+   `RECYCLEROS_TRUSTED_HOSTS` contains the exact Railway public domain plus
+   Railway's documented `healthcheck.railway.app` probe hostname.
 10. Deploy only after the branch's GitHub checks pass.
+
+Railway injects `RAILWAY_GIT_COMMIT_SHA` into GitHub-backed deployments. The
+API uses that value as the release identity ahead of any provider-neutral
+`RECYCLEROS_RELEASE_SHA` value, so an automatic deployment cannot report the
+previous commit.
 
 The API applies forward-only PostgreSQL migrations before starting. A failed
 migration, missing database URL, missing trusted host, or failed dependency

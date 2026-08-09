@@ -59,6 +59,21 @@ def test_production_hides_docs_and_adds_security_headers(monkeypatch):
     assert openapi.status_code == 404
 
 
+def test_railway_commit_sha_is_the_release_identity(monkeypatch):
+    _production_environment(monkeypatch)
+    monkeypatch.setenv("RECYCLEROS_RELEASE_SHA", "a" * 40)
+    monkeypatch.setenv("RAILWAY_GIT_COMMIT_SHA", "b" * 40)
+
+    with TestClient(
+        create_app(store=InMemoryStore(), auth_service=LocalAuthService([])),
+        base_url="https://api.example.com",
+    ) as client:
+        health = client.get("/v1/health")
+
+    assert health.status_code == 200
+    assert health.json()["release"] == "b" * 40
+
+
 def test_production_entrypoint_requires_release_and_trusted_proxy(
     monkeypatch,
     tmp_path,

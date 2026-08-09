@@ -76,7 +76,11 @@ def create_app(
     )
     app.state.store = store
     app.state.auth_service = auth_service
-    app.state.release_sha = os.getenv("RECYCLEROS_RELEASE_SHA", "development")
+    app.state.release_sha = (
+        os.getenv("RAILWAY_GIT_COMMIT_SHA")
+        or os.getenv("RECYCLEROS_RELEASE_SHA")
+        or "development"
+    )
 
     @app.middleware("http")
     async def add_security_headers(request: Request, call_next):

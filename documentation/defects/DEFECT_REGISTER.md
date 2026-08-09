@@ -253,40 +253,45 @@ non-secret output variables.
 
 #### DEF-RAILWAY-001: Railway account, project, and budget controls are absent
 
-Status: open, external blocker
+Status: closed on August 2, 2026
 
-Evidence: The contract is `planned`; project ID, billing approval, alert
-verification, and hard-limit verification are pending. No resource was created.
+Evidence: Hobby project `recycleros-pilot`
+(`22bdb278-c849-4c65-bd93-0031053344a1`) is private, account MFA and a passkey
+are enabled, and the USD 20 warning plus USD 30 hard limit are active.
 
-Impact: A live or billable Railway pilot is not authorized.
+Impact: The cost-bounded pilot account prerequisite is satisfied.
 
-Next action: Approve the Hobby account owner and current pricing, create
-`recycleros-pilot`, set the USD 20 alert and USD 30 hard limit, then retain
-non-secret verification.
+Next action: Retain monthly usage evidence and test warning delivery before
+field access.
 
 #### DEF-RAILWAY-002: Railway runtime, domain, and sealed variables are absent
 
-Status: open, external blocker
+Status: closed on August 2, 2026
 
-Evidence: The API URL and release commit are pending and
-`sealed_variables` is false.
+Evidence: PostgreSQL deployment `9a092ef2-5f58-4cc8-92db-03f0af74b8d5` and API
+deployment `9ccd3586-b57f-4567-937f-0a6864d0d624` are successful in US East.
+The API is available at `https://recycleros-api-pilot.up.railway.app`, reports
+release `5784f4526e97de7cc60538d00ecc6977ca13a375`, uses private PostgreSQL, and
+has a sealed generated operator credential. The database has no public domain.
 
-Impact: Remote pilot login and endpoint acceptance cannot run.
+Impact: Remote runtime, login, and tenant acceptance can run.
 
-Next action: Configure the GitHub-backed API service, private database reference,
-exact Railway domain, sealed operator secret, and approved deployment commit.
+Next action: Preserve exact release and endpoint evidence for each deployment.
 
 #### DEF-RAILWAY-003: Railway database recovery is not evidenced
 
 Status: open, external blocker
 
-Evidence: Daily, weekly, and off-platform backups are false and the restore
-rehearsal reference is pending. Railway's database template is unmanaged.
+Evidence: PostgreSQL 16 is pinned to a private 5 GiB US East volume. Daily and
+weekly schedules remain absent; the public API returned `Not Authorized` when
+the project owner attempted to enable them. Off-platform backup and clean-target
+restore evidence are also pending. Railway's database template is unmanaged.
 
 Impact: A data-bearing field pilot would lack an approved recovery path.
 
-Next action: Pin PostgreSQL 16, enable native backups, create an encrypted
-off-platform dump, restore it into a clean target, and record the rehearsal.
+Next action: Enable native schedules in the Railway dashboard or resolve the
+plan permission, create an encrypted off-platform dump, restore it into a clean
+target, and record the rehearsal.
 
 ### Medium
 
@@ -294,13 +299,15 @@ off-platform dump, restore it into a clean target, and record the rehearsal.
 
 Status: open, external blocker
 
-Evidence: Uptime monitoring, alert delivery, GitHub `railway-pilot` environment,
-and field/support approvals are not configured.
+Evidence: The protected GitHub `railway-pilot` environment exists and Railway
+Wait for CI is enabled with one valid check suite. Public readiness checks pass.
+Continuous uptime monitoring, alert delivery testing, and field/support owner
+approvals are not complete.
 
 Impact: Failures or spending changes may not reach an accountable operator.
 
-Next action: Configure and test uptime, readiness, cost alerting, owners, and the
-protected manual acceptance workflow.
+Next action: Configure and test continuous uptime and cost alert delivery,
+assign owners, and run the protected manual acceptance workflow.
 
 #### DEF-RAILWAY-005: A second field tester lacks a separate account path
 

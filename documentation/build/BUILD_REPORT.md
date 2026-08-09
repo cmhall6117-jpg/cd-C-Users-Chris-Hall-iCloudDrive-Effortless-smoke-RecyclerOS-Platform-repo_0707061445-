@@ -199,3 +199,23 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
   pull-request run `30724007217` at
   `fbf1c5f09c5a1d8c69a9f4ca312bf9a189e3fd8f`
 - Draft pull request: `#13` against `codex/production-environment-provisioning`
+
+## Railway First Reproducible Build
+
+- Date: August 2, 2026
+- Provider project: `recycleros-pilot`
+  (`22bdb278-c849-4c65-bd93-0031053344a1`)
+- Source branch: `codex/railway-pilot-environment`
+- Source commit: `5784f4526e97de7cc60538d00ecc6977ca13a375`
+- API deployment: `9ccd3586-b57f-4567-937f-0a6864d0d624`, successful
+- PostgreSQL deployment: `9a092ef2-5f58-4cc8-92db-03f0af74b8d5`, successful
+- Runtime: one US East instance, 512 MiB, one CPU, one worker, serverless sleep
+- Database: PostgreSQL 16.14, private networking, 5 GiB persistent volume
+- Public endpoint: `https://recycleros-api-pilot.up.railway.app`
+- Wait for CI: enabled with one valid GitHub check suite
+- Evidence-branch backend regression: 69 passed, 2 PostgreSQL-only skipped
+- Evidence-branch Python compilation: passed
+- Updated Railway contract validation: `valid: true`, `field_ready: false`
+- Remaining release blockers: native/off-platform recovery, restore rehearsal,
+  continuous monitoring and alert delivery, support ownership, field approval,
+  and a separate second-tester identity

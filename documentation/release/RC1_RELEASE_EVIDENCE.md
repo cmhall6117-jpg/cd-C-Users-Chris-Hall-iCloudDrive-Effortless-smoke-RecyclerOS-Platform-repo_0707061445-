@@ -126,18 +126,26 @@ Cloud resources.
 | Focused automated tests | Passed locally | 9 tests. |
 | Dynamic `PORT` healthcheck | Passed locally | Focused Dockerfile test. |
 | Full RC1 CI | Passed | Push run `30723893531` and PR run `30724007217` passed all 10 jobs. |
-| Railway account and budget controls | Blocked external | `DEF-RAILWAY-001`. |
-| Runtime, domain, and sealed variables | Blocked external | `DEF-RAILWAY-002`. |
+| Railway account and budget controls | Passed live | Private Hobby project, MFA/passkey, USD 20 warning and USD 30 hard limit verified. |
+| Runtime, domain, and sealed variables | Passed live | Successful US East API/PostgreSQL deployments, public HTTPS API, private database, sealed operator credential, exact release identity. |
 | Database backup and restore | Blocked external | `DEF-RAILWAY-003`. |
-| Monitoring and protected acceptance | Blocked external | `DEF-RAILWAY-004`. |
+| Monitoring and protected acceptance | Partially passed | GitHub environment and Wait for CI exist; uptime, alert delivery, support ownership, and field approval remain under `DEF-RAILWAY-004`. |
 | Second unique tester identity | Blocked for tester two | `DEF-RAILWAY-005`. |
 
-No Railway release gate is marked passed on the strength of configuration alone.
-The provider-specific branch creates no resources and does not change the
-production-provider decision.
+Passed Railway gates above have live command or endpoint evidence. The contract
+remains `planned` and field access remains blocked while recovery, monitoring,
+ownership, and approval controls are incomplete. Railway remains a pilot choice
+and does not change the production-provider decision.
 
 CI evidence applies to implementation commit
 `fbf1c5f09c5a1d8c69a9f4ca312bf9a189e3fd8f` on draft pull request `#13`.
 Both trigger paths passed backend, SQLite, PostgreSQL migration/replay and
 restore, Flutter, live core integration, pilot and production containers,
 production contract, Railway pilot config, and composite release evidence.
+
+Live evidence applies to API deployment
+`9ccd3586-b57f-4567-937f-0a6864d0d624`, PostgreSQL deployment
+`9a092ef2-5f58-4cc8-92db-03f0af74b8d5`, and commit
+`5784f4526e97de7cc60538d00ecc6977ca13a375`. Public health, release identity,
+security headers, hidden docs, operator login/logout, valid tenant access, and
+missing/mismatched tenant rejection passed on August 2, 2026.

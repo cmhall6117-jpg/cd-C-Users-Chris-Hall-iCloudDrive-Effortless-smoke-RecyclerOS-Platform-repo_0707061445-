@@ -266,3 +266,30 @@ passed all 10 jobs at `fbf1c5f09c5a1d8c69a9f4ca312bf9a189e3fd8f`.
 This includes the Railway configuration gate, backend, clean SQLite and
 PostgreSQL, populated backup/restore, Flutter analyze/test, live core path,
 hardened pilot and production containers, and composite release evidence.
+
+### Railway Live Acceptance
+
+Result on August 2, 2026: first reproducible runtime passed; field-readiness
+controls remain blocked.
+
+- `/v1/health/live`: 200, service alive
+- `/v1/health/ready`: 200, PostgreSQL storage and auth ready
+- `/v1/health`: 200, version `0.6.0`, exact release
+  `5784f4526e97de7cc60538d00ecc6977ca13a375`, PostgreSQL storage
+- `/docs` and `/openapi.json`: 404 in production mode
+- HTTPS HSTS, no-store, no-referrer, nosniff, and frame-deny headers: present
+- operator login: 200; durable operator membership returned
+- tenant request without organization/workspace headers: 400
+- tenant request with mismatched membership: 403
+- tenant request with the assigned organization/workspace: 200
+- logout: 204
+- database migrations: all eleven active files passed before startup
+- API and database manifests: one US East replica each
+- database public domains: none
+- evidence-branch backend regression: 69 passed, 2 PostgreSQL-only skipped
+- evidence-branch Python compilation: passed
+- updated Railway contract: valid and intentionally not field-ready
+
+The generated password and bearer token remained in memory during acceptance
+and were not printed or written to the repository. Backup/restore, continuous
+monitoring, alert delivery, and second-tester evidence were not claimed.

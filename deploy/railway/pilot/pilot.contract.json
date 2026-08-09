@@ -6,7 +6,7 @@
     "name": "railway",
     "plan": "hobby",
     "project_name": "recycleros-pilot",
-    "project_id": "PENDING",
+    "project_id": "22bdb278-c849-4c65-bd93-0031053344a1",
     "region": "us-east4-eqdc4a"
   },
   "cost_controls": {
@@ -14,8 +14,8 @@
     "estimated_monthly_max_usd": 25,
     "alert_usd": 20,
     "hard_limit_usd": 30,
-    "alert_verified": false,
-    "hard_limit_verified": false
+    "alert_verified": true,
+    "hard_limit_verified": true
   },
   "runtime": {
     "service_name": "recycleros-api",
@@ -25,9 +25,9 @@
     "replicas": 1,
     "serverless_sleep": true,
     "healthcheck_path": "/v1/health/ready",
-    "public_access_enabled": false,
-    "api_url": "PENDING",
-    "release_commit": "PENDING"
+    "public_access_enabled": true,
+    "api_url": "https://recycleros-api-pilot.up.railway.app",
+    "release_commit": "5784f4526e97de7cc60538d00ecc6977ca13a375"
   },
   "database": {
     "service_name": "Postgres",
@@ -43,10 +43,10 @@
     "restore_rehearsal_evidence": "PENDING"
   },
   "security": {
-    "sealed_variables": false,
+    "sealed_variables": true,
     "static_provider_tokens_in_github": false,
     "exact_trusted_host": true,
-    "two_factor_authentication": false,
+    "two_factor_authentication": true,
     "deployment_branch": "codex/railway-pilot-environment"
   },
   "observability": {
@@ -59,7 +59,7 @@
     "data_policy": "synthetic_or_authorized_pilot_only"
   },
   "approvals": {
-    "deployment": false,
+    "deployment": true,
     "field_access": false,
     "restore_owner_assigned": false,
     "support_owner_assigned": false

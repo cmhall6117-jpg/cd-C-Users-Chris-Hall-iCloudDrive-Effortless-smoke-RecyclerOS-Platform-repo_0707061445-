@@ -68,7 +68,7 @@ def test_planned_contract_is_not_field_ready():
 
     assert "lifecycle must be verified for field readiness" in errors
     assert "database.daily_backup_enabled must be true" in errors
-    assert "database.off_platform_backup_enabled must be true" in errors
+    assert "observability.uptime_check_configured must be true" in errors
 
 
 def test_verified_contract_passes_field_readiness():
@@ -82,7 +82,7 @@ def test_verified_lifecycle_cannot_bypass_readiness_in_normal_ci():
     errors = validate_contract(contract)
 
     assert "database.daily_backup_enabled must be true" in errors
-    assert "database.restore_rehearsal_evidence is required" in errors
+    assert "database.weekly_backup_enabled must be true" in errors
     assert "approvals.field_access must be true" in errors
 
 

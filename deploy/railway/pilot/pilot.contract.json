@@ -39,8 +39,8 @@
     "unmanaged_template_acknowledged": true,
     "daily_backup_enabled": false,
     "weekly_backup_enabled": false,
-    "off_platform_backup_enabled": false,
-    "restore_rehearsal_evidence": "PENDING"
+    "off_platform_backup_enabled": true,
+    "restore_rehearsal_evidence": "railway-live-2026-08-09-a65d704f"
   },
   "security": {
     "sealed_variables": true,

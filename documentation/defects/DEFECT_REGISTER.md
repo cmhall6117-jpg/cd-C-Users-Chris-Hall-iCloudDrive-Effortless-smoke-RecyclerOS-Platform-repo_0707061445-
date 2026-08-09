@@ -255,9 +255,11 @@ non-secret output variables.
 
 Status: closed on August 2, 2026
 
-Evidence: Hobby project `recycleros-pilot`
+Evidence: Pro project `recycleros-pilot`
 (`22bdb278-c849-4c65-bd93-0031053344a1`) is private, account MFA and a passkey
-are enabled, and the USD 20 warning plus USD 30 hard limit are active.
+are enabled, and the USD 20 warning plus USD 30 hard limit are active. The
+project owner upgraded from Hobby to Pro on August 9, 2026, to activate native
+recovery controls; the expected monthly minimum is now USD 20.
 
 Impact: The cost-bounded pilot account prerequisite is satisfied.
 
@@ -282,25 +284,34 @@ Next action: Preserve exact release and endpoint evidence for each deployment.
 
 Status: open, partially mitigated external blocker
 
-Evidence: PostgreSQL 16 is pinned to a private 5 GiB US East volume. Daily and
-weekly schedules remain absent; the public API returned `Not Authorized` when
-the project owner attempted to enable them. On August 9, 2026, a PostgreSQL
-16.14 custom dump was copied off-platform, its server and downloaded SHA-256
-values matched, and its encrypted copy was retained outside Git. A clean-target
-restore passed with 24 public tables, 11 migration-ledger rows, and expected
-pilot identity records. The temporary restore database was dropped, local
-plaintext and SSH keys were removed, and Railway reported no registered SSH
-keys. A human operator then deleted the owner-only staging dump, verified its
-absence, revoked the cleanup SSH key, removed its local files, and confirmed
-that Railway again reported no registered keys. Automated cadence, retention,
-cross-device key escrow, and an assigned restore owner remain absent.
+Evidence: PostgreSQL 16 is pinned to private 5 GiB US East volume
+`postgres-volume-gHwe`. On August 9, 2026, the owner upgraded to Pro and enabled
+PITR. An initial invalid-WAL-archive-credential warning was repaired by
+redeploying only PostgreSQL as deployment
+`ca3c8918-a664-4b6e-b9cc-998c0650ce27`. Railway marked the deployment active and
+successful at 12:44 EDT; the volume remained attached, the warning cleared, and
+the recovery window advanced from 12:35:54 through 13:19:18. The API readiness
+endpoint then returned HTTP 200 with storage and auth ready. Evidence images are
+retained under `documentation/release/evidence/railway/`.
 
-Impact: One recovery point is proven, but a data-bearing field pilot still
-lacks an approved and continuously operated recovery path.
+Earlier on August 9, a PostgreSQL 16.14 custom dump was copied off-platform, its
+server and downloaded SHA-256 values matched, and its encrypted copy was
+retained outside Git. A clean-target restore passed with 24 public tables, 11
+migration-ledger rows, and expected pilot identity records. The temporary
+restore database was dropped, local plaintext and SSH keys were removed, and
+Railway reported no registered SSH keys. A human operator then deleted the
+owner-only staging dump, verified its absence, revoked the cleanup SSH key,
+removed its local files, and confirmed that Railway again reported no
+registered keys. Daily and weekly volume schedules, automated off-platform
+cadence, cross-device key escrow, and an assigned restore owner remain
+unverified.
 
-Next action: Enable native schedules in the Railway dashboard or resolve the
-plan permission, automate the off-platform cadence and retention, escrow the
-recovery key, assign the restore owner, and approve the RPO/RTO.
+Impact: PITR and one independent restore point are proven, but the complete
+defense-in-depth schedule and its operational ownership are not yet approved.
+
+Next action: Enable and verify daily plus weekly volume schedules, record their
+first successful snapshots, automate the off-platform cadence and retention,
+escrow the recovery key, assign the restore owner, and approve the RPO/RTO.
 
 ### Medium
 

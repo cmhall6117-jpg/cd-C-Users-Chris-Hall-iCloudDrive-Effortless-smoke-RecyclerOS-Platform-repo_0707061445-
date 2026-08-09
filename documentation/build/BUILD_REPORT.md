@@ -189,7 +189,7 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
 - Manual acceptance: `.github/workflows/railway-pilot-acceptance.yml`
 - Runtime: one US East replica, one worker, 512 MiB memory limit, serverless sleep
 - Database: private PostgreSQL 16 reference; public TCP proxy disabled at rest
-- Focused local result: 9 Railway tests passed
+- Focused local result: 10 Railway tests passed
 - Official Railway JSON schema validation: passed locally
 - Planned contract validation: passed and correctly reported `field_ready: false`
 - Live project, backup, endpoint, monitoring, and cost-control evidence: blocked external
@@ -243,5 +243,11 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
   Railway SSH access revoked and verified empty
 - Human cleanup: owner-only Railway staging dump deleted and verified absent;
   cleanup SSH key revoked, local files removed, and final key list empty
-- Gate result: one-time backup and restore evidence passed; scheduled recovery
-  and operational ownership remain blocked
+- Railway plan: Pro as of August 9, 2026; expected monthly minimum USD 20
+- PITR repair deployment: `ca3c8918-a664-4b6e-b9cc-998c0650ce27`, active and
+  successful at 12:44 EDT
+- PITR result: WAL warning cleared and recovery window advanced from 12:35:54
+  through 13:19:18
+- Post-redeployment readiness: HTTP 200; storage and auth both ready
+- Gate result: independent restore and live PITR evidence passed; daily/weekly
+  volume schedules and operational ownership remain blocked

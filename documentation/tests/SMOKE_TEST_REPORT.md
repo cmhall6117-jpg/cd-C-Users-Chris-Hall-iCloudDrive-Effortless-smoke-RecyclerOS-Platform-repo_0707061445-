@@ -252,7 +252,7 @@ Local checks validate:
 - the Docker healthcheck honors Railway's assigned `PORT`
 - `railway.json` passes Railway's current official JSON schema
 
-Focused evidence: 9 tests passed. The contract validator returned `valid: true`
+Focused evidence: 10 tests passed. The contract validator returned `valid: true`
 and `field_ready: false`, which is the required pre-provisioning result. Python
 compilation passed. No live endpoint, database, backup, or billing check was
 attempted because no Railway project is approved or provisioned.
@@ -296,8 +296,9 @@ monitoring, alert delivery, and second-tester evidence were not claimed.
 
 ## Live Railway Recovery Drill
 
-Result on August 9, 2026: the one-time backup and clean-target restore passed;
-ongoing recovery operations remain blocked.
+Result on August 9, 2026: the independent backup, clean-target restore, and
+live PITR verification passed; remaining recovery operations are partially
+blocked.
 
 - current backend regression: 70 passed, 2 PostgreSQL-only skipped
 - `pg_dump` and source database version: PostgreSQL 16.14
@@ -313,7 +314,14 @@ ongoing recovery operations remain blocked.
 - local plaintext and key cleanup: passed
 - Railway staging-dump deletion: passed by human operator and verified absent
 - cleanup SSH-key removal: passed; final Railway key list empty
-- native schedules, automated retention, cross-device key escrow: not passed
+- Pro upgrade and PITR enablement: passed
+- PostgreSQL repair deployment `ca3c8918-a664-4b6e-b9cc-998c0650ce27`: active
+  and successful at 12:44 EDT
+- post-redeployment readiness: HTTP 200 with storage and auth ready
+- PITR WAL warning clearance: passed
+- PITR window advancement: passed, 12:35:54 through 13:19:18
+- daily/weekly volume schedules, automated off-platform retention, and
+  cross-device key escrow: not passed
 
 No database password, bearer token, plaintext encryption secret, or plaintext
 database archive was written to Git.

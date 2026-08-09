@@ -123,12 +123,12 @@ Cloud resources.
 | Railway config structure | Passed locally | Current official Railway JSON schema accepted `railway.json`. |
 | Credential-free contract | Passed locally | Validator returned `valid: true`. |
 | Pre-provisioning no-go | Passed locally | Validator returned `field_ready: false`. |
-| Focused automated tests | Passed locally | 9 tests. |
+| Focused automated tests | Passed locally | 10 tests. |
 | Dynamic `PORT` healthcheck | Passed locally | Focused Dockerfile test. |
 | Full RC1 CI | Passed | Push run `30723893531` and PR run `30724007217` passed all 10 jobs. |
-| Railway account and budget controls | Passed live | Private Hobby project, MFA/passkey, USD 20 warning and USD 30 hard limit verified. |
+| Railway account and budget controls | Passed live | Private Pro project, MFA/passkey, USD 20 warning and USD 30 hard limit verified; expected monthly minimum is USD 20. |
 | Runtime, domain, and sealed variables | Passed live | Successful US East API/PostgreSQL deployments, public HTTPS API, private database, sealed operator credential, exact release identity. |
-| Database backup and restore | Partially passed live | August 9 custom dump, checksum match, encrypted off-platform copy, clean restore, and staging cleanup passed. Native schedules, cadence, key escrow, and owner approval remain under `DEF-RAILWAY-003`. |
+| Database backup and restore | Partially passed live | August 9 custom dump, checksum match, encrypted off-platform copy, clean restore, staging cleanup, and live PITR passed. Daily/weekly volume schedules, off-platform cadence, key escrow, and owner approval remain under `DEF-RAILWAY-003`. |
 | Monitoring and protected acceptance | Partially passed | GitHub environment and Wait for CI exist; uptime, alert delivery, support ownership, and field approval remain under `DEF-RAILWAY-004`. |
 | Second unique tester identity | Blocked for tester two | `DEF-RAILWAY-005`. |
 
@@ -162,6 +162,20 @@ expected pilot organization, workspace, user, and membership. Encryption and
 decryption verification reproduced the source hash. The temporary database and
 local plaintext were removed. A human operator deleted and verified the
 owner-only volume staging file, revoked the cleanup SSH key, removed its local
-files, and confirmed that Railway reported no registered SSH keys. Native
-schedules, automated retention, cross-device key escrow, and restore ownership
-are not approved. This evidence does not change `field_ready: false`.
+files, and confirmed that Railway reported no registered SSH keys.
+
+The owner then upgraded the project to Pro and enabled PITR. PostgreSQL
+deployment `ca3c8918-a664-4b6e-b9cc-998c0650ce27` repaired the WAL archive
+credentials without replacing the database service or volume. Railway marked
+the deployment active and successful at 12:44 EDT. The warning cleared, the
+recovery window advanced from 12:35:54 through 13:19:18, and `/v1/health/ready`
+returned HTTP 200 with storage and auth ready. Screenshot evidence:
+
+- `documentation/release/evidence/railway/2026-08-09-postgres-deployment-ca3c8918.png`
+  SHA-256 `fdbbb1c30d666ff24884b0a023181cf775dedd6cc11d087607bec07faef5cb36`
+- `documentation/release/evidence/railway/2026-08-09-pitr-healthy.png`
+  SHA-256 `c1926747c43373bfe8edc0f61cfec10ecde53a7ca121436cb7399daa31f8fab2`
+
+Daily and weekly volume schedules, automated off-platform cadence,
+cross-device key escrow, and restore ownership are not approved. This evidence
+does not change `field_ready: false`.

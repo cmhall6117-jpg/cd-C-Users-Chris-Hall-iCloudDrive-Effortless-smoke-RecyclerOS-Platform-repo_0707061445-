@@ -97,14 +97,17 @@ def test_contract_rejects_credentials_and_cost_drift():
     assert "cost_controls.hard_limit_usd must be 30" in errors
 
 
-def test_config_rejects_scale_and_public_database_drift():
+def test_config_rejects_scale_public_database_and_pitr_drift():
     config = _config()
     config["deploy"]["numReplicas"] = 3
     contract = _contract()
     contract["database"]["tcp_proxy_enabled"] = True
+    contract["database"]["point_in_time_recovery_enabled"] = False
 
     assert "deploy.numReplicas must be 1" in validate_railway_config(config)
-    assert "database.tcp_proxy_enabled must be False" in validate_contract(contract)
+    contract_errors = validate_contract(contract)
+    assert "database.tcp_proxy_enabled must be False" in contract_errors
+    assert "database.point_in_time_recovery_enabled must be True" in contract_errors
 
 
 def test_variable_template_rejects_literal_secrets():

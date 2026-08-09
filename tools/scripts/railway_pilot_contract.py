@@ -165,7 +165,7 @@ def validate_contract(
     provider = contract.get("provider", {})
     expected_provider = {
         "name": "railway",
-        "plan": "hobby",
+        "plan": "pro",
         "project_name": "recycleros-pilot",
         "region": "us-east4-eqdc4a",
     }
@@ -175,7 +175,7 @@ def validate_contract(
 
     cost = contract.get("cost_controls", {})
     expected_cost = {
-        "estimated_monthly_min_usd": 12,
+        "estimated_monthly_min_usd": 20,
         "estimated_monthly_max_usd": 25,
         "alert_usd": 20,
         "hard_limit_usd": 30,
@@ -207,6 +207,7 @@ def validate_contract(
         "private_database_url": True,
         "tcp_proxy_enabled": False,
         "unmanaged_template_acknowledged": True,
+        "point_in_time_recovery_enabled": True,
     }
     for key, expected in expected_database.items():
         if database.get(key) != expected:
@@ -254,6 +255,8 @@ def validate_contract(
                 errors.append(f"database.{name} must be true")
         if database.get("restore_rehearsal_evidence") in {"", "PENDING", None}:
             errors.append("database.restore_rehearsal_evidence is required")
+        if database.get("point_in_time_recovery_evidence") in {"", "PENDING", None}:
+            errors.append("database.point_in_time_recovery_evidence is required")
         for name in ("sealed_variables", "two_factor_authentication"):
             if security.get(name) is not True:
                 errors.append(f"security.{name} must be true")

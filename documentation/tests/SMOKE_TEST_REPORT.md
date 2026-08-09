@@ -327,3 +327,19 @@ blocked.
 
 No database password, bearer token, plaintext encryption secret, or plaintext
 database archive was written to Git.
+
+## Railway Monitor Incident Drill
+
+Result on August 9, 2026: passed.
+
+- PR `#15` merged the monitor workflow to `main` at
+  `e2b1fee3c83a03daf6aec31d5bf3e354133564b8`
+- healthy monitor run `31331712419`: passed
+- simulated-failure run `31331739729`: failed as designed
+- simulated incident issue `#16`: opened with the triggering run link
+- recovery monitor run `31331787276`: passed
+- incident issue `#16`: closed as completed with the recovery run link
+- two-hour default-branch schedule: active
+
+The incident was synthetic; no Railway resource, credential, database, volume,
+PITR setting, or backup schedule was changed.

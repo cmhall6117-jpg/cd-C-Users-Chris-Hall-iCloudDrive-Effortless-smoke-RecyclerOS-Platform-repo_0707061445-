@@ -320,19 +320,23 @@ approve the RPO/RTO.
 
 ### Medium
 
-#### DEF-RAILWAY-004: Railway monitoring and protected acceptance are absent
+#### DEF-RAILWAY-004: Railway protected acceptance lacks owner approval
 
-Status: open, external blocker
+Status: open, partially mitigated approval blocker
 
 Evidence: The protected GitHub `railway-pilot` environment exists and Railway
-Wait for CI is enabled with one valid check suite. Public readiness checks pass.
-Continuous uptime monitoring, alert delivery testing, and field/support owner
-approvals are not complete.
+Wait for CI is enabled with one valid check suite. PR `#15` merged the monitor
+to `main` as commit `e2b1fee3c83a03daf6aec31d5bf3e354133564b8`. Healthy
+workflow run `31331712419` passed. Simulated-failure run `31331739729` failed as
+designed and opened incident `#16`. Recovery run `31331787276` passed and
+closed that same incident with a recovery comment. The two-hour schedule is
+active on the default branch. Field/support owner approvals are not complete.
 
-Impact: Failures or spending changes may not reach an accountable operator.
+Impact: Readiness failures now create durable incidents, but no accountable
+support owner has accepted the response duty and field access remains blocked.
 
-Next action: Configure and test continuous uptime and cost alert delivery,
-assign owners, and run the protected manual acceptance workflow.
+Next action: Assign the support owner, approve field access, set the contract
+lifecycle to verified, and run the protected manual acceptance workflow.
 
 #### DEF-RAILWAY-005: A second field tester lacks a separate account path
 

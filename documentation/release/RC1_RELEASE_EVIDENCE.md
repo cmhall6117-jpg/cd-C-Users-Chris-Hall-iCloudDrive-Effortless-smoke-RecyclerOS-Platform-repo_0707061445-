@@ -129,12 +129,12 @@ Cloud resources.
 | Railway account and budget controls | Passed live | Private Pro project, MFA/passkey, USD 20 warning and USD 30 hard limit verified; expected monthly minimum is USD 20. |
 | Runtime, domain, and sealed variables | Passed live | Successful US East API/PostgreSQL deployments, public HTTPS API, private database, sealed operator credential, exact release identity. |
 | Database backup and restore | Partially passed live | August 9 custom dump, checksum match, encrypted off-platform copy, clean restore, staging cleanup, live PITR, a 164 MB native snapshot, and daily/weekly native schedules passed. Off-platform cadence, key escrow, and owner approval remain under `DEF-RAILWAY-003`. |
-| Monitoring and protected acceptance | Partially passed | GitHub environment and Wait for CI exist; uptime, alert delivery, support ownership, and field approval remain under `DEF-RAILWAY-004`. |
+| Monitoring and protected acceptance | Partially passed live | Two-hour monitoring is active; healthy, simulated incident, and recovery runs passed their expected outcomes, including issue creation and closure. Support ownership and field approval remain under `DEF-RAILWAY-004`. |
 | Second unique tester identity | Blocked for tester two | `DEF-RAILWAY-005`. |
 
 Passed Railway gates above have live command or endpoint evidence. The contract
-remains `planned` and field access remains blocked while scheduled recovery,
-monitoring, ownership, and approval controls are incomplete. Railway remains a
+remains `planned` and field access remains blocked while off-platform recovery,
+ownership, and approval controls are incomplete. Railway remains a
 pilot choice and does not change the production-provider decision.
 
 CI evidence applies to implementation commit
@@ -153,6 +153,13 @@ missing/mismatched tenant rejection passed on August 2, 2026.
 Evidence-branch baseline `f3b732f5c75bc0c9088b1deefbd3f9149ac220a7`
 passed all 22 checks on push run `31314925876` and pull-request run
 `31315025909` for draft pull request `#15`.
+
+Pull request `#15` merged to `main` on August 9, 2026, as commit
+`e2b1fee3c83a03daf6aec31d5bf3e354133564b8`, activating the scheduled Railway
+monitor. Healthy run `31331712419` passed. Simulated-failure run `31331739729`
+failed as designed and opened issue `#16`. Recovery run `31331787276` passed
+and closed issue `#16` as completed with a recovery comment. No Railway
+resource was modified during this incident drill.
 
 Recovery evidence applies to the live PostgreSQL service on August 9, 2026.
 The source and downloaded custom archive shared SHA-256

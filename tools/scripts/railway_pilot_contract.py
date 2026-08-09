@@ -222,8 +222,13 @@ def validate_contract(
         errors.append("security.deployment_branch must be the Railway pilot branch")
 
     observability = contract.get("observability", {})
-    if observability.get("railway_logs_enabled") is not True:
-        errors.append("observability.railway_logs_enabled must be true")
+    for name in (
+        "railway_logs_enabled",
+        "uptime_check_configured",
+        "alert_delivery_verified",
+    ):
+        if observability.get(name) is not True:
+            errors.append(f"observability.{name} must be true")
 
     testing = contract.get("testing", {})
     if testing.get("maximum_testers") not in {1, 2}:
@@ -265,6 +270,8 @@ def validate_contract(
         for name in ("uptime_check_configured", "alert_delivery_verified"):
             if observability.get(name) is not True:
                 errors.append(f"observability.{name} must be true")
+        if observability.get("monitor_evidence") in {"", "PENDING", None}:
+            errors.append("observability.monitor_evidence is required")
         approvals = contract.get("approvals", {})
         for name in (
             "deployment",

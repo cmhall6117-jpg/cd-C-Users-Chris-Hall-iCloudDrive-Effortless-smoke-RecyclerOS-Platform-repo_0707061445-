@@ -254,3 +254,17 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
   every seven days with one-month retention; next backup due in six hours
 - Gate result: independent restore, live PITR, and native schedule evidence
   passed; off-platform automation and operational ownership remain blocked
+
+## Railway Monitor Activation
+
+- Date: August 9, 2026
+- Integration PR: `#15`, merged to `main`
+- Merge commit: `e2b1fee3c83a03daf6aec31d5bf3e354133564b8`
+- Healthy monitor: run `31331712419`, passed
+- Simulated incident: run `31331739729`, expected failure
+- Incident delivery: issue `#16` opened by GitHub Actions
+- Recovery monitor: run `31331787276`, passed
+- Recovery handling: issue `#16` closed as completed with a recovery comment
+- Schedule: active every two hours on the default branch
+- Gate result: uptime and readiness-incident delivery passed; support ownership
+  and field approval remain blocked

@@ -1,0 +1,126 @@
+name: Production Environment Acceptance
+
+on:
+  workflow_dispatch:
+    inputs:
+      contract_path:
+        description: Committed credential-free production environment contract
+        required: true
+        default: deploy/production/environment.json
+        type: string
+      api_url:
+        description: Exact public HTTPS API origin from the contract
+        required: true
+        type: string
+      release_sha:
+        description: Exact 40-character deployed Git SHA from the contract
+        required: true
+        type: string
+      minimum_certificate_days:
+        description: Minimum acceptable TLS certificate lifetime
+        required: true
+        default: "14"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Validate approved production contract
+        env:
+          CONTRACT_PATH: ${{ inputs.contract_path }}
+          EXPECTED_API_URL: ${{ inputs.api_url }}
+          EXPECTED_RELEASE_SHA: ${{ inputs.release_sha }}
+        run: >-
+          python tools/scripts/production_environment_contract.py
+          --contract "$CONTRACT_PATH"
+          --require-ready
+          --expect-api-url "$EXPECTED_API_URL"
+          --expect-release-sha "$EXPECTED_RELEASE_SHA"
+
+  public-endpoint:
+    environment: production
+    needs: contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Verify public HTTPS surface
+        env:
+          API_URL: ${{ inputs.api_url }}
+          EXPECTED_RELEASE_SHA: ${{ inputs.release_sha }}
+          MINIMUM_CERTIFICATE_DAYS: ${{ inputs.minimum_certificate_days }}
+        run: >-
+          python tools/scripts/production_endpoint_verify.py
+          --base-url "$API_URL"
+          --release-sha "$EXPECTED_RELEASE_SHA"
+          --minimum-certificate-days "$MINIMUM_CERTIFICATE_DAYS"
+          --output "$RUNNER_TEMP/public-endpoint.json"
+      - name: Publish endpoint evidence
+        if: ${{ always() }}
+        run: cat "$RUNNER_TEMP/public-endpoint.json" >> "$GITHUB_STEP_SUMMARY"
+
+  managed-database:
+    environment: production
+    needs: contract
+    runs-on: [self-hosted, linux, recycleros-production]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -r services/api/requirements-postgres.txt
+      - name: Verify protected managed PostgreSQL
+        env:
+          DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_VERIFY_URL }}
+        run: >-
+          python tools/scripts/production_database_verify.py
+          --output "$RUNNER_TEMP/managed-database.json"
+      - name: Publish database evidence
+        if: ${{ always() }}
+        run: cat "$RUNNER_TEMP/managed-database.json" >> "$GITHUB_STEP_SUMMARY"
+
+  acceptance-evidence:
+    if: ${{ always() }}
+    environment: production
+    needs:
+      - contract
+      - public-endpoint
+      - managed-database
+    runs-on: ubuntu-latest
+    steps:
+      - name: Summarize production environment acceptance
+        env:
+          CONTRACT_RESULT: ${{ needs.contract.result }}
+          ENDPOINT_RESULT: ${{ needs['public-endpoint'].result }}
+          DATABASE_RESULT: ${{ needs['managed-database'].result }}
+        run: |
+          {
+            echo "## Production environment acceptance"
+            echo
+            echo "| Gate | Result |"
+            echo "| --- | --- |"
+            echo "| contract | ${CONTRACT_RESULT} |"
+            echo "| public endpoint | ${ENDPOINT_RESULT} |"
+            echo "| managed database | ${DATABASE_RESULT} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          for result in \
+            "$CONTRACT_RESULT" \
+            "$ENDPOINT_RESULT" \
+            "$DATABASE_RESULT"; do
+            if [[ "$result" != "success" ]]; then
+              echo "Production environment gate did not pass: $result"
+              exit 1
+            fi
+          done

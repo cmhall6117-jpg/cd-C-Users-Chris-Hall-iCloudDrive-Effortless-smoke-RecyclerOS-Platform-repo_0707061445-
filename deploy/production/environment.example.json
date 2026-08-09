@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "environment": "production",
+  "lifecycle": "planned",
+  "provider": {
+    "name": "UNSELECTED",
+    "account_id": "UNSET",
+    "region": "UNSET"
+  },
+  "release": {
+    "image_repository": "ghcr.io/effortless-smoke/recycleros-api",
+    "image_digest": "sha256:replace_with_approved_64_character_digest",
+    "commit": "replace_with_40_character_git_sha"
+  },
+  "network": {
+    "api_url": "https://api.example.invalid",
+    "browser_origins": [
+      "https://app.example.invalid"
+    ],
+    "trusted_proxy_cidrs": [
+      "127.0.0.1/32"
+    ],
+    "database_publicly_accessible": false
+  },
+  "database": {
+    "engine": "postgresql",
+    "major_version": 16,
+    "tls_required": true,
+    "encryption_at_rest": true,
+    "deletion_protection": true,
+    "high_availability": true
+  },
+  "recovery": {
+    "rpo_hours": 24,
+    "rto_hours": 4,
+    "retention_days": 14,
+    "point_in_time_recovery": true,
+    "restore_rehearsal_evidence": "UNSET"
+  },
+  "security": {
+    "container_registry": "UNSELECTED",
+    "secret_manager": "UNSELECTED",
+    "deployment_role": "UNSET",
+    "least_privilege_review": false,
+    "image_signing": false
+  },
+  "observability": {
+    "log_destination": "UNSELECTED",
+    "metric_destination": "UNSELECTED",
+    "uptime_check": "UNSET",
+    "alert_route": "UNSET"
+  },
+  "ownership": {
+    "deployment_owner": "UNASSIGNED",
+    "restore_owner": "UNASSIGNED",
+    "incident_commander": "UNASSIGNED",
+    "security_approver": "UNASSIGNED",
+    "business_approver": "UNASSIGNED"
+  },
+  "approvals": {
+    "technical": false,
+    "security": false,
+    "business": false
+  }
+}

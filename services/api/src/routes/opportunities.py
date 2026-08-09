@@ -1,36 +1,47 @@
-from datetime import datetime
-from fastapi import APIRouter, Depends
-from pydantic import BaseModel
-from tenant import TenantContext, require_tenant_context, validate_payload_tenant
+from fastapi import APIRouter, Depends, HTTPException, status
+
+from auth import Permission
+from dependencies import get_store
+from schemas.opportunity import OpportunityCreate
+from store import WorkflowStore
+from tenant import TenantContext, require_permission, validate_payload_tenant
 
 router = APIRouter()
 
-class OpportunityCreate(BaseModel):
-    title: str
-    procurement_intent: str = "undecided"
-    source_type: str = "manual"
-    organization_id: str | None = None
-    workspace_id: str | None = None
 
-@router.post("")
-def create_opportunity(payload: OpportunityCreate, tenant: TenantContext = Depends(require_tenant_context)):
+@router.post("", status_code=status.HTTP_201_CREATED)
+def create_opportunity(
+    payload: OpportunityCreate,
+    tenant: TenantContext = Depends(require_permission(Permission.OPERATE)),
+    store: WorkflowStore = Depends(get_store),
+):
     validate_payload_tenant(payload, tenant)
-    return {
-        "opportunity_id": "OPP-DEMO-000001",
-        "organization_id": tenant.organization_id,
-        "workspace_id": tenant.workspace_id,
-        "title": payload.title,
-        "procurement_intent": payload.procurement_intent,
-        "source_type": payload.source_type,
-        "created_at": datetime.utcnow().isoformat() + "Z",
-        "event_created": "EVT-001 Opportunity Discovered",
-    }
+    values = payload.model_dump(exclude={"organization_id", "workspace_id"})
+    return store.create_opportunity(tenant, values)
+
 
 @router.get("")
-def list_opportunities(tenant: TenantContext = Depends(require_tenant_context)):
+def list_opportunities(
+    tenant: TenantContext = Depends(require_permission(Permission.READ)),
+    store: WorkflowStore = Depends(get_store),
+):
     return {
         "organization_id": tenant.organization_id,
         "workspace_id": tenant.workspace_id,
-        "items": [],
-        "message": "Opportunity listing scaffold ready.",
+        "items": store.list_opportunities(tenant),
     }
+
+
+@router.get("/{opportunity_id}")
+def get_opportunity(
+    opportunity_id: str,
+    tenant: TenantContext = Depends(require_permission(Permission.READ)),
+    store: WorkflowStore = Depends(get_store),
+):
+    opportunity = store.get_opportunity(opportunity_id, tenant)
+    if opportunity is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Opportunity not found in tenant workspace.",
+        )
+    return opportunity

@@ -1,0 +1,65 @@
+name: recycleros-pilot
+
+services:
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: recycleros_pilot
+      POSTGRES_USER: recycleros
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    secrets:
+      - postgres_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:${RECYCLEROS_POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U recycleros -d recycleros_pilot"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    security_opt:
+      - no-new-privileges:true
+
+  api:
+    build:
+      context: ../..
+      dockerfile: services/api/Dockerfile
+    image: ${RECYCLEROS_API_IMAGE:-recycleros-api:pilot}
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL_FILE: /run/secrets/database_url
+      RECYCLEROS_LOCAL_OPERATOR_PASSWORD_FILE: /run/secrets/operator_password
+      RECYCLEROS_DEPLOYMENT_MODE: production
+      RECYCLEROS_TRUSTED_HOSTS: ${RECYCLEROS_TRUSTED_HOSTS:?Set trusted API hosts}
+      RECYCLEROS_CORS_ORIGINS: ${RECYCLEROS_CORS_ORIGINS:-}
+      RECYCLEROS_CORS_ORIGIN_REGEX: ${RECYCLEROS_CORS_ORIGIN_REGEX:-a^}
+      RECYCLEROS_API_WORKERS: ${RECYCLEROS_API_WORKERS:-1}
+      RECYCLEROS_FORWARDED_ALLOW_IPS: ${RECYCLEROS_FORWARDED_ALLOW_IPS:-127.0.0.1}
+    secrets:
+      - database_url
+      - operator_password
+    ports:
+      - "127.0.0.1:${RECYCLEROS_API_PORT:-8000}:8000"
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+
+secrets:
+  postgres_password:
+    file: ${RECYCLEROS_PILOT_SECRET_DIR:-./secrets}/postgres_password
+  database_url:
+    file: ${RECYCLEROS_PILOT_SECRET_DIR:-./secrets}/database_url
+  operator_password:
+    file: ${RECYCLEROS_PILOT_SECRET_DIR:-./secrets}/operator_password
+
+volumes:
+  postgres_data:

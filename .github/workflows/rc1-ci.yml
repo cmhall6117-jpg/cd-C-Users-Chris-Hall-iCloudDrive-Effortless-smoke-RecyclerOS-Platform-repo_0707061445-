@@ -4,7 +4,14 @@ on:
   pull_request:
   push:
     branches:
-      - codex/rc1-repository-integration
+      - "codex/gcp-*"
+      - "codex/rc1-*"
+      - "codex/pilot-*"
+      - "codex/production-*"
+      - "codex/railway-*"
+
+permissions:
+  contents: read
 
 jobs:
   backend:
@@ -13,8 +20,8 @@ jobs:
       run:
         working-directory: services/api
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - run: python -m pip install --upgrade pip
@@ -25,8 +32,8 @@ jobs:
   sqlite-migrations:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - run: python tools/scripts/rc1_sqlite_check.py
@@ -48,8 +55,8 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - run: python -m pip install --upgrade pip
@@ -58,6 +65,281 @@ jobs:
       - run: python tools/scripts/rc1_postgres_migrate.py
         env:
           DATABASE_URL: postgresql://recycleros:recycleros_test_password@localhost:5432/recycleros_test
+      - name: Verify migration ledger replay
+        run: python tools/scripts/rc1_postgres_migrate.py
+        env:
+          DATABASE_URL: postgresql://recycleros:recycleros_test_password@localhost:5432/recycleros_test
+      - name: Verify durable workflow and auth across app restart
+        run: PYTHONPATH=services/api/src pytest -q services/api/tests/test_postgres_runtime.py
+        env:
+          DATABASE_URL: postgresql://recycleros:recycleros_test_password@localhost:5432/recycleros_test
+          RECYCLEROS_DEPLOYMENT_MODE: production
+          RECYCLEROS_LOCAL_OPERATOR_PASSWORD: postgres-runtime-password
+          RECYCLEROS_TRUSTED_HOSTS: testserver
+      - name: Verify pilot backup and restore
+        shell: bash
+        env:
+          DATABASE_URL: postgresql://recycleros:recycleros_test_password@localhost:5432/recycleros_test
+          RECYCLEROS_RESTORE_DATABASE_NAME: recycleros_restore_test
+          RECYCLEROS_RESTORE_DATABASE_URL: postgresql://recycleros:recycleros_test_password@localhost:5432/recycleros_restore_test
+          RECYCLEROS_RESTORE_CONFIRM: recycleros_restore_test
+        run: |
+          pg_dump --version
+          python tools/scripts/pilot_postgres_backup.py \
+            --output "$RUNNER_TEMP/recycleros-pilot.dump"
+          python tools/scripts/pilot_postgres_create_database.py
+          python tools/scripts/pilot_postgres_restore.py \
+            --backup "$RUNNER_TEMP/recycleros-pilot.dump" \
+            --manifest "$RUNNER_TEMP/recycleros-pilot.dump.manifest.json"
+          RECYCLEROS_VERIFY_DATABASE_VARIABLE=RECYCLEROS_RESTORE_DATABASE_URL \
+            python tools/scripts/pilot_postgres_verify.py --require-runtime-data
+
+  pilot-container:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: recycleros_pilot
+          POSTGRES_USER: recycleros
+          POSTGRES_PASSWORD: pilot_ci_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v6
+      - name: Validate pilot compose configuration
+        shell: bash
+        env:
+          RECYCLEROS_TRUSTED_HOSTS: localhost,127.0.0.1
+        run: |
+          secret_dir="$RUNNER_TEMP/pilot-secrets"
+          mkdir -p "$secret_dir"
+          printf '%s' 'pilot_ci_password' > "$secret_dir/postgres_password"
+          printf '%s' 'postgresql://recycleros:pilot_ci_password@postgres:5432/recycleros_pilot' > "$secret_dir/database_url"
+          printf '%s' 'pilot_operator_password' > "$secret_dir/operator_password"
+          RECYCLEROS_PILOT_SECRET_DIR="$secret_dir" \
+            docker compose -f deploy/pilot/compose.yml config --quiet
+      - name: Build and smoke test hardened pilot image
+        shell: bash
+        run: |
+          docker build -f services/api/Dockerfile -t recycleros-api:pilot .
+          docker run --detach --name recycleros-pilot-api \
+            --network host \
+            --read-only \
+            --tmpfs /tmp:size=64m,mode=1777 \
+            --cap-drop ALL \
+            --security-opt no-new-privileges \
+            --env DATABASE_URL=postgresql://recycleros:pilot_ci_password@127.0.0.1:5432/recycleros_pilot \
+            --env RECYCLEROS_LOCAL_OPERATOR_PASSWORD=pilot_operator_password \
+            --env RECYCLEROS_DEPLOYMENT_MODE=production \
+            --env RECYCLEROS_TRUSTED_HOSTS=localhost,127.0.0.1 \
+            recycleros-api:pilot
+
+          for attempt in {1..20}; do
+            if [[ "$(docker inspect --format '{{.State.Health.Status}}' recycleros-pilot-api)" == "healthy" ]]; then
+              curl --fail http://127.0.0.1:8000/v1/health/ready
+              exit 0
+            fi
+            sleep 3
+          done
+
+          docker logs recycleros-pilot-api
+          exit 1
+      - if: ${{ always() }}
+        run: docker rm --force recycleros-pilot-api || true
+
+  production-container:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: recycleros_production
+          POSTGRES_USER: recycleros
+          POSTGRES_PASSWORD: production_ci_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build immutable production candidate
+        shell: bash
+        run: |
+          docker build \
+            --build-arg RECYCLEROS_BUILD_DATE="$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --build-arg RECYCLEROS_RELEASE_SHA="$GITHUB_SHA" \
+            -f services/api/Dockerfile \
+            -t recycleros-api:production .
+          test "$(docker image inspect recycleros-api:production --format '{{.Config.User}}')" = "recycleros"
+          test "$(docker image inspect recycleros-api:production --format '{{index .Config.Labels "org.opencontainers.image.revision"}}')" = "$GITHUB_SHA"
+          docker run --rm --entrypoint python recycleros-api:production -m pip check
+      - name: Validate digest-pinned production compose
+        shell: bash
+        env:
+          RECYCLEROS_API_IMAGE: ghcr.io/effortless-smoke/recycleros-api
+          RECYCLEROS_API_IMAGE_DIGEST: sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+          RECYCLEROS_RELEASE_SHA: ${{ github.sha }}
+          RECYCLEROS_TRUSTED_HOSTS: api.example.invalid
+          RECYCLEROS_FORWARDED_ALLOW_IPS: 127.0.0.1
+        run: |
+          secret_dir="$RUNNER_TEMP/production-secrets"
+          mkdir -p "$secret_dir"
+          printf '%s' 'postgresql://recycleros:production_ci_password@127.0.0.1:5432/recycleros_production' > "$secret_dir/database_url"
+          printf '%s' 'production_owner_password' > "$secret_dir/bootstrap_owner_password"
+          RECYCLEROS_PRODUCTION_SECRET_DIR="$secret_dir" \
+            docker compose -f deploy/production/compose.yml config --quiet
+      - name: Run controlled migration and owner bootstrap
+        shell: bash
+        run: |
+          database_secret="$RUNNER_TEMP/production-database-url"
+          owner_secret="$RUNNER_TEMP/production-owner-password"
+          printf '%s' 'postgresql://recycleros:production_ci_password@127.0.0.1:5432/recycleros_production' > "$database_secret"
+          printf '%s' 'production_owner_password' > "$owner_secret"
+
+          docker run --rm \
+            --network host \
+            --read-only \
+            --tmpfs /tmp:size=64m,mode=1777 \
+            --cap-drop ALL \
+            --security-opt no-new-privileges \
+            --volume "$database_secret:/run/secrets/database_url:ro" \
+            --env DATABASE_URL_FILE=/run/secrets/database_url \
+            --entrypoint python \
+            recycleros-api:production \
+            tools/scripts/rc1_postgres_migrate.py
+
+          docker run --rm \
+            --network host \
+            --read-only \
+            --tmpfs /tmp:size=64m,mode=1777 \
+            --cap-drop ALL \
+            --security-opt no-new-privileges \
+            --volume "$database_secret:/run/secrets/database_url:ro" \
+            --volume "$owner_secret:/run/secrets/bootstrap_owner_password:ro" \
+            --env DATABASE_URL_FILE=/run/secrets/database_url \
+            --env RECYCLEROS_BOOTSTRAP_OWNER_PASSWORD_FILE=/run/secrets/bootstrap_owner_password \
+            --env RECYCLEROS_BOOTSTRAP_OWNER_EMAIL=production-owner@example.com \
+            --env RECYCLEROS_BOOTSTRAP_OWNER_DISPLAY_NAME='Production Owner' \
+            --env RECYCLEROS_BOOTSTRAP_ORGANIZATION_ID=org-production \
+            --env RECYCLEROS_BOOTSTRAP_ORGANIZATION_NAME='Effortless Smoke Production' \
+            --env RECYCLEROS_BOOTSTRAP_WORKSPACE_ID=workspace-production \
+            --env RECYCLEROS_BOOTSTRAP_WORKSPACE_NAME='RecyclerOS Production' \
+            --env RECYCLEROS_BOOTSTRAP_CONFIRM=production-owner@example.com \
+            --entrypoint python \
+            recycleros-api:production \
+            services/api/production_bootstrap.py
+      - name: Smoke test hardened production runtime
+        shell: bash
+        run: |
+          database_secret="$RUNNER_TEMP/production-database-url"
+          docker run --detach --name recycleros-production-api \
+            --network host \
+            --read-only \
+            --tmpfs /tmp:size=64m,mode=1777 \
+            --pids-limit 256 \
+            --cap-drop ALL \
+            --security-opt no-new-privileges \
+            --volume "$database_secret:/run/secrets/database_url:ro" \
+            --env DATABASE_URL_FILE=/run/secrets/database_url \
+            --env RECYCLEROS_DEPLOYMENT_MODE=production \
+            --env RECYCLEROS_RELEASE_SHA="$GITHUB_SHA" \
+            --env RECYCLEROS_TRUSTED_HOSTS=localhost,127.0.0.1 \
+            --env RECYCLEROS_FORWARDED_ALLOW_IPS=127.0.0.1 \
+            --env RECYCLEROS_API_WORKERS=2 \
+            --entrypoint python \
+            recycleros-api:production \
+            services/api/production_entrypoint.py
+
+          for attempt in {1..20}; do
+            if curl --fail --silent http://127.0.0.1:8000/v1/health/ready > /dev/null; then
+              break
+            fi
+            if [[ "$attempt" == "20" ]]; then
+              docker logs recycleros-production-api
+              exit 1
+            fi
+            sleep 3
+          done
+
+          curl --fail --silent --dump-header "$RUNNER_TEMP/production-headers" \
+            http://127.0.0.1:8000/v1/health > "$RUNNER_TEMP/production-health.json"
+          grep --ignore-case '^strict-transport-security:' "$RUNNER_TEMP/production-headers"
+          grep --fixed-strings "$GITHUB_SHA" "$RUNNER_TEMP/production-health.json"
+          test "$(curl --silent --output /dev/null --write-out '%{http_code}' http://127.0.0.1:8000/docs)" = "404"
+          curl --fail --silent \
+            --header 'Content-Type: application/json' \
+            --data '{"email":"production-owner@example.com","password":"production_owner_password"}' \
+            http://127.0.0.1:8000/v1/auth/login > /dev/null
+      - if: ${{ always() }}
+        run: docker rm --force recycleros-production-api || true
+
+  environment-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Validate credential-free environment contract
+        run: >-
+          python tools/scripts/production_environment_contract.py
+          --contract deploy/production/environment.example.json
+          --allow-placeholders
+      - name: Compile production acceptance tools
+        run: >-
+          python -m compileall -q
+          tools/scripts/production_environment_contract.py
+          tools/scripts/production_endpoint_verify.py
+          tools/scripts/production_database_verify.py
+
+  gcp-pilot-iac:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "1.14.6"
+      - name: Validate credential-free GCP pilot contract
+        run: python tools/scripts/gcp_pilot_contract.py
+      - name: Check Terraform formatting
+        run: terraform fmt -check -recursive deploy/gcp/pilot
+      - name: Validate bootstrap root
+        working-directory: deploy/gcp/pilot/bootstrap
+        run: |
+          terraform init -backend=false
+          terraform validate
+      - name: Validate environment root
+        working-directory: deploy/gcp/pilot/environment
+        run: |
+          terraform init -backend=false
+          terraform validate
+
+  railway-pilot-config:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Validate credential-free Railway pilot configuration
+        run: python tools/scripts/railway_pilot_contract.py
+      - name: Compile Railway pilot controls
+        run: >-
+          python -m compileall -q
+          tools/scripts/railway_pilot_contract.py
+          services/api/tests/test_railway_pilot_contract.py
 
   flutter:
     runs-on: ubuntu-latest
@@ -65,10 +347,113 @@ jobs:
       run:
         working-directory: apps/recycleros_pro_mobile
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
       - run: flutter pub get
       - run: flutter analyze
       - run: flutter test
+
+  core-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: python -m pip install -r services/api/requirements.txt
+      - run: flutter pub get
+        working-directory: apps/recycleros_pro_mobile
+      - name: Run live Flutter-to-FastAPI smoke test
+        shell: bash
+        env:
+          RECYCLEROS_LOCAL_OPERATOR_PASSWORD: local-ci-rc1
+        run: |
+          PYTHONPATH=services/api/src python -m uvicorn main:app \
+            --app-dir services/api/src --host 127.0.0.1 --port 8000 \
+            > "$RUNNER_TEMP/recycleros-api.log" 2>&1 &
+          api_pid=$!
+          trap 'kill "$api_pid"' EXIT
+          curl --fail --retry 10 --retry-connrefused --retry-delay 1 \
+            http://127.0.0.1:8000/v1/health
+          cd apps/recycleros_pro_mobile
+          flutter test --dart-define=RECYCLEROS_LIVE_API_TEST=true \
+            --dart-define=RECYCLEROS_TEST_PASSWORD=local-ci-rc1 \
+            test/live_rc1_gateway_test.dart
+
+  release-evidence:
+    if: ${{ always() }}
+    needs:
+      - backend
+      - sqlite-migrations
+      - postgres-migrations
+      - flutter
+      - core-integration
+      - pilot-container
+      - production-container
+      - environment-contract
+      - gcp-pilot-iac
+      - railway-pilot-config
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify and summarize RC1 gates
+        shell: bash
+        env:
+          BACKEND_RESULT: ${{ needs.backend.result }}
+          SQLITE_RESULT: ${{ needs['sqlite-migrations'].result }}
+          POSTGRES_RESULT: ${{ needs['postgres-migrations'].result }}
+          FLUTTER_RESULT: ${{ needs.flutter.result }}
+          CORE_INTEGRATION_RESULT: ${{ needs['core-integration'].result }}
+          PILOT_CONTAINER_RESULT: ${{ needs['pilot-container'].result }}
+          PRODUCTION_CONTAINER_RESULT: ${{ needs['production-container'].result }}
+          ENVIRONMENT_CONTRACT_RESULT: ${{ needs['environment-contract'].result }}
+          GCP_PILOT_IAC_RESULT: ${{ needs['gcp-pilot-iac'].result }}
+          RAILWAY_PILOT_CONFIG_RESULT: ${{ needs['railway-pilot-config'].result }}
+        run: |
+          run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          {
+            echo "## RC1 release evidence"
+            echo
+            echo "| Field | Value |"
+            echo "| --- | --- |"
+            echo "| Commit | \`${GITHUB_SHA}\` |"
+            echo "| Branch | \`${GITHUB_REF_NAME}\` |"
+            echo "| Event | \`${GITHUB_EVENT_NAME}\` |"
+            echo "| Run | [${GITHUB_RUN_ID}](${run_url}) |"
+            echo
+            echo "| Required gate | Result |"
+            echo "| --- | --- |"
+            echo "| backend | ${BACKEND_RESULT} |"
+            echo "| sqlite-migrations | ${SQLITE_RESULT} |"
+            echo "| postgres-migrations | ${POSTGRES_RESULT} |"
+            echo "| flutter | ${FLUTTER_RESULT} |"
+            echo "| core-integration | ${CORE_INTEGRATION_RESULT} |"
+            echo "| pilot-container | ${PILOT_CONTAINER_RESULT} |"
+            echo "| production-container | ${PRODUCTION_CONTAINER_RESULT} |"
+            echo "| environment-contract | ${ENVIRONMENT_CONTRACT_RESULT} |"
+            echo "| gcp-pilot-iac | ${GCP_PILOT_IAC_RESULT} |"
+            echo "| railway-pilot-config | ${RAILWAY_PILOT_CONFIG_RESULT} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          for result in \
+            "$BACKEND_RESULT" \
+            "$SQLITE_RESULT" \
+            "$POSTGRES_RESULT" \
+            "$FLUTTER_RESULT" \
+            "$CORE_INTEGRATION_RESULT" \
+            "$PILOT_CONTAINER_RESULT" \
+            "$PRODUCTION_CONTAINER_RESULT" \
+            "$ENVIRONMENT_CONTRACT_RESULT" \
+            "$GCP_PILOT_IAC_RESULT" \
+            "$RAILWAY_PILOT_CONFIG_RESULT"; do
+            if [[ "$result" != "success" ]]; then
+              echo "Required RC1 gate did not pass: $result"
+              exit 1
+            fi
+          done
+
+          echo "All required RC1 gates passed for ${GITHUB_SHA}."

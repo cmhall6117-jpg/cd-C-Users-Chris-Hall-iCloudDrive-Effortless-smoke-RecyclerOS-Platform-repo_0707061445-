@@ -1,52 +1,38 @@
-from datetime import datetime, timezone
-from fastapi import APIRouter, Depends
-from pydantic import BaseModel
-from tenant import TenantContext, require_tenant_context, validate_payload_tenant
+from fastapi import APIRouter, Depends, HTTPException, status
+
+from auth import Permission
+from dependencies import get_store
+from schemas.inventory import InventoryCreate
+from store import WorkflowStore
+from tenant import TenantContext, require_permission, validate_payload_tenant
 
 router = APIRouter()
 
-class InventoryCreate(BaseModel):
-    organization_id: str | None = None
-    workspace_id: str | None = None
-    part_name: str
-    source_vehicle_id: str | None = None
-    harvest_session_id: str | None = None
-    storage_location_id: str | None = None
-    condition: str = "usedUntested"
-    status: str = "available"
-    quantity: int = 1
-    estimated_value: float | None = None
 
-@router.post("")
-def create_inventory_item(payload: InventoryCreate, tenant: TenantContext = Depends(require_tenant_context)):
+@router.post("", status_code=status.HTTP_201_CREATED)
+def create_inventory_item(
+    payload: InventoryCreate,
+    tenant: TenantContext = Depends(require_permission(Permission.OPERATE)),
+    store: WorkflowStore = Depends(get_store),
+):
     validate_payload_tenant(payload, tenant)
-    now = datetime.now(timezone.utc)
-    return {
-        "inventory_item_id": "INV-DEMO-000001",
-        "organization_id": tenant.organization_id,
-        "workspace_id": tenant.workspace_id,
-        "inventory_code": "INV-000001",
-        "part_name": payload.part_name,
-        "condition": payload.condition,
-        "status": payload.status,
-        "quantity": payload.quantity,
-        "created_at": now.isoformat(),
-        "event_created": "inventory.created"
-    }
+    values = payload.model_dump(exclude={"organization_id", "workspace_id"})
+    item = store.create_inventory_item(tenant, values)
+    if item is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Linked vehicle or harvest session not found in tenant workspace.",
+        )
+    return item
+
 
 @router.get("")
-def list_inventory_items(tenant: TenantContext = Depends(require_tenant_context)):
+def list_inventory_items(
+    tenant: TenantContext = Depends(require_permission(Permission.READ)),
+    store: WorkflowStore = Depends(get_store),
+):
     return {
         "organization_id": tenant.organization_id,
         "workspace_id": tenant.workspace_id,
-        "items": [
-            {
-                "inventory_item_id": "INV-DEMO-000001",
-                "inventory_code": "INV-000001",
-                "part_name": "ECM / PCM",
-                "condition": "usedUntested",
-                "status": "available",
-                "quantity": 1
-            }
-        ]
+        "items": store.list_inventory_items(tenant),
     }

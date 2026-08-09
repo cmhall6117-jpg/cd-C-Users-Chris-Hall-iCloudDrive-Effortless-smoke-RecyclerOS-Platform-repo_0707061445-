@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "environment": "pilot",
+  "lifecycle": "planned",
+  "provider": {
+    "name": "railway",
+    "plan": "pro",
+    "project_name": "recycleros-pilot",
+    "project_id": "22bdb278-c849-4c65-bd93-0031053344a1",
+    "region": "us-east4-eqdc4a"
+  },
+  "cost_controls": {
+    "estimated_monthly_min_usd": 20,
+    "estimated_monthly_max_usd": 25,
+    "alert_usd": 20,
+    "hard_limit_usd": 30,
+    "alert_verified": true,
+    "hard_limit_verified": true
+  },
+  "runtime": {
+    "service_name": "recycleros-api",
+    "builder": "dockerfile",
+    "memory_mib": 512,
+    "cpu": 1,
+    "replicas": 1,
+    "serverless_sleep": true,
+    "healthcheck_path": "/v1/health/ready",
+    "public_access_enabled": true,
+    "api_url": "https://recycleros-api-pilot.up.railway.app",
+    "release_commit": "5784f4526e97de7cc60538d00ecc6977ca13a375"
+  },
+  "database": {
+    "service_name": "Postgres",
+    "engine": "postgresql",
+    "major_version": 16,
+    "storage_gib": 5,
+    "private_database_url": true,
+    "tcp_proxy_enabled": false,
+    "unmanaged_template_acknowledged": true,
+    "daily_backup_enabled": true,
+    "weekly_backup_enabled": true,
+    "volume_backup_schedule_evidence": "railway-volume-backups-2026-08-09-1234",
+    "point_in_time_recovery_enabled": true,
+    "point_in_time_recovery_evidence": "railway-pitr-2026-08-09-ca3c8918",
+    "off_platform_backup_enabled": true,
+    "restore_rehearsal_evidence": "railway-live-2026-08-09-a65d704f"
+  },
+  "security": {
+    "sealed_variables": true,
+    "static_provider_tokens_in_github": false,
+    "exact_trusted_host": true,
+    "two_factor_authentication": true,
+    "deployment_branch": "codex/railway-pilot-environment"
+  },
+  "observability": {
+    "railway_logs_enabled": true,
+    "uptime_check_configured": false,
+    "alert_delivery_verified": false
+  },
+  "testing": {
+    "maximum_testers": 2,
+    "data_policy": "synthetic_or_authorized_pilot_only"
+  },
+  "approvals": {
+    "deployment": true,
+    "field_access": false,
+    "restore_owner_assigned": false,
+    "support_owner_assigned": false
+  }
+}

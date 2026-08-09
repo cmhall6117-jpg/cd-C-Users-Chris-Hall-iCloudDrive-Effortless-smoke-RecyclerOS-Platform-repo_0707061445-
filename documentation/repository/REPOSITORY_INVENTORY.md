@@ -937,6 +937,97 @@ This inventory records original package zip contents and the active files curren
 
 ## Active Repository Files
 
+### RC1 Core Working Path Integration
+
+The following files are authored by repository integration work rather than
+copied from one source package:
+
+- `apps/recycleros_pro_mobile/lib/src/data/rc1_gateway.dart`
+- `apps/recycleros_pro_mobile/lib/src/data/dio_rc1_gateway.dart`
+- `apps/recycleros_pro_mobile/test/dio_rc1_gateway_test.dart`
+- `apps/recycleros_pro_mobile/test/live_rc1_gateway_test.dart`
+- `apps/recycleros_pro_mobile/test/support/fake_rc1_gateway.dart`
+- `services/api/tests/test_cors.py`
+- `documentation/build/RC1_CORE_WORKING_PATH.md`
+- `documentation/release/RC1_CORE_WORKING_PATH_PR.md`
+
+Existing VS-001 through VS-005 app and API files retain their package provenance
+and contain documented RC1 integration edits.
+
+### RC1 Auth, Tenant, and RBAC Integration
+
+The following files are authored by repository integration work rather than
+copied from a source package:
+
+- `services/api/src/auth.py`
+- `services/api/src/auth_dependencies.py`
+- `services/api/src/routes/auth.py`
+- `services/api/src/schemas/auth.py`
+- `services/api/tests/test_auth_rbac.py`
+- `apps/recycleros_pro_mobile/test/auth_rbac_ui_test.dart`
+- `documentation/security/RC1_AUTH_TENANT_RBAC.md`
+- `documentation/release/RC1_AUTH_TENANT_RBAC_PR.md`
+
+The active route, tenant, workflow, gateway, screen, test, and CI files retain
+their earlier provenance and contain documented auth/RBAC integration edits.
+
+### RC1 CI/CD Release Evidence Integration
+
+The following files are authored by repository integration work rather than
+copied from a source package:
+
+- `.github/workflows/rc1-ci.yml` (`release-evidence` composite gate)
+- `documentation/release/RC1_CICD_RELEASE_EVIDENCE.md`
+- `documentation/release/RC1_CICD_RELEASE_EVIDENCE_PR.md`
+
+Existing build, smoke-test, defect, release, and inventory records retain their
+earlier provenance and contain documented CI/CD evidence updates.
+
+### RC1 Defect Closure Integration
+
+The following files are authored by repository integration work rather than
+copied from a source package:
+
+- `database/migrations/postgres/026_rc1_durable_runtime.sql`
+- `services/api/src/postgres_store.py`
+- `services/api/src/postgres_auth.py`
+- `services/api/tests/test_postgres_runtime.py`
+- `documentation/release/RC1_DEFECT_CLOSURE_PR.md`
+
+Existing auth, store, route, workflow, CI, migration, build, test, defect, and
+release files retain their earlier provenance and contain documented defect
+closure edits.
+
+### Pilot Deployment Readiness Integration
+
+The following files are authored by repository integration work rather than
+copied from a source package:
+
+- `.dockerignore`
+- `deploy/pilot/compose.yml`
+- `deploy/pilot/pilot.env.example`
+- `deploy/pilot/secrets/.gitignore`
+- `services/api/Dockerfile`
+- `services/api/pilot_entrypoint.py`
+- `services/api/src/runtime_config.py`
+- `services/api/tests/test_pilot_operations.py`
+- `services/api/tests/test_pilot_runtime.py`
+- `tools/scripts/pilot_prepare_secrets.py`
+- `tools/scripts/pilot_postgres_common.py`
+- `tools/scripts/pilot_postgres_backup.py`
+- `tools/scripts/pilot_postgres_create_database.py`
+- `tools/scripts/pilot_postgres_restore.py`
+- `tools/scripts/pilot_postgres_verify.py`
+- `documentation/deployment/PILOT_DEPLOYMENT_RUNBOOK.md`
+- `documentation/deployment/PILOT_READINESS_CHECKLIST.md`
+- `documentation/operations/BACKUP_RESTORE_RUNBOOK.md`
+- `documentation/security/PILOT_SECRETS_REGISTER.md`
+- `documentation/release/PILOT_DEPLOYMENT_READINESS_PR.md`
+
+Existing runtime, health, CI, assumptions, build, test, defect, release, and
+inventory files retain their earlier provenance and contain documented pilot
+readiness edits.
+
 - `apps/recycleros_pro_mobile/lib/main.dart`
 - `apps/recycleros_pro_mobile/lib/src/app/app_routes.dart`
 - `apps/recycleros_pro_mobile/lib/src/app/recycleros_app.dart`
@@ -1138,3 +1229,76 @@ This inventory records original package zip contents and the active files curren
 - `tools/scripts/rc1_sqlite_check.py`
 - `tools/smoke_tests/smoke_test_api.py`
 - `tools/smoke_tests/SMOKE_TEST_README.md`
+
+## Production Launch Preparation Contributions
+
+- `deploy/production/compose.yml`
+- `deploy/production/production.env.example`
+- `deploy/production/secrets/.gitignore`
+- `services/api/production_bootstrap.py`
+- `services/api/production_entrypoint.py`
+- `services/api/src/service_metadata.py`
+- `services/api/tests/test_production_runtime.py`
+- `tools/scripts/production_release_manifest.py`
+- `documentation/deployment/PRODUCTION_DEPLOYMENT_RUNBOOK.md`
+- `documentation/deployment/PRODUCTION_READINESS_CHECKLIST.md`
+- `documentation/operations/PRODUCTION_ROLLBACK_RUNBOOK.md`
+- `documentation/security/PRODUCTION_SECURITY_BASELINE.md`
+- `documentation/release/PRODUCTION_LAUNCH_PREPARATION_PR.md`
+- `documentation/release/PRODUCTION_RELEASE_EVIDENCE.md`
+
+These files are repository-authored operational controls derived from the
+integrated RC1 path. They do not activate archived vertical slice packages.
+
+## Production Environment Provisioning Contributions
+
+- `.github/workflows/production-environment-acceptance.yml`
+- `deploy/production/environment.example.json`
+- `tools/scripts/production_environment_contract.py`
+- `tools/scripts/production_endpoint_verify.py`
+- `tools/scripts/production_database_verify.py`
+- `services/api/tests/test_production_environment.py`
+- `documentation/deployment/PRODUCTION_ENVIRONMENT_CONTRACT.md`
+- `documentation/deployment/PRODUCTION_ENVIRONMENT_PROVISIONING.md`
+- `documentation/release/PRODUCTION_ENVIRONMENT_PROVISIONING_PR.md`
+- `documentation/release/PRODUCTION_ENVIRONMENT_EVIDENCE.md`
+
+These files are provider-neutral and credential-free. They create no cloud or
+production resources.
+
+## Google Cloud Pilot Contributions
+
+- `.github/workflows/gcp-pilot-infrastructure.yml`
+- `.github/workflows/gcp-pilot-release.yml`
+- `deploy/gcp/pilot/pilot.contract.json`
+- `deploy/gcp/pilot/bootstrap/*`
+- `deploy/gcp/pilot/environment/*`
+- `tools/scripts/gcp_pilot_contract.py`
+- `services/api/tests/test_gcp_pilot_contract.py`
+- `documentation/deployment/GCP_PILOT_GITHUB_SETUP.md`
+- `documentation/deployment/GCP_PILOT_RUNBOOK.md`
+- `documentation/release/GCP_PILOT_ENVIRONMENT_PR.md`
+
+These are repository-authored operational controls for the existing RC1
+application. They create no additional vertical slice and contain no cloud
+credentials. The original generated packages and documentation remain
+preserved.
+
+## Railway Pilot Environment Contributions
+
+- `.github/workflows/railway-pilot-acceptance.yml`
+- `.github/workflows/railway-pilot-monitor.yml`
+- `deploy/railway/pilot/railway.json`
+- `deploy/railway/pilot/variables.example`
+- `deploy/railway/pilot/pilot.contract.json`
+- `tools/scripts/railway_pilot_contract.py`
+- `services/api/tests/test_railway_pilot_contract.py`
+- `documentation/deployment/RAILWAY_PILOT_SETUP.md`
+- `documentation/deployment/RAILWAY_PILOT_RUNBOOK.md`
+- `documentation/release/RAILWAY_PILOT_ENVIRONMENT_PR.md`
+
+The branch also updates `services/api/Dockerfile` so the healthcheck honors the
+platform-assigned port, and extends RC1 CI, recovery, monitoring, and evidence
+documents. These files are credential-free and activate no vertical slice. The
+monitor performs read-only public endpoint checks; its scoped GitHub token can
+only maintain the single readiness incident issue.

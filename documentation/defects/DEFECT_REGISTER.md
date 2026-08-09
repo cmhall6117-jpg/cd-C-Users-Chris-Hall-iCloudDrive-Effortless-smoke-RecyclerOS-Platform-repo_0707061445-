@@ -14,37 +14,107 @@ Resolution: GitHub Actions `postgres-migrations` succeeded on run `29289307269`.
 
 ### DEF-RC1-002: Backend dependency installation is not reproducible locally yet
 
-Status: closed by CI evidence
+Status: closed
 
 Evidence: `pip install -r services/api/requirements.txt` timed out after the `psycopg` pin was corrected.
 
 Impact: FastAPI startup import and automated pytest execution could not be completed locally.
 
-Resolution: GitHub Actions `backend` succeeded on run `29289307269`. PostgreSQL-only dependency installation remains split into `services/api/requirements-postgres.txt`.
+Resolution: Backend requirements installed successfully in the ignored repository `.venv` on July 14, 2026. The local backend suite then passed all 13 tests. PostgreSQL-only dependencies remain split into `services/api/requirements-postgres.txt`.
 
 ## High
 
-### DEF-RC1-003: Flutter SDK commands hang locally
+### DEF-RC1-010: Auth identities, memberships, and sessions are process-local
 
 Status: closed by CI evidence
 
-Evidence: `flutter pub get`, `flutter analyze`, and `flutter test` timed out without usable command output.
+Evidence: `PostgresAuthService` stores identities, memberships, token digests,
+expiry, revocation, login attempts, and audit events in PostgreSQL. The restart
+test passed on push run `29366652838` and pull-request run `29366685297`.
 
-Impact: Flutter gates are blocked locally.
+Impact: None remaining for the RC1 durable auth/session gate.
 
-Resolution: GitHub Actions `flutter` succeeded on run `29289307269`.
+Resolution: A bearer session remained valid across a fresh auth/app instance,
+then logout revocation remained effective across another fresh instance.
+
+### DEF-RC1-008: Core Flutter API integration awaits CI verification
+
+Status: closed by CI evidence
+
+Evidence: The workstation has no Flutter or Dart executable, so the new Dio
+gateway, asynchronous workflow controller, and injected fake tests cannot be
+analyzed or executed locally.
+
+Impact: None remaining for the reproducible Flutter build gate.
+
+Resolution: An initial analyzer warning was corrected in commit `71c2aa9`.
+GitHub Actions PR run `29325554779` then passed `flutter pub get`,
+`flutter analyze`, `flutter test`, and the live Flutter-to-FastAPI smoke test.
+
+### DEF-RC1-007: Backend records are not durable across process restarts
+
+Status: closed by CI evidence
+
+Evidence: FastAPI selects `PostgresStore` when `DATABASE_URL` is configured and
+production mode fails closed without it. The complete opportunity-to-inventory
+workflow survived fresh store/app instances on push run `29366652838` and
+pull-request run `29366685297`.
+
+Impact: None remaining for the RC1 durable workflow gate.
+
+Resolution: Migration `026` and `test_postgres_runtime.py` passed against clean
+PostgreSQL 16 services in both trigger paths.
+
+### DEF-RC1-003: Flutter SDK is unavailable locally
+
+Status: closed by CI evidence
+
+Evidence: `where flutter` and `where dart` found no executable on July 14, 2026. Earlier Flutter commands timed out without usable output.
+
+Impact: The Flutter baseline cannot run `flutter pub get`, `flutter analyze`, or `flutter test` locally.
+
+Resolution: GitHub Actions completed `flutter pub get`, `flutter analyze`, and `flutter test` successfully on run `29323035764`. Install a local Flutter SDK separately if workstation execution is required.
 
 ### DEF-RC1-004: Standard `python -m compileall` hangs locally
 
-Status: closed by CI evidence
+Status: closed
 
 Evidence: `python -m compileall services/api/src` emitted compile activity but did not exit before timeout. A previous backend syntax check passed before the environment degraded.
 
 Impact: RC1 cannot mark the requested compile gate passed with clean command completion.
 
-Resolution: GitHub Actions `backend` succeeded on run `29289307269`, including `python -m compileall src`.
+Resolution: The bundled Python runtime completed `python -m compileall services/api/src` locally on July 14, 2026. GitHub Actions also succeeded on run `29289307269`.
 
 ## Medium
+
+### DEF-RC1-011: Local auth lacks production account defenses
+
+Status: closed for RC1 scope by CI evidence
+
+Evidence: The PostgreSQL provider verifies PBKDF2 password hashes, rate-limits
+failed logins, expires and revokes opaque sessions, exposes logout, and records
+auth audit events. Refresh, password recovery, and live SSO remain intentionally
+deferred behind `AuthService`.
+
+Impact: No RC1 implementation blocker remains; enterprise identity capabilities
+are outside this release scope.
+
+Resolution: Durable lockout, revocation, expiry storage, and auth audit checks
+passed on runs `29366652838` and `29366685297`. Refresh, password recovery, and
+live SSO remain out of RC1 scope rather than release-gate defects.
+
+### DEF-RC1-009: GitHub Actions use versions targeting deprecated Node.js 20
+
+Status: closed by CI evidence
+
+Evidence: The workflow uses `actions/checkout@v6` and
+`actions/setup-python@v6`. Push run `29366652838` and pull-request run
+`29366685297` passed all jobs with zero check annotations.
+
+Impact: None remaining.
+
+Resolution: Both official actions ran their Node 24 majors without the prior
+Node 20 warning annotations.
 
 ### DEF-RC1-006: Draft pull request cannot be opened without a GitHub remote
 
@@ -65,3 +135,334 @@ Evidence: Active migrations go from `006` to `022`.
 Impact: Numbering is non-contiguous, but no duplicate migration numbers are active.
 
 Next action: Keep the manifest explicit and avoid renumbering generated historical packages.
+
+## Pilot Deployment Readiness
+
+### High
+
+#### DEF-PILOT-001: Public ingress, DNS, and TLS are not provisioned
+
+Status: open, external blocker
+
+Evidence: The pilot compose stack intentionally binds API and PostgreSQL ports
+to loopback. No public hostname, certificate, or reverse proxy is configured.
+
+Impact: Remote pilot access must not begin.
+
+Next action: Provision the selected provider's approved ingress, DNS, and TLS
+endpoint, then record external verification evidence.
+
+#### DEF-PILOT-002: Real pilot secrets are not provisioned
+
+Status: open, external blocker
+
+Evidence: The repository contains secret references and safe creation tooling,
+but no live values or approved access record.
+
+Impact: A real pilot environment cannot be started securely.
+
+Next action: Provision secrets in the selected provider's approved secret store,
+restrict deployment access, import the operator credential into the approved
+password manager, and record rotation ownership.
+
+#### DEF-PILOT-003: Off-host backup operations are not configured
+
+Status: open, external blocker
+
+Evidence: Backup and restore tooling exists, but no encrypted destination,
+schedule, retention job, or restore owner is configured.
+
+Impact: A data-bearing pilot would lack an evidenced recovery process.
+
+Next action: Approve recovery targets, configure provider-native and encrypted
+off-platform backups, assign the restore owner, and complete a clean-target
+restore rehearsal.
+
+### Medium
+
+#### DEF-PILOT-004: Central logs and readiness alerts are not routed
+
+Status: open, external blocker
+
+Evidence: The API exposes liveness and readiness, but no external log collector,
+monitor, or alert recipient is configured.
+
+Impact: An unattended pilot failure may not reach an operator promptly.
+
+Next action: Connect runtime logs and readiness probes to the selected provider's
+approved monitoring channel and test alert delivery.
+
+#### DEF-PILOT-005: Pilot container and recovery checks await CI
+
+Status: closed by CI evidence
+
+Evidence: Local Python checks pass. Push run `29369194654` and pull-request run
+`29369197183` passed the hardened container and populated backup/restore jobs.
+
+Impact: None remaining for repository-level pilot readiness.
+
+Resolution: The Linux image reached real readiness with a read-only filesystem,
+dropped capabilities, and no-new-privileges. The recovery rehearsal restored and
+verified auth, opportunity, and inventory data.
+
+#### DEF-PILOT-006: GCP Terraform definitions await provider validation
+
+Status: closed by CI evidence
+
+Evidence: A checksum-verified portable Terraform 1.14.6 initialized Google
+provider 7.41.0 and Random provider 3.9.0. Formatting passed and both the
+bootstrap and environment roots returned `Success! The configuration is valid.`
+
+Impact: No provider-schema blocker remains. Billable infrastructure still must
+not be applied until the external approval gates pass.
+
+Resolution: `gcp-pilot-iac` passed contract validation, Terraform formatting,
+and both provider roots on pull-request run `30162538935` at
+`8b24fae4d540834edf0c041a9b06c8d619fa7058`.
+
+#### DEF-PILOT-007: Billing and budget controls are not evidenced
+
+Status: open, external blocker
+
+Evidence: Project ID and number are recorded, but billing linkage and USD 100
+budget alert delivery have not been verified.
+
+Impact: Billable infrastructure must not be applied.
+
+Next action: Link the approved billing account, configure 50%, 80%, and 100%
+alerts, verify the recipients, and record the evidence without storing billing
+credentials in the repository.
+
+#### DEF-PILOT-008: Keyless deployment trust is not bootstrapped
+
+Status: open, external blocker
+
+Evidence: Workload Identity Federation, state storage, and least-scope deployer
+definitions exist under `deploy/gcp/pilot/bootstrap`, but no bootstrap output or
+protected GitHub environment is recorded.
+
+Impact: GitHub cannot safely plan or apply the pilot environment.
+
+Next action: Apply the bootstrap once from an authenticated administrator
+session, create the protected `gcp-pilot` environment, and record its three
+non-secret output variables.
+
+## Railway Pilot Environment
+
+### High
+
+#### DEF-RAILWAY-001: Railway account, project, and budget controls are absent
+
+Status: closed on August 2, 2026
+
+Evidence: Pro project `recycleros-pilot`
+(`22bdb278-c849-4c65-bd93-0031053344a1`) is private, account MFA and a passkey
+are enabled, and the USD 20 warning plus USD 30 hard limit are active. The
+project owner upgraded from Hobby to Pro on August 9, 2026, to activate native
+recovery controls; the expected monthly minimum is now USD 20.
+
+Impact: The cost-bounded pilot account prerequisite is satisfied.
+
+Next action: Retain monthly usage evidence and test warning delivery before
+field access.
+
+#### DEF-RAILWAY-002: Railway runtime, domain, and sealed variables are absent
+
+Status: closed on August 2, 2026
+
+Evidence: PostgreSQL deployment `9a092ef2-5f58-4cc8-92db-03f0af74b8d5` and API
+deployment `9ccd3586-b57f-4567-937f-0a6864d0d624` are successful in US East.
+The API is available at `https://recycleros-api-pilot.up.railway.app`, reports
+release `5784f4526e97de7cc60538d00ecc6977ca13a375`, uses private PostgreSQL, and
+has a sealed generated operator credential. The database has no public domain.
+
+Impact: Remote runtime, login, and tenant acceptance can run.
+
+Next action: Preserve exact release and endpoint evidence for each deployment.
+
+#### DEF-RAILWAY-003: Railway recovery operations are not fully approved
+
+Status: open, partially mitigated external blocker
+
+Evidence: PostgreSQL 16 is pinned to private 5 GiB US East volume
+`postgres-volume-gHwe`. On August 9, 2026, the owner upgraded to Pro and enabled
+PITR. An initial invalid-WAL-archive-credential warning was repaired by
+redeploying only PostgreSQL as deployment
+`ca3c8918-a664-4b6e-b9cc-998c0650ce27`. Railway marked the deployment active and
+successful at 12:44 EDT; the volume remained attached, the warning cleared, and
+the recovery window advanced from 12:35:54 through 13:19:18. The API readiness
+endpoint then returned HTTP 200 with storage and auth ready. Evidence images are
+retained under `documentation/release/evidence/railway/`.
+
+The volume-backup panel also shows a successful 164 MB manual backup at 12:34
+EDT and an active schedule with its next backup due in six hours. Schedule
+configuration confirms Daily is enabled every 24 hours with six-day retention
+and Weekly is enabled every seven days with one-month retention. Monthly is
+intentionally disabled. Earlier on August 9, a PostgreSQL 16.14 custom dump was
+copied off-platform, its
+server and downloaded SHA-256 values matched, and its encrypted copy was
+retained outside Git. A clean-target restore passed with 24 public tables, 11
+migration-ledger rows, and expected pilot identity records. The temporary
+restore database was dropped, local plaintext and SSH keys were removed, and
+Railway reported no registered SSH keys. A human operator then deleted the
+owner-only staging dump, verified its absence, revoked the cleanup SSH key,
+removed its local files, and confirmed that Railway again reported no
+registered keys. Automated off-platform cadence, cross-device key escrow, and
+an assigned restore owner remain unverified.
+
+Impact: PITR, native daily/weekly schedules, and one independent restore point
+are proven, but off-platform automation and recovery ownership are not yet
+approved.
+
+Next action: Confirm the first scheduled daily run, automate off-platform
+cadence and retention, escrow the recovery key, assign the restore owner, and
+approve the RPO/RTO.
+
+### Medium
+
+#### DEF-RAILWAY-004: Railway monitoring and protected acceptance are absent
+
+Status: open, external blocker
+
+Evidence: The protected GitHub `railway-pilot` environment exists and Railway
+Wait for CI is enabled with one valid check suite. Public readiness checks pass.
+Continuous uptime monitoring, alert delivery testing, and field/support owner
+approvals are not complete.
+
+Impact: Failures or spending changes may not reach an accountable operator.
+
+Next action: Configure and test continuous uptime and cost alert delivery,
+assign owners, and run the protected manual acceptance workflow.
+
+#### DEF-RAILWAY-005: A second field tester lacks a separate account path
+
+Status: open, scope limitation
+
+Evidence: The existing pilot bootstrap creates one durable local operator and
+the project has no user-administration workflow in the active RC1 path.
+
+Impact: One named tester can be assigned; a second must not share credentials.
+
+Next action: Pilot with one named operator or separately approve a minimal,
+audited account-provisioning operation before adding the second tester.
+
+## Production Launch Preparation
+
+### High
+
+#### DEF-PROD-001: Production hosting, ingress, DNS, and TLS are not provisioned
+
+Status: open, external blocker
+
+Impact: Production traffic must remain closed.
+
+Next action: Approve the production account and region, harden the host and
+network, provision DNS and managed TLS, and retain external verification.
+
+#### DEF-PROD-002: No approved image is published by immutable registry digest
+
+Status: open, external blocker
+
+Impact: The deployment cannot identify or retrieve an approved release artifact.
+
+Next action: Configure the approved registry, publish the exact CI candidate,
+record its SHA-256 digest and provenance, and create the release manifest.
+
+#### DEF-PROD-003: Managed PostgreSQL recovery controls are not provisioned
+
+Status: open, external blocker
+
+Impact: Production data would lack evidenced encryption, point-in-time recovery,
+retention, and target-environment restore capability.
+
+Next action: Provision managed PostgreSQL, restrict network access, configure
+encrypted backups and retention, approve RPO/RTO, and pass a restore drill.
+
+#### DEF-PROD-004: Production secrets and IAM ownership are not approved
+
+Status: open, external blocker
+
+Impact: Database and first-owner credentials cannot be safely provisioned or rotated.
+
+Next action: Configure the approved secret manager and deployment role, review
+least privilege, assign rotation owners, and retain an access review.
+
+#### DEF-PROD-005: Monitoring, incident response, and launch support are not active
+
+Status: open, external blocker
+
+Impact: Failures may not be detected, escalated, or rolled back within an approved window.
+
+Next action: Route logs, metrics, uptime and readiness alerts; test delivery; and
+assign on-call, incident command, rollback, and customer support ownership.
+
+### Medium
+
+#### DEF-PROD-006: Capacity, privacy, retention, and business launch approvals are absent
+
+Status: open, external blocker
+
+Impact: Technical repository readiness alone cannot authorize production use.
+
+Next action: Approve target load and retention, complete privacy and terms review,
+and record the accountable business go/no-go decision.
+
+#### DEF-PROD-007: Production container gate awaits GitHub Actions evidence
+
+Status: closed by CI evidence
+
+Impact: None remaining for repository-level production preparation.
+
+Resolution: Push run `29372078034` and pull-request run `29372080469` passed all
+eight jobs at `847a1bed5e9a438d3a85758954abdca1400525a6`. The production
+job validated Compose, image metadata, dependency integrity, clean migrations,
+owner bootstrap, two workers, readiness, release identity, headers, hidden docs,
+and login.
+
+## Production Environment Provisioning
+
+### High
+
+#### DEF-ENV-001: Cloud provider and production account decision is unapproved
+
+Status: open, external blocker
+
+Evidence: No provider, account, region, budget, billing owner, or production
+domain is recorded. The environment example intentionally contains placeholders.
+
+Impact: Provider-specific infrastructure and billable resources must not be created.
+
+Next action: Select the provider and service mapping, approve expected cost and
+region, assign account ownership, and complete the credential-free contract.
+
+#### DEF-ENV-002: Protected production environment and live acceptance are absent
+
+Status: open, external blocker
+
+Evidence: The manual GitHub workflow exists, but the `production` environment,
+required reviewers, database secret, public endpoint, and managed database have
+not been configured.
+
+The database acceptance job also requires a protected self-hosted runner labelled
+`recycleros-production` inside the private database network and the dedicated
+`PRODUCTION_DATABASE_VERIFY_URL` environment secret.
+
+Impact: Repository tests cannot prove target-environment TLS, IAM, recovery,
+observability, or deployed release identity.
+
+Next action: Provision the approved target, configure GitHub environment
+protection, and pass `production-environment-acceptance.yml` with retained output.
+
+### Medium
+
+#### DEF-ENV-003: Provider-specific infrastructure as code is intentionally deferred
+
+Status: open, blocked by provider decision
+
+Evidence: A provider-neutral acceptance boundary is implemented; no AWS, Azure,
+Google Cloud, or other provider has authority to become the production baseline.
+
+Impact: Production resources are not reproducible from provider-specific IaC yet.
+
+Next action: After DEF-ENV-001 closes, implement the selected provider module
+against the committed contract without changing application behavior.

@@ -320,8 +320,10 @@ blocked.
 - post-redeployment readiness: HTTP 200 with storage and auth ready
 - PITR WAL warning clearance: passed
 - PITR window advancement: passed, 12:35:54 through 13:19:18
-- daily/weekly volume schedules, automated off-platform retention, and
-  cross-device key escrow: not passed
+- 164 MB manual native volume backup at 12:34 EDT: passed
+- daily schedule every 24 hours with six-day retention: passed
+- weekly schedule every seven days with one-month retention: passed
+- automated off-platform retention and cross-device key escrow: not passed
 
 No database password, bearer token, plaintext encryption secret, or plaintext
 database archive was written to Git.

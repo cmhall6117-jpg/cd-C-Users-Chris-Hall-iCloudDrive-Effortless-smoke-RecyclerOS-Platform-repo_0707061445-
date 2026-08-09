@@ -257,6 +257,8 @@ def validate_contract(
             errors.append("database.restore_rehearsal_evidence is required")
         if database.get("point_in_time_recovery_evidence") in {"", "PENDING", None}:
             errors.append("database.point_in_time_recovery_evidence is required")
+        if database.get("volume_backup_schedule_evidence") in {"", "PENDING", None}:
+            errors.append("database.volume_backup_schedule_evidence is required")
         for name in ("sealed_variables", "two_factor_authentication"):
             if security.get(name) is not True:
                 errors.append(f"security.{name} must be true")

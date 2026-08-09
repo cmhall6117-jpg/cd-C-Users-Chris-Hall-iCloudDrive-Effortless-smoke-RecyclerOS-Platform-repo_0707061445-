@@ -280,7 +280,7 @@ Impact: Remote runtime, login, and tenant acceptance can run.
 
 Next action: Preserve exact release and endpoint evidence for each deployment.
 
-#### DEF-RAILWAY-003: Railway database recovery is not evidenced
+#### DEF-RAILWAY-003: Railway recovery operations are not fully approved
 
 Status: open, partially mitigated external blocker
 
@@ -294,7 +294,12 @@ the recovery window advanced from 12:35:54 through 13:19:18. The API readiness
 endpoint then returned HTTP 200 with storage and auth ready. Evidence images are
 retained under `documentation/release/evidence/railway/`.
 
-Earlier on August 9, a PostgreSQL 16.14 custom dump was copied off-platform, its
+The volume-backup panel also shows a successful 164 MB manual backup at 12:34
+EDT and an active schedule with its next backup due in six hours. Schedule
+configuration confirms Daily is enabled every 24 hours with six-day retention
+and Weekly is enabled every seven days with one-month retention. Monthly is
+intentionally disabled. Earlier on August 9, a PostgreSQL 16.14 custom dump was
+copied off-platform, its
 server and downloaded SHA-256 values matched, and its encrypted copy was
 retained outside Git. A clean-target restore passed with 24 public tables, 11
 migration-ledger rows, and expected pilot identity records. The temporary
@@ -302,16 +307,16 @@ restore database was dropped, local plaintext and SSH keys were removed, and
 Railway reported no registered SSH keys. A human operator then deleted the
 owner-only staging dump, verified its absence, revoked the cleanup SSH key,
 removed its local files, and confirmed that Railway again reported no
-registered keys. Daily and weekly volume schedules, automated off-platform
-cadence, cross-device key escrow, and an assigned restore owner remain
-unverified.
+registered keys. Automated off-platform cadence, cross-device key escrow, and
+an assigned restore owner remain unverified.
 
-Impact: PITR and one independent restore point are proven, but the complete
-defense-in-depth schedule and its operational ownership are not yet approved.
+Impact: PITR, native daily/weekly schedules, and one independent restore point
+are proven, but off-platform automation and recovery ownership are not yet
+approved.
 
-Next action: Enable and verify daily plus weekly volume schedules, record their
-first successful snapshots, automate the off-platform cadence and retention,
-escrow the recovery key, assign the restore owner, and approve the RPO/RTO.
+Next action: Confirm the first scheduled daily run, automate off-platform
+cadence and retention, escrow the recovery key, assign the restore owner, and
+approve the RPO/RTO.
 
 ### Medium
 

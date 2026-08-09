@@ -249,5 +249,8 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
 - PITR result: WAL warning cleared and recovery window advanced from 12:35:54
   through 13:19:18
 - Post-redeployment readiness: HTTP 200; storage and auth both ready
-- Gate result: independent restore and live PITR evidence passed; daily/weekly
-  volume schedules and operational ownership remain blocked
+- Native volume backup: 164 MB manual snapshot completed at 12:34 EDT
+- Native schedules: Daily every 24 hours with six-day retention and Weekly
+  every seven days with one-month retention; next backup due in six hours
+- Gate result: independent restore, live PITR, and native schedule evidence
+  passed; off-platform automation and operational ownership remain blocked

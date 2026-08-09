@@ -128,7 +128,7 @@ Cloud resources.
 | Full RC1 CI | Passed | Push run `30723893531` and PR run `30724007217` passed all 10 jobs. |
 | Railway account and budget controls | Passed live | Private Pro project, MFA/passkey, USD 20 warning and USD 30 hard limit verified; expected monthly minimum is USD 20. |
 | Runtime, domain, and sealed variables | Passed live | Successful US East API/PostgreSQL deployments, public HTTPS API, private database, sealed operator credential, exact release identity. |
-| Database backup and restore | Partially passed live | August 9 custom dump, checksum match, encrypted off-platform copy, clean restore, staging cleanup, and live PITR passed. Daily/weekly volume schedules, off-platform cadence, key escrow, and owner approval remain under `DEF-RAILWAY-003`. |
+| Database backup and restore | Partially passed live | August 9 custom dump, checksum match, encrypted off-platform copy, clean restore, staging cleanup, live PITR, a 164 MB native snapshot, and daily/weekly native schedules passed. Off-platform cadence, key escrow, and owner approval remain under `DEF-RAILWAY-003`. |
 | Monitoring and protected acceptance | Partially passed | GitHub environment and Wait for CI exist; uptime, alert delivery, support ownership, and field approval remain under `DEF-RAILWAY-004`. |
 | Second unique tester identity | Blocked for tester two | `DEF-RAILWAY-005`. |
 
@@ -175,7 +175,13 @@ returned HTTP 200 with storage and auth ready. Screenshot evidence:
   SHA-256 `fdbbb1c30d666ff24884b0a023181cf775dedd6cc11d087607bec07faef5cb36`
 - `documentation/release/evidence/railway/2026-08-09-pitr-healthy.png`
   SHA-256 `c1926747c43373bfe8edc0f61cfec10ecde53a7ca121436cb7399daa31f8fab2`
+- `documentation/release/evidence/railway/2026-08-09-volume-backup-1234.png`
+  SHA-256 `43ae91d2d54d7fc027264aa04dd550c0875dd3e68d54119b1a62d1d7ee6c09a7`
+- `documentation/release/evidence/railway/2026-08-09-volume-backup-schedule.png`
+  SHA-256 `02cf2ad36545433cd6da3fa2f9cf855453f185aaee2770eae59c2f11627e5630`
 
-Daily and weekly volume schedules, automated off-platform cadence,
+The native backup is 164 MB and completed at 12:34 EDT. Daily backups are
+enabled every 24 hours with six-day retention, and weekly backups are enabled
+every seven days with one-month retention. Automated off-platform cadence,
 cross-device key escrow, and restore ownership are not approved. This evidence
 does not change `field_ready: false`.

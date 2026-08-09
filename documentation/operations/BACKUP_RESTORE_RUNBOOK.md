@@ -72,12 +72,16 @@ iCloud-synced `private-backups` folder outside Git. The manifest is
 current Windows account; cross-device key escrow remains mandatory before field
 use.
 
-Railway's CLI refused agent deletion of the owner-only staging dump. A human
-operator must run this exact cleanup command and record the result:
+Railway's CLI required a human for staging-file deletion. On August 9, 2026,
+the operator ran this exact command:
 
 ```powershell
 railway volume files delete --volume postgres-volume-gHwe /recycleros-pilot-2026-08-09-rc1.dump
 ```
+
+Railway returned `Deleted /recycleros-pilot-2026-08-09-rc1.dump`. The operator
+verified the file was absent, revoked the cleanup SSH key, removed its local key
+files, and confirmed that Railway had no registered SSH keys.
 
 This one-time drill does not satisfy the proposed daily cadence, retention
 policy, native volume schedule, or restore-owner approval.

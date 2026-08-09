@@ -128,7 +128,7 @@ Cloud resources.
 | Full RC1 CI | Passed | Push run `30723893531` and PR run `30724007217` passed all 10 jobs. |
 | Railway account and budget controls | Passed live | Private Hobby project, MFA/passkey, USD 20 warning and USD 30 hard limit verified. |
 | Runtime, domain, and sealed variables | Passed live | Successful US East API/PostgreSQL deployments, public HTTPS API, private database, sealed operator credential, exact release identity. |
-| Database backup and restore | Partially passed live | August 9 custom dump, checksum match, encrypted off-platform copy, and clean restore passed. Native schedules, cadence, key escrow, owner approval, and staging-file cleanup remain under `DEF-RAILWAY-003`. |
+| Database backup and restore | Partially passed live | August 9 custom dump, checksum match, encrypted off-platform copy, clean restore, and staging cleanup passed. Native schedules, cadence, key escrow, and owner approval remain under `DEF-RAILWAY-003`. |
 | Monitoring and protected acceptance | Partially passed | GitHub environment and Wait for CI exist; uptime, alert delivery, support ownership, and field approval remain under `DEF-RAILWAY-004`. |
 | Second unique tester identity | Blocked for tester two | `DEF-RAILWAY-005`. |
 
@@ -160,7 +160,8 @@ The source and downloaded custom archive shared SHA-256
 The clean restore produced 24 public tables, 11 migration-ledger rows, and the
 expected pilot organization, workspace, user, and membership. Encryption and
 decryption verification reproduced the source hash. The temporary database and
-local plaintext were removed, and Railway reported no registered SSH keys. A
-human must still delete the owner-only volume staging file; native schedules,
-automated retention, cross-device key escrow, and restore ownership are not
-approved. This evidence does not change `field_ready: false`.
+local plaintext were removed. A human operator deleted and verified the
+owner-only volume staging file, revoked the cleanup SSH key, removed its local
+files, and confirmed that Railway reported no registered SSH keys. Native
+schedules, automated retention, cross-device key escrow, and restore ownership
+are not approved. This evidence does not change `field_ready: false`.

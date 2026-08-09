@@ -53,7 +53,7 @@
 | Budget envelope | Passed live | USD 20 warning and USD 30 hard limit are active. |
 | Railway account and project | Passed live | Private Hobby project, MFA, and passkey verified. |
 | Private PostgreSQL 16 | Passed live | Private service, 5 GiB volume, and no public database domain. |
-| Native and off-platform recovery | Partially passed live | Encrypted off-platform dump and clean restore passed August 9; native schedules, automated cadence/retention, key escrow, owner approval, and staging-file cleanup remain open. |
+| Native and off-platform recovery | Partially passed live | Encrypted off-platform dump, clean restore, and staging cleanup passed August 9; native schedules, automated cadence/retention, key escrow, and owner approval remain open. |
 | Public endpoint and sealed variables | Passed live | HTTPS API, private database, and sealed operator credential verified. |
 | Monitoring and alert delivery | Blocked external | Uptime and cost alert delivery are not evidenced. |
 | Protected acceptance workflow | Partially passed | GitHub environment and Railway Wait for CI exist; reviewer-run field acceptance remains pending. |

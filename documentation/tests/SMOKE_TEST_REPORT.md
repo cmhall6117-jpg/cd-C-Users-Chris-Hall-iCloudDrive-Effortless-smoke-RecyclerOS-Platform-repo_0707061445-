@@ -311,8 +311,9 @@ ongoing recovery operations remain blocked.
 - temporary restore database removal: passed and verified
 - temporary Railway SSH-key removal: passed; final key list empty
 - local plaintext and key cleanup: passed
+- Railway staging-dump deletion: passed by human operator and verified absent
+- cleanup SSH-key removal: passed; final Railway key list empty
 - native schedules, automated retention, cross-device key escrow: not passed
-- Railway staging-dump deletion: pending required human command
 
 No database password, bearer token, plaintext encryption secret, or plaintext
 database archive was written to Git.

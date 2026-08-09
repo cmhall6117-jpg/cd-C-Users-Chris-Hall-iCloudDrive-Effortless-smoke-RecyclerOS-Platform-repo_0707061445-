@@ -290,17 +290,17 @@ values matched, and its encrypted copy was retained outside Git. A clean-target
 restore passed with 24 public tables, 11 migration-ledger rows, and expected
 pilot identity records. The temporary restore database was dropped, local
 plaintext and SSH keys were removed, and Railway reported no registered SSH
-keys. Railway's agent safeguard requires a human to remove the owner-only
-staging dump from the private volume. Automated cadence, retention,
+keys. A human operator then deleted the owner-only staging dump, verified its
+absence, revoked the cleanup SSH key, removed its local files, and confirmed
+that Railway again reported no registered keys. Automated cadence, retention,
 cross-device key escrow, and an assigned restore owner remain absent.
 
 Impact: One recovery point is proven, but a data-bearing field pilot still
 lacks an approved and continuously operated recovery path.
 
-Next action: Run the human cleanup command in the backup runbook, enable native
-schedules in the Railway dashboard or resolve the plan permission, automate the
-off-platform cadence and retention, escrow the recovery key, assign the restore
-owner, and approve the RPO/RTO.
+Next action: Enable native schedules in the Railway dashboard or resolve the
+plan permission, automate the off-platform cadence and retention, escrow the
+recovery key, assign the restore owner, and approve the RPO/RTO.
 
 ### Medium
 

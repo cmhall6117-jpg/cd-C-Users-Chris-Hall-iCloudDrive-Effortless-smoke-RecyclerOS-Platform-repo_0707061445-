@@ -241,7 +241,7 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
   `96102505a31888c5c3e9eb2424dae58ef0323747d81b6e126466bbd3da4c1a00`
 - Cleanup: temporary database removed, local plaintext removed, temporary
   Railway SSH access revoked and verified empty
-- Pending human cleanup: remove the owner-only staging dump from the Railway
-  volume using the exact command in `BACKUP_RESTORE_RUNBOOK.md`
+- Human cleanup: owner-only Railway staging dump deleted and verified absent;
+  cleanup SSH key revoked, local files removed, and final key list empty
 - Gate result: one-time backup and restore evidence passed; scheduled recovery
   and operational ownership remain blocked

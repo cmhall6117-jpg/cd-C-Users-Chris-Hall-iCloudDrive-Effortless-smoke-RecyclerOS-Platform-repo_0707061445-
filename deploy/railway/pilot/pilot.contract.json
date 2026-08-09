@@ -65,7 +65,8 @@
   "approvals": {
     "deployment": true,
     "field_access": false,
-    "restore_owner_assigned": false,
-    "support_owner_assigned": false
+    "restore_owner_assigned": true,
+    "support_owner_assigned": true,
+    "owner_assignment_evidence": "pilot-owner-approval-2026-08-09"
   }
 }

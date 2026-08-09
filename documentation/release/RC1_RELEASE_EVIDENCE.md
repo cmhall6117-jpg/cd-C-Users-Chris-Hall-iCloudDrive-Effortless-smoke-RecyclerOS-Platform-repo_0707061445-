@@ -128,13 +128,13 @@ Cloud resources.
 | Full RC1 CI | Passed | Push run `30723893531` and PR run `30724007217` passed all 10 jobs. |
 | Railway account and budget controls | Passed live | Private Pro project, MFA/passkey, USD 20 warning and USD 30 hard limit verified; expected monthly minimum is USD 20. |
 | Runtime, domain, and sealed variables | Passed live | Successful US East API/PostgreSQL deployments, public HTTPS API, private database, sealed operator credential, exact release identity. |
-| Database backup and restore | Partially passed live | August 9 custom dump, checksum match, encrypted off-platform copy, clean restore, staging cleanup, live PITR, a 164 MB native snapshot, and daily/weekly native schedules passed. Off-platform cadence, key escrow, and owner approval remain under `DEF-RAILWAY-003`. |
-| Monitoring and protected acceptance | Partially passed live | Two-hour monitoring is active; healthy, simulated incident, and recovery runs passed their expected outcomes, including issue creation and closure. Support ownership and field approval remain under `DEF-RAILWAY-004`. |
+| Database backup and restore | Partially passed live | August 9 custom dump, checksum match, encrypted off-platform copy, clean restore, staging cleanup, live PITR, a 164 MB native snapshot, daily/weekly native schedules, and restore-owner assignment passed. Off-platform cadence and key escrow remain under `DEF-RAILWAY-003`. |
+| Monitoring and protected acceptance | Partially passed live | Two-hour monitoring is active; healthy, simulated incident, and recovery runs passed their expected outcomes, including issue creation and closure. Support ownership is assigned; field approval remains under `DEF-RAILWAY-004`. |
 | Second unique tester identity | Blocked for tester two | `DEF-RAILWAY-005`. |
 
 Passed Railway gates above have live command or endpoint evidence. The contract
 remains `planned` and field access remains blocked while off-platform recovery,
-ownership, and approval controls are incomplete. Railway remains a
+and field-approval controls are incomplete. Railway remains a
 pilot choice and does not change the production-provider decision.
 
 CI evidence applies to implementation commit
@@ -189,6 +189,8 @@ returned HTTP 200 with storage and auth ready. Screenshot evidence:
 
 The native backup is 164 MB and completed at 12:34 EDT. Daily backups are
 enabled every 24 hours with six-day retention, and weekly backups are enabled
-every seven days with one-month retention. Automated off-platform cadence,
-cross-device key escrow, and restore ownership are not approved. This evidence
-does not change `field_ready: false`.
+every seven days with one-month retention. On August 9, the project owner
+assigned Chris Hall as both restore owner and support owner for the one-person
+pilot. Automated off-platform cadence and cross-device key escrow are not
+complete. Field access is not approved, so this evidence does not change
+`field_ready: false`.

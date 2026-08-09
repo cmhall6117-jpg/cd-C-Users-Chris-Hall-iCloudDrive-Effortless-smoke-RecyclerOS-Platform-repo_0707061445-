@@ -53,6 +53,7 @@ def _ready_contract() -> dict:
         "field_access": True,
         "restore_owner_assigned": True,
         "support_owner_assigned": True,
+        "owner_assignment_evidence": "owner-approval-100",
     }
     return contract
 
@@ -69,7 +70,8 @@ def test_planned_contract_is_not_field_ready():
     assert "lifecycle must be verified for field readiness" in errors
     assert "database.daily_backup_enabled must be true" not in errors
     assert "observability.uptime_check_configured must be true" not in errors
-    assert "approvals.restore_owner_assigned must be true" in errors
+    assert "approvals.restore_owner_assigned must be true" not in errors
+    assert "approvals.field_access must be true" in errors
 
 
 def test_verified_contract_passes_field_readiness():

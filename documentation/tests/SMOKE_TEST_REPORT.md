@@ -343,3 +343,16 @@ Result on August 9, 2026: passed.
 
 The incident was synthetic; no Railway resource, credential, database, volume,
 PITR setting, or backup schedule was changed.
+
+## Railway Pilot Owner Assignment
+
+Result on August 9, 2026: passed for the one-person pilot.
+
+- restore owner: Chris Hall
+- support owner: Chris Hall
+- approval source: explicit project-owner approval
+- scope: one-person Railway pilot only
+- field access: not yet approved
+
+No credential, secret, or elevated Railway permission was added by this owner
+assignment.

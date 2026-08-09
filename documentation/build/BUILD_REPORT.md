@@ -252,8 +252,9 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
 - Native volume backup: 164 MB manual snapshot completed at 12:34 EDT
 - Native schedules: Daily every 24 hours with six-day retention and Weekly
   every seven days with one-month retention; next backup due in six hours
-- Gate result: independent restore, live PITR, and native schedule evidence
-  passed; off-platform automation and operational ownership remain blocked
+- Restore owner: Chris Hall, approved for the one-person pilot on August 9
+- Gate result: independent restore, live PITR, native schedules, and recovery
+  ownership passed; off-platform automation remains blocked
 
 ## Railway Monitor Activation
 
@@ -266,5 +267,6 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
 - Recovery monitor: run `31331787276`, passed
 - Recovery handling: issue `#16` closed as completed with a recovery comment
 - Schedule: active every two hours on the default branch
-- Gate result: uptime and readiness-incident delivery passed; support ownership
-  and field approval remain blocked
+- Support owner: Chris Hall, approved for the one-person pilot on August 9
+- Gate result: uptime, readiness-incident delivery, and support ownership
+  passed; field approval remains blocked

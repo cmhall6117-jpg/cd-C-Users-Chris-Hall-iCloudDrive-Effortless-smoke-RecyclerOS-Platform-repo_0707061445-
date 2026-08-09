@@ -1287,6 +1287,7 @@ preserved.
 ## Railway Pilot Environment Contributions
 
 - `.github/workflows/railway-pilot-acceptance.yml`
+- `.github/workflows/railway-pilot-monitor.yml`
 - `deploy/railway/pilot/railway.json`
 - `deploy/railway/pilot/variables.example`
 - `deploy/railway/pilot/pilot.contract.json`
@@ -1297,5 +1298,7 @@ preserved.
 - `documentation/release/RAILWAY_PILOT_ENVIRONMENT_PR.md`
 
 The branch also updates `services/api/Dockerfile` so the healthcheck honors the
-platform-assigned port, and extends RC1 CI and evidence documents. These files
-are credential-free, create no Railway resources, and activate no vertical slice.
+platform-assigned port, and extends RC1 CI, recovery, monitoring, and evidence
+documents. These files are credential-free and activate no vertical slice. The
+monitor performs read-only public endpoint checks; its scoped GitHub token can
+only maintain the single readiness incident issue.

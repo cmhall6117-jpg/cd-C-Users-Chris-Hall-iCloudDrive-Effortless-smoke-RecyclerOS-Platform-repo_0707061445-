@@ -142,3 +142,16 @@ def test_acceptance_inputs_must_match_committed_deployment_identity():
         "Workflow input does not match contract: runtime.api_url",
         "Workflow input does not match contract: runtime.release_commit",
     ]
+
+
+def test_uptime_monitor_is_cost_bounded_and_reports_incidents():
+    workflow = (
+        REPOSITORY_ROOT / ".github" / "workflows" / "railway-pilot-monitor.yml"
+    ).read_text(encoding="utf-8")
+
+    assert 'cron: "37 */2 * * *"' in workflow
+    assert "production_endpoint_verify.py" in workflow
+    assert "issues: write" in workflow
+    assert "simulate_failure" in workflow
+    assert "gh issue create" in workflow
+    assert "gh issue close" in workflow

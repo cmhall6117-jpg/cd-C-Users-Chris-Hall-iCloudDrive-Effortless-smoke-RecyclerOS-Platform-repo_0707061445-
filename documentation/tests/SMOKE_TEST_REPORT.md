@@ -293,3 +293,26 @@ controls remain blocked.
 The generated password and bearer token remained in memory during acceptance
 and were not printed or written to the repository. Backup/restore, continuous
 monitoring, alert delivery, and second-tester evidence were not claimed.
+
+## Live Railway Recovery Drill
+
+Result on August 9, 2026: the one-time backup and clean-target restore passed;
+ongoing recovery operations remain blocked.
+
+- current backend regression: 70 passed, 2 PostgreSQL-only skipped
+- `pg_dump` and source database version: PostgreSQL 16.14
+- custom archive: 61,051 bytes and 150 TOC entries
+- server/download SHA-256 equality: passed
+- clean-target `pg_restore --exit-on-error`: passed
+- restored public tables: 24
+- restored migration-ledger rows: 11
+- restored organization/workspace/user/membership counts: `1/1/1/1`
+- encrypted-copy decrypt/hash verification: passed
+- temporary restore database removal: passed and verified
+- temporary Railway SSH-key removal: passed; final key list empty
+- local plaintext and key cleanup: passed
+- native schedules, automated retention, cross-device key escrow: not passed
+- Railway staging-dump deletion: pending required human command
+
+No database password, bearer token, plaintext encryption secret, or plaintext
+database archive was written to Git.

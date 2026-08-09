@@ -280,18 +280,27 @@ Next action: Preserve exact release and endpoint evidence for each deployment.
 
 #### DEF-RAILWAY-003: Railway database recovery is not evidenced
 
-Status: open, external blocker
+Status: open, partially mitigated external blocker
 
 Evidence: PostgreSQL 16 is pinned to a private 5 GiB US East volume. Daily and
 weekly schedules remain absent; the public API returned `Not Authorized` when
-the project owner attempted to enable them. Off-platform backup and clean-target
-restore evidence are also pending. Railway's database template is unmanaged.
+the project owner attempted to enable them. On August 9, 2026, a PostgreSQL
+16.14 custom dump was copied off-platform, its server and downloaded SHA-256
+values matched, and its encrypted copy was retained outside Git. A clean-target
+restore passed with 24 public tables, 11 migration-ledger rows, and expected
+pilot identity records. The temporary restore database was dropped, local
+plaintext and SSH keys were removed, and Railway reported no registered SSH
+keys. Railway's agent safeguard requires a human to remove the owner-only
+staging dump from the private volume. Automated cadence, retention,
+cross-device key escrow, and an assigned restore owner remain absent.
 
-Impact: A data-bearing field pilot would lack an approved recovery path.
+Impact: One recovery point is proven, but a data-bearing field pilot still
+lacks an approved and continuously operated recovery path.
 
-Next action: Enable native schedules in the Railway dashboard or resolve the
-plan permission, create an encrypted off-platform dump, restore it into a clean
-target, and record the rehearsal.
+Next action: Run the human cleanup command in the backup runbook, enable native
+schedules in the Railway dashboard or resolve the plan permission, automate the
+off-platform cadence and retention, escrow the recovery key, assign the restore
+owner, and approve the RPO/RTO.
 
 ### Medium
 

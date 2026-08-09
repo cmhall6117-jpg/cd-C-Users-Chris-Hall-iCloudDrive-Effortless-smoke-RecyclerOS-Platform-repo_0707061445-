@@ -1,0 +1,106 @@
+name: Railway Pilot Monitor
+
+on:
+  schedule:
+    - cron: "37 */2 * * *"
+  workflow_dispatch:
+    inputs:
+      simulate_failure:
+        description: Exercise the incident issue path without calling the API
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: railway-pilot-monitor
+  cancel-in-progress: false
+
+jobs:
+  readiness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Verify the public Railway surface
+        id: monitor
+        continue-on-error: true
+        env:
+          SIMULATE_FAILURE: ${{ inputs.simulate_failure || 'false' }}
+        run: |
+          if [[ "$SIMULATE_FAILURE" == "true" ]]; then
+            echo "Synthetic monitor failure requested."
+            exit 1
+          fi
+
+          API_URL="$(python -c 'import json; print(json.load(open("deploy/railway/pilot/pilot.contract.json", encoding="utf-8"))["runtime"]["api_url"])')"
+          RELEASE_SHA="$(python -c 'import json; print(json.load(open("deploy/railway/pilot/pilot.contract.json", encoding="utf-8"))["runtime"]["release_commit"])')"
+
+          result=1
+          for attempt in 1 2 3; do
+            if python tools/scripts/production_endpoint_verify.py \
+              --base-url "$API_URL" \
+              --release-sha "$RELEASE_SHA" \
+              --minimum-certificate-days 7 \
+              --output "$RUNNER_TEMP/railway-pilot-monitor.json"; then
+              result=0
+              break
+            fi
+            echo "Readiness attempt ${attempt} failed; allowing a cold-start retry."
+            sleep 15
+          done
+          exit "$result"
+
+      - name: Publish monitor evidence
+        if: ${{ always() }}
+        run: |
+          echo "## Railway pilot monitor" >> "$GITHUB_STEP_SUMMARY"
+          if [[ -f "$RUNNER_TEMP/railway-pilot-monitor.json" ]]; then
+            cat "$RUNNER_TEMP/railway-pilot-monitor.json" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No endpoint report was produced; the incident path was exercised." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Open or update readiness incident
+        if: ${{ steps.monitor.outcome == 'failure' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          ISSUE_TITLE: "[Pilot Monitor] Railway readiness failure"
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          SIMULATE_FAILURE: ${{ inputs.simulate_failure || 'false' }}
+        run: |
+          issue_number="$(gh issue list --state open --limit 100 --json number,title --jq ".[] | select(.title == \"$ISSUE_TITLE\") | .number" | head -n 1)"
+          if [[ -n "$issue_number" ]]; then
+            gh issue comment "$issue_number" --body "Readiness failed again. Run: $RUN_URL. Simulated: $SIMULATE_FAILURE."
+          else
+            gh issue create \
+              --title "$ISSUE_TITLE" \
+              --body "The RecyclerOS Railway pilot readiness monitor failed. Run: $RUN_URL. Simulated: $SIMULATE_FAILURE. Field access remains blocked until the endpoint recovers and an operator reviews the run."
+          fi
+
+      - name: Close recovered readiness incident
+        if: ${{ steps.monitor.outcome == 'success' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          ISSUE_TITLE: "[Pilot Monitor] Railway readiness failure"
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          issue_number="$(gh issue list --state open --limit 100 --json number,title --jq ".[] | select(.title == \"$ISSUE_TITLE\") | .number" | head -n 1)"
+          if [[ -n "$issue_number" ]]; then
+            gh issue close "$issue_number" \
+              --reason completed \
+              --comment "Readiness recovered. Run: $RUN_URL."
+          fi
+
+      - name: Enforce monitor result
+        if: ${{ steps.monitor.outcome == 'failure' }}
+        run: exit 1

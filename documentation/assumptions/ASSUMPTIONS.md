@@ -17,7 +17,10 @@
 - The pilot API and PostgreSQL ports remain loopback-bound; remote access requires an independently managed TLS reverse proxy and DNS record.
 - Pilot runtime secrets are mounted through file references and are not committed, baked into the image, or written into evidence documents.
 - The API container applies idempotent RC1 migrations before starting one initial pilot worker.
-- Repository readiness does not imply a live pilot host, approved real secrets, off-host backup schedule, centralized alerts, or staffed support coverage.
+- Repository readiness alone does not imply a live pilot host, approved real
+  secrets, off-host backup schedule, centralized alerts, or staffed support
+  coverage. The live Railway pilot remains no-go until its external controls
+  are evidenced.
 - Proposed pilot recovery targets are a 24-hour recovery point and 4-hour recovery time; business approval is still required.
 - The short repository path `repo_0707061445` is the authoritative monorepo because longer Windows paths interrupt deep generated file copies.
 - Production uses the same RC1 application image as the pilot but separates schema migration and first-owner provisioning from API startup.
@@ -51,7 +54,10 @@
   its existence does not authorize production traffic or production data.
 - The Railway planning envelope is USD 12-25 monthly with a USD 20 alert and USD 30 hard limit; field access remains blocked if the plan cannot enforce or evidence those controls.
 - The Railway API uses one US East replica, one worker, serverless sleep, a 512 MiB memory limit, and private PostgreSQL networking for a maximum of two testers.
-- Railway's PostgreSQL template is unmanaged. Native volume backups require a separate encrypted off-platform logical backup and restore rehearsal before field use.
+- Railway's PostgreSQL template is unmanaged. The August 9 manual encrypted
+  off-platform backup and clean restore proves one recovery point, but does not
+  replace native schedules, automated retention, cross-device key escrow, or an
+  assigned restore owner.
 - The initial Railway pilot starts with one named operator and no credential sharing; a second tester requires a separate durable identity.
 - Railway and GitHub acceptance workflows contain no provider deployment token and cannot create, mutate, or delete live resources.
 - Railway health probes use `healthcheck.railway.app`; this exact hostname is

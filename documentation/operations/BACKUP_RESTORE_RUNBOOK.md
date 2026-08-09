@@ -56,6 +56,32 @@ python tools/scripts/pilot_postgres_verify.py --require-runtime-data
 Record the backup manifest, restore start/end times, verification output, and
 operator. Remove all temporary environment variables after the rehearsal.
 
+## Railway Recovery Evidence
+
+The August 9, 2026 Railway rehearsal created a PostgreSQL 16.14 custom archive,
+matched its server and downloaded SHA-256 values, encrypted the off-platform
+copy, and restored it into the clean target
+`recycleros_restore_verify_a65d704f`. Verification found 24 public tables, 11
+migration-ledger rows, and the expected organization, workspace, user, and
+membership records. The temporary database was dropped, local plaintext and
+SSH keys were removed, and Railway reported no registered SSH keys.
+
+The retained encrypted artifact and DPAPI-protected recovery key are in the
+iCloud-synced `private-backups` folder outside Git. The manifest is
+`recycleros-pilot-2026-08-09-rc1.manifest.txt`. DPAPI protection is tied to the
+current Windows account; cross-device key escrow remains mandatory before field
+use.
+
+Railway's CLI refused agent deletion of the owner-only staging dump. A human
+operator must run this exact cleanup command and record the result:
+
+```powershell
+railway volume files delete --volume postgres-volume-gHwe /recycleros-pilot-2026-08-09-rc1.dump
+```
+
+This one-time drill does not satisfy the proposed daily cadence, retention
+policy, native volume schedule, or restore-owner approval.
+
 ## Production Restore Controls
 
 - stop writes before restore

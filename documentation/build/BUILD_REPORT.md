@@ -215,7 +215,33 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
 - Wait for CI: enabled with one valid GitHub check suite
 - Evidence-branch backend regression: 69 passed, 2 PostgreSQL-only skipped
 - Evidence-branch Python compilation: passed
+- Evidence baseline: `f3b732f5c75bc0c9088b1deefbd3f9149ac220a7`
+- Evidence CI: all 22 checks passed on push run `31314925876` and pull-request
+  run `31315025909` for draft pull request `#15`
 - Updated Railway contract validation: `valid: true`, `field_ready: false`
-- Remaining release blockers: native/off-platform recovery, restore rehearsal,
-  continuous monitoring and alert delivery, support ownership, field approval,
-  and a separate second-tester identity
+- Remaining release blockers: native and scheduled off-platform recovery,
+  cross-device key escrow, continuous monitoring and alert delivery, support
+  ownership, field approval, and a separate second-tester identity
+
+## Railway Recovery Drill
+
+- Date: August 9, 2026
+- Current backend regression: 70 passed, 2 PostgreSQL-only skipped
+- Source: live private Railway PostgreSQL 16.14 service
+- Archive: custom format, 61,051 bytes, 150 TOC entries
+- Archive SHA-256:
+  `665035b1502c52ba4e80272073b1a8f5a2ee6d5bd4c22a1ff76bfe76a65d704f`
+- Download verification: passed; server and workstation hashes matched
+- Clean restore: passed into `recycleros_restore_verify_a65d704f`
+- Restored schema: 24 public tables and 11 migration-ledger rows
+- Restored pilot identity data: organization, workspace, user, and membership
+  counts each equal to 1
+- Encryption verification: passed; decrypted archive hash matched the source
+- Retained encrypted SHA-256:
+  `96102505a31888c5c3e9eb2424dae58ef0323747d81b6e126466bbd3da4c1a00`
+- Cleanup: temporary database removed, local plaintext removed, temporary
+  Railway SSH access revoked and verified empty
+- Pending human cleanup: remove the owner-only staging dump from the Railway
+  volume using the exact command in `BACKUP_RESTORE_RUNBOOK.md`
+- Gate result: one-time backup and restore evidence passed; scheduled recovery
+  and operational ownership remain blocked

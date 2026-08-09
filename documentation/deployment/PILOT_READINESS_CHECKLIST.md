@@ -50,13 +50,13 @@
 | Config as code | Passed locally | Official Railway schema and repository validator passed. |
 | Credential-free contract | Passed locally | Planned contract is valid and not field-ready. |
 | Dynamic platform port | Passed locally | Docker healthcheck and API entrypoint use `PORT`. |
-| Budget envelope | Planned | USD 12-25 estimate, USD 20 alert, USD 30 hard limit. |
-| Railway account and project | Blocked external | No approved account or billable resource exists. |
-| Private PostgreSQL 16 | Blocked external | Service and volume are not provisioned. |
-| Native and off-platform recovery | Blocked external | Backups and restore rehearsal are not evidenced. |
-| Public endpoint and sealed variables | Blocked external | Domain and live secrets do not exist. |
+| Budget envelope | Passed live | USD 20 warning and USD 30 hard limit are active. |
+| Railway account and project | Passed live | Private Hobby project, MFA, and passkey verified. |
+| Private PostgreSQL 16 | Passed live | Private service, 5 GiB volume, and no public database domain. |
+| Native and off-platform recovery | Partially passed live | Encrypted off-platform dump and clean restore passed August 9; native schedules, automated cadence/retention, key escrow, owner approval, and staging-file cleanup remain open. |
+| Public endpoint and sealed variables | Passed live | HTTPS API, private database, and sealed operator credential verified. |
 | Monitoring and alert delivery | Blocked external | Uptime and cost alert delivery are not evidenced. |
-| Protected acceptance workflow | Passed repository CI; blocked external | Workflow parses and branch CI passed; GitHub environment and live target do not exist. |
+| Protected acceptance workflow | Partially passed | GitHub environment and Railway Wait for CI exist; reviewer-run field acceptance remains pending. |
 
 Railway field access remains no-go until the strict contract reports field-ready,
 the manual acceptance workflow passes, and all `DEF-RAILWAY-*` defects close.
@@ -64,7 +64,7 @@ the manual acceptance workflow passes, and all `DEF-RAILWAY-*` defects close.
 ## Decision
 
 The local-container pilot repository was deployment-ready at commit
-`59bd74a78c39923ad99d583a00f352a57d8dfb95`. The Google Cloud and Railway
-definitions are credential-free deployment candidates only. A data-bearing or
-remotely accessible pilot remains no-go until the selected provider's external
-prerequisites are assigned, configured, and evidenced.
+`59bd74a78c39923ad99d583a00f352a57d8dfb95`. Google Cloud remains a
+credential-free deployment candidate. Railway has a reproducible live runtime,
+but a data-bearing field pilot remains no-go until its scheduled recovery,
+monitoring, ownership, cleanup, and approval prerequisites are evidenced.

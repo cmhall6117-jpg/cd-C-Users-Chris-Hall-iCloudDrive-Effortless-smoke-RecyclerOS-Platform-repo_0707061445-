@@ -43,9 +43,9 @@
   cap spend.
 - The pilot accepts single-zone `db-g1-small` Cloud SQL availability. Shared-core
   availability is an explicit pilot risk and is not a production SLA.
-- Field access remains prohibited until billing, budget alerts, GitHub
-  protection, monitoring delivery, support ownership, and restore evidence are
-  verified.
+- Google Cloud field access remains prohibited until billing, budget alerts,
+  GitHub protection, monitoring delivery, support ownership, and restore
+  evidence are verified.
 - GitHub deployments use Workload Identity Federation restricted to the exact
   repository and deployment branch. Static Google service account keys are
   forbidden.
@@ -53,7 +53,11 @@
   production provider. The private Pro project `recycleros-pilot` is live;
   its existence does not authorize production traffic or production data.
 - The Railway planning envelope is USD 20-25 monthly with a USD 20 alert and USD 30 hard limit; field access remains blocked if the plan cannot enforce or evidence those controls.
-- The Railway API uses one US East replica, one worker, serverless sleep, a 512 MiB memory limit, and private PostgreSQL networking for a maximum of two testers.
+- The project owner approved Railway field access on August 24, 2026, for Chris
+  Hall as the only pilot tester. Billing controls, GitHub protection,
+  monitoring delivery, support ownership, and restore evidence are verified;
+  protected acceptance still must pass before this gate is recorded complete.
+- The Railway API uses one US East replica, one worker, serverless sleep, a 512 MiB memory limit, and private PostgreSQL networking for one approved tester.
 - Railway's PostgreSQL template is unmanaged. The August 9 manual encrypted
   off-platform backup and clean restore proves one recovery point; PITR and
   daily/weekly native schedules are active. Automated off-platform retention

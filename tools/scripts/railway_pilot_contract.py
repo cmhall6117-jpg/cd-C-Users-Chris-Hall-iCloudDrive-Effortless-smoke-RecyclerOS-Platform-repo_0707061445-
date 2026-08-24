@@ -283,6 +283,8 @@ def validate_contract(
                 errors.append(f"approvals.{name} must be true")
         if approvals.get("owner_assignment_evidence") in {"", "PENDING", None}:
             errors.append("approvals.owner_assignment_evidence is required")
+        if approvals.get("field_access_evidence") in {"", "PENDING", None}:
+            errors.append("approvals.field_access_evidence is required")
     elif contract.get("lifecycle") == "verified":
         for error in validate_contract(contract, require_ready=True):
             if error not in errors:

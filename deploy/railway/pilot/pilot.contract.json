@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "environment": "pilot",
-  "lifecycle": "planned",
+  "lifecycle": "verified",
   "provider": {
     "name": "railway",
     "plan": "pro",
@@ -59,14 +59,15 @@
     "monitor_evidence": "github-actions-2026-08-09-31331712419-31331739729-31331787276"
   },
   "testing": {
-    "maximum_testers": 2,
+    "maximum_testers": 1,
     "data_policy": "synthetic_or_authorized_pilot_only"
   },
   "approvals": {
     "deployment": true,
-    "field_access": false,
+    "field_access": true,
     "restore_owner_assigned": true,
     "support_owner_assigned": true,
-    "owner_assignment_evidence": "pilot-owner-approval-2026-08-09"
+    "owner_assignment_evidence": "pilot-owner-approval-2026-08-09",
+    "field_access_evidence": "project-owner-approval-2026-08-24"
   }
 }

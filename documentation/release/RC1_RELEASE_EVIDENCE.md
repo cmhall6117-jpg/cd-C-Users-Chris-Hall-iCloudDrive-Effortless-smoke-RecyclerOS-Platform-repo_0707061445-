@@ -122,20 +122,21 @@ Cloud resources.
 | --- | --- | --- |
 | Railway config structure | Passed locally | Current official Railway JSON schema accepted `railway.json`. |
 | Credential-free contract | Passed locally | Validator returned `valid: true`. |
-| Pre-provisioning no-go | Passed locally | Validator returned `field_ready: false`. |
+| One-person field contract | Passed locally | Verified contract caps access at one tester and records project-owner approval. |
 | Focused automated tests | Passed locally | 10 tests. |
 | Dynamic `PORT` healthcheck | Passed locally | Focused Dockerfile test. |
 | Full RC1 CI | Passed | Push run `30723893531` and PR run `30724007217` passed all 10 jobs. |
 | Railway account and budget controls | Passed live | Private Pro project, MFA/passkey, USD 20 warning and USD 30 hard limit verified; expected monthly minimum is USD 20. |
 | Runtime, domain, and sealed variables | Passed live | Successful US East API/PostgreSQL deployments, public HTTPS API, private database, sealed operator credential, exact release identity. |
 | Database backup and restore | Passed for one-person pilot | August 9 custom dump, checksum match, encrypted off-platform copy, clean restore, staging cleanup, live PITR, and restore-owner assignment passed. August 24 history proves daily and weekly native schedules produced real snapshots. Off-platform automation and key escrow remain broader-use hardening under `DEF-RAILWAY-003`. |
-| Monitoring and protected acceptance | Partially passed live | Two-hour monitoring is active; healthy, simulated incident, and recovery runs passed their expected outcomes, including issue creation and closure. Support ownership is assigned; field approval remains under `DEF-RAILWAY-004`. |
+| Monitoring and protected acceptance | Partially passed live | Two-hour monitoring is active; healthy, simulated incident, and recovery runs passed their expected outcomes, including issue creation and closure. One-person field access is approved; protected acceptance remains under `DEF-RAILWAY-004`. |
 | Second unique tester identity | Blocked for tester two | `DEF-RAILWAY-005`. |
 
 Passed Railway gates above have live command or endpoint evidence. The contract
-remains `planned` and field access remains blocked pending explicit field
-approval. Railway remains a
-pilot choice and does not change the production-provider decision.
+is `verified`, limits access to one tester, and records explicit field approval
+as `project-owner-approval-2026-08-24`. Protected acceptance must still pass
+before `DEF-RAILWAY-004` closes. Railway remains a pilot choice and does not
+change the production-provider decision.
 
 CI evidence applies to implementation commit
 `fbf1c5f09c5a1d8c69a9f4ca312bf9a189e3fd8f` on draft pull request `#13`.
@@ -196,5 +197,6 @@ assigned Chris Hall as both restore owner and support owner for the one-person
 pilot. August 24 history shows completed daily snapshots of 485 MB and 472 MB,
 a completed weekly snapshot of 470 MB, and the next run due in 14 hours.
 Automated off-platform cadence and cross-device key escrow remain broader-use
-hardening. Field access is not approved, so this evidence does not change
-`field_ready: false`.
+hardening. On August 24, the project owner approved Chris Hall as the only field
+tester. The verified contract records that approval and caps the environment at
+one tester; a second tester remains blocked pending a separate durable identity.

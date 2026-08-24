@@ -366,7 +366,10 @@ Result on August 9, 2026: passed for the one-person pilot.
 - support owner: Chris Hall
 - approval source: explicit project-owner approval
 - scope: one-person Railway pilot only
-- field access: not yet approved
+- field access: approved for Chris Hall on August 24, 2026
+- field approval evidence: `project-owner-approval-2026-08-24`
+- second tester: blocked pending a separate durable identity
+- protected acceptance: pending
 
 No credential, secret, or elevated Railway permission was added by this owner
 assignment.

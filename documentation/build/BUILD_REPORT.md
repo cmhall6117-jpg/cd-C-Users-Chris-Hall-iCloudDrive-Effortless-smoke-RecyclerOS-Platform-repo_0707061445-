@@ -294,3 +294,26 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
 - Environment cleanup: temporary `main` allowlist policy removed; only
   `codex/railway-pilot-environment` remains allowed
 - Gate result: passed for one named Railway field tester
+
+## Railway One-Person API Field Smoke
+
+- Date: August 24, 2026
+- Run ID: `20260824212230-5fd820be`
+- Tester: `operator@effortlesssmoke.com`
+- Tenant: `org-local` / `workspace-local`, operator role
+- Release: `5784f4526e97de7cc60538d00ecc6977ca13a375`
+- Result: all 18 live checks passed
+- Local backend regression: 72 passed, 2 skipped
+- Working path: login, membership selection, Mission Control data,
+  opportunity, vehicle, procurement, pick list, Focus Point, inventory, logout
+- Tenant isolation: missing context rejected with HTTP 400; mismatched context
+  rejected with HTTP 403
+- Session isolation: logged-out token rejected with HTTP 401
+- Created synthetic records: `OPP-000001`, `VEH-000001`, `INV-000001`
+- Evidence: `documentation/release/evidence/railway/2026-08-24-one-person-field-smoke.json`
+- Evidence SHA-256:
+  `7ceffa050ddba5a2901ac7794747b8882d105812536c10be24313a1888fc249f`
+- Credential scan: no password, token, authorization header, secret, or
+  database URL present
+- Remaining evidence gap: manual Flutter device interaction under
+  `DEF-RAILWAY-006`

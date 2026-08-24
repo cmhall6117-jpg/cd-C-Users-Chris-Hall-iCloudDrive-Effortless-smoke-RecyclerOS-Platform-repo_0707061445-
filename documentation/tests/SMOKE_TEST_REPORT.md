@@ -393,3 +393,31 @@ Result on August 24, 2026: passed for the one-person pilot.
 
 The workflow had read-only repository permission and did not provision, deploy,
 or mutate any Railway resource.
+
+## Railway One-Person API Field Smoke
+
+Result on August 24, 2026: passed against the live pilot.
+
+- run ID: `20260824212230-5fd820be`
+- local backend regression: 72 passed, 2 skipped
+- approved release identity: passed
+- login and single membership selection: passed
+- authenticated identity: passed
+- missing tenant context: rejected with HTTP 400
+- mismatched tenant context: rejected with HTTP 403
+- Mission Control opportunity data: HTTP 200
+- opportunity discovery: `OPP-000001`
+- vehicle record: `VEH-000001`
+- procurement: three scenarios, `partOut` recommended
+- pick-list availability: `available`
+- Focus Point: completed
+- inventory intake: `INV-000001`
+- logout: HTTP 204
+- revoked session: rejected with HTTP 401
+- evidence SHA-256:
+  `7ceffa050ddba5a2901ac7794747b8882d105812536c10be24313a1888fc249f`
+- credential scan: passed; no credential or token field is present
+
+This result proves the live tenant-scoped API path with synthetic data. It does
+not claim a manual Flutter device session; that evidence remains tracked under
+`DEF-RAILWAY-006`.

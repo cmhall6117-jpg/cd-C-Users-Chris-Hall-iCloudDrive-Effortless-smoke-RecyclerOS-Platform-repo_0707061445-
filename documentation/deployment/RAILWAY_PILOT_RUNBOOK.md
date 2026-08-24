@@ -30,6 +30,20 @@ For each failure, record the time, tester, release SHA, screen or endpoint, and
 whether data was retried. Do not paste credentials or database URLs into defect
 evidence.
 
+Run the credential-safe automated API path with the sealed service variables:
+
+```powershell
+railway run --service recycleros-api --environment pilot --no-local -- `
+  python tools/scripts/railway_field_smoke.py `
+  --base-url https://recycleros-api-pilot.up.railway.app `
+  --release-sha <exact-40-character-deployed-sha> `
+  --output <sanitized-evidence-path>
+```
+
+The command creates clearly labeled synthetic records, logs out, verifies
+session revocation, and never serializes the password or bearer token. This API
+smoke complements but does not replace the manual Flutter device session.
+
 ## Backup And Restore
 
 Before the first field session and after any material test data change:

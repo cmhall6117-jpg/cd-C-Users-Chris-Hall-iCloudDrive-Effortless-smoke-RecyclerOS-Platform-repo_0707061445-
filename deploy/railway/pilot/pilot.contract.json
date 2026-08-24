@@ -29,6 +29,14 @@
     "api_url": "https://recycleros-api-pilot.up.railway.app",
     "release_commit": "5784f4526e97de7cc60538d00ecc6977ca13a375"
   },
+  "frontend": {
+    "provider": "github_pages",
+    "origin": "https://cmhall6117-jpg.github.io",
+    "app_url": "https://cmhall6117-jpg.github.io/cd-C-Users-Chris-Hall-iCloudDrive-Effortless-smoke-RecyclerOS-Platform-repo_0707061445-/",
+    "api_url": "https://recycleros-api-pilot.up.railway.app",
+    "public_login_shell": true,
+    "credentials_embedded": false
+  },
   "database": {
     "service_name": "Postgres",
     "engine": "postgresql",

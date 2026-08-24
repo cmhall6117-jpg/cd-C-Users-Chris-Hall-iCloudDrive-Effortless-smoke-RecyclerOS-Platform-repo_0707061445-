@@ -21,6 +21,12 @@ flutter run --dart-define=RECYCLEROS_API_BASE_URL=http://localhost:8000
 
 Use `http://10.0.2.2:8000` for an Android emulator reaching an API on the host.
 
+For the controlled iPhone pilot, GitHub Pages builds the web target with the
+exact Railway API URL from `deploy/railway/pilot/pilot.contract.json`. The
+public shell contains no account credential or API token. Railway accepts
+browser requests only from the exact Pages origin committed in
+`deploy/railway/pilot/variables.example`.
+
 ## Validate
 
 ```text

@@ -376,9 +376,10 @@ Impact: The one-person tenant-scoped API path is verified, but this evidence
 does not prove rendering, touch interaction, navigation ergonomics, or device
 network behavior against Railway.
 
-Next action: Install the approved pilot build on Chris Hall's device, complete
-the runbook path with synthetic data, capture non-secret screen evidence, and
-record the device, app commit, timestamps, and observed defects.
+Next action: Deploy the credential-free GitHub Pages build, complete
+`documentation/deployment/FLUTTER_WEB_PILOT_RUNBOOK.md` on Chris Hall's iPhone
+with synthetic data, capture non-secret screen evidence, and record the device,
+app commit, timestamps, and observed defects.
 
 ## Production Launch Preparation
 

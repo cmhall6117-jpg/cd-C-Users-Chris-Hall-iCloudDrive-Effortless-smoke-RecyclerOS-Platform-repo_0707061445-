@@ -55,8 +55,11 @@
 - The Railway planning envelope is USD 20-25 monthly with a USD 20 alert and USD 30 hard limit; field access remains blocked if the plan cannot enforce or evidence those controls.
 - The project owner approved Railway field access on August 24, 2026, for Chris
   Hall as the only pilot tester. Billing controls, GitHub protection,
-  monitoring delivery, support ownership, and restore evidence are verified;
-  protected acceptance still must pass before this gate is recorded complete.
+  monitoring delivery, support ownership, restore evidence, and protected
+  acceptance are verified for that one-person scope.
+- Protected acceptance temporarily allowed `main` in the GitHub environment,
+  then removed that rule after the run. The environment again allows only
+  `codex/railway-pilot-environment`.
 - The Railway API uses one US East replica, one worker, serverless sleep, a 512 MiB memory limit, and private PostgreSQL networking for one approved tester.
 - Railway's PostgreSQL template is unmanaged. The August 9 manual encrypted
   off-platform backup and clean restore proves one recovery point; PITR and

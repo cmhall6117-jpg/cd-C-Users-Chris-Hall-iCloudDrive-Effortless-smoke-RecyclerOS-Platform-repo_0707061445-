@@ -125,18 +125,18 @@ Cloud resources.
 | One-person field contract | Passed locally | Verified contract caps access at one tester and records project-owner approval. |
 | Focused automated tests | Passed locally | 10 tests. |
 | Dynamic `PORT` healthcheck | Passed locally | Focused Dockerfile test. |
-| Full RC1 CI | Passed | Push run `30723893531` and PR run `30724007217` passed all 10 jobs. |
+| Full RC1 CI | Passed | Push run `32733071474` and PR run `32733139755` passed all 10 jobs for the verified one-person contract. |
 | Railway account and budget controls | Passed live | Private Pro project, MFA/passkey, USD 20 warning and USD 30 hard limit verified; expected monthly minimum is USD 20. |
 | Runtime, domain, and sealed variables | Passed live | Successful US East API/PostgreSQL deployments, public HTTPS API, private database, sealed operator credential, exact release identity. |
 | Database backup and restore | Passed for one-person pilot | August 9 custom dump, checksum match, encrypted off-platform copy, clean restore, staging cleanup, live PITR, and restore-owner assignment passed. August 24 history proves daily and weekly native schedules produced real snapshots. Off-platform automation and key escrow remain broader-use hardening under `DEF-RAILWAY-003`. |
-| Monitoring and protected acceptance | Partially passed live | Two-hour monitoring is active; healthy, simulated incident, and recovery runs passed their expected outcomes, including issue creation and closure. One-person field access is approved; protected acceptance remains under `DEF-RAILWAY-004`. |
+| Monitoring and protected acceptance | Passed for one-person pilot | Two-hour monitoring, simulated incident delivery and recovery, owner approval, and protected acceptance run `32770410381` passed. `DEF-RAILWAY-004` is closed. |
 | Second unique tester identity | Blocked for tester two | `DEF-RAILWAY-005`. |
 
 Passed Railway gates above have live command or endpoint evidence. The contract
 is `verified`, limits access to one tester, and records explicit field approval
-as `project-owner-approval-2026-08-24`. Protected acceptance must still pass
-before `DEF-RAILWAY-004` closes. Railway remains a pilot choice and does not
-change the production-provider decision.
+as `project-owner-approval-2026-08-24`. Protected acceptance passed for that
+scope. Railway remains a pilot choice and does not change the
+production-provider decision.
 
 CI evidence applies to implementation commit
 `fbf1c5f09c5a1d8c69a9f4ca312bf9a189e3fd8f` on draft pull request `#13`.
@@ -200,3 +200,13 @@ Automated off-platform cadence and cross-device key escrow remain broader-use
 hardening. On August 24, the project owner approved Chris Hall as the only field
 tester. The verified contract records that approval and caps the environment at
 one tester; a second tester remains blocked pending a separate durable identity.
+
+PR `#19` merged the verified contract to `main` as commit
+`e99fc294acffc69e078f134ab38344caf2d7401f`. Push run `32733071474` and
+pull-request run `32733139755` passed all 10 RC1 jobs. Protected acceptance run
+`32770410381` passed the contract, public-endpoint, and acceptance-evidence jobs.
+The endpoint evidence recorded TLS 1.3 with 63 days remaining; HTTP 200 for
+liveness, readiness, and exact release identity; all required security headers;
+and HTTP 404 for docs and OpenAPI. The temporary `main` environment policy used
+for the read-only run was removed, and only the original
+`codex/railway-pilot-environment` policy remains.

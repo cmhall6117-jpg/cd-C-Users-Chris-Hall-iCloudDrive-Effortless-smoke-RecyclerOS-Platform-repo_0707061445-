@@ -369,7 +369,27 @@ Result on August 9, 2026: passed for the one-person pilot.
 - field access: approved for Chris Hall on August 24, 2026
 - field approval evidence: `project-owner-approval-2026-08-24`
 - second tester: blocked pending a separate durable identity
-- protected acceptance: pending
+- protected acceptance: passed in run `32770410381`
 
 No credential, secret, or elevated Railway permission was added by this owner
 assignment.
+
+## Railway Protected Acceptance
+
+Result on August 24, 2026: passed for the one-person pilot.
+
+- verified contract and exact deployment identity: passed
+- TLS certificate: TLS 1.3, 63 days remaining
+- liveness: HTTP 200
+- readiness: HTTP 200
+- release identity: HTTP 200 for
+  `5784f4526e97de7cc60538d00ecc6977ca13a375`
+- cache control, referrer policy, content-type, frame, and HSTS headers: present
+- interactive docs: HTTP 404
+- OpenAPI schema: HTTP 404
+- protected workflow: run `32770410381`, all three jobs passed
+- policy cleanup: temporary `main` rule removed; original deployment-branch
+  rule is the only remaining allowlist entry
+
+The workflow had read-only repository permission and did not provision, deploy,
+or mutate any Railway resource.

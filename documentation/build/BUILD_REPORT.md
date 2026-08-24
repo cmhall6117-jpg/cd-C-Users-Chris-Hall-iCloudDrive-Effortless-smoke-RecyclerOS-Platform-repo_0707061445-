@@ -274,4 +274,23 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
 - Contract: lifecycle `verified`, `maximum_testers: 1`, approval evidence
   `project-owner-approval-2026-08-24`
 - Gate result: uptime, readiness-incident delivery, support ownership, and
-  one-person field approval passed; protected acceptance is pending
+  one-person field approval passed
+
+## Railway Protected Acceptance
+
+- Date: August 24, 2026
+- Approval implementation: commit `6bf00e29b21d7664b972cc940d79bd7178cf6a60`
+- Pull request: `#19`, merged to `main`
+- Merge commit: `e99fc294acffc69e078f134ab38344caf2d7401f`
+- Full CI: push run `32733071474` and pull-request run `32733139755`; all 10
+  jobs passed on both trigger paths
+- Protected acceptance: run `32770410381`, passed
+- Contract job: lifecycle, one-tester cap, field approval, endpoint, and release
+  identity validation passed
+- Public endpoint: TLS 1.3 with 63 certificate days remaining; liveness,
+  readiness, and release identity returned HTTP 200
+- Surface hardening: required security headers present; docs and OpenAPI
+  returned HTTP 404
+- Environment cleanup: temporary `main` allowlist policy removed; only
+  `codex/railway-pilot-environment` remains allowed
+- Gate result: passed for one named Railway field tester

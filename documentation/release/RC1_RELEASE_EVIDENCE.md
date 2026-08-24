@@ -128,13 +128,13 @@ Cloud resources.
 | Full RC1 CI | Passed | Push run `30723893531` and PR run `30724007217` passed all 10 jobs. |
 | Railway account and budget controls | Passed live | Private Pro project, MFA/passkey, USD 20 warning and USD 30 hard limit verified; expected monthly minimum is USD 20. |
 | Runtime, domain, and sealed variables | Passed live | Successful US East API/PostgreSQL deployments, public HTTPS API, private database, sealed operator credential, exact release identity. |
-| Database backup and restore | Partially passed live | August 9 custom dump, checksum match, encrypted off-platform copy, clean restore, staging cleanup, live PITR, a 164 MB native snapshot, daily/weekly native schedules, and restore-owner assignment passed. Off-platform cadence and key escrow remain under `DEF-RAILWAY-003`. |
+| Database backup and restore | Passed for one-person pilot | August 9 custom dump, checksum match, encrypted off-platform copy, clean restore, staging cleanup, live PITR, and restore-owner assignment passed. August 24 history proves daily and weekly native schedules produced real snapshots. Off-platform automation and key escrow remain broader-use hardening under `DEF-RAILWAY-003`. |
 | Monitoring and protected acceptance | Partially passed live | Two-hour monitoring is active; healthy, simulated incident, and recovery runs passed their expected outcomes, including issue creation and closure. Support ownership is assigned; field approval remains under `DEF-RAILWAY-004`. |
 | Second unique tester identity | Blocked for tester two | `DEF-RAILWAY-005`. |
 
 Passed Railway gates above have live command or endpoint evidence. The contract
-remains `planned` and field access remains blocked while off-platform recovery,
-and field-approval controls are incomplete. Railway remains a
+remains `planned` and field access remains blocked pending explicit field
+approval. Railway remains a
 pilot choice and does not change the production-provider decision.
 
 CI evidence applies to implementation commit
@@ -186,11 +186,15 @@ returned HTTP 200 with storage and auth ready. Screenshot evidence:
   SHA-256 `43ae91d2d54d7fc027264aa04dd550c0875dd3e68d54119b1a62d1d7ee6c09a7`
 - `documentation/release/evidence/railway/2026-08-09-volume-backup-schedule.png`
   SHA-256 `02cf2ad36545433cd6da3fa2f9cf855453f185aaee2770eae59c2f11627e5630`
+- `documentation/release/evidence/railway/2026-08-24-scheduled-volume-backups.jpg`
+  SHA-256 `39d270b2d85de6c5301209e7c43a5bbba85f32f7eb2bb95f21c352a695b82181`
 
 The native backup is 164 MB and completed at 12:34 EDT. Daily backups are
 enabled every 24 hours with six-day retention, and weekly backups are enabled
 every seven days with one-month retention. On August 9, the project owner
 assigned Chris Hall as both restore owner and support owner for the one-person
-pilot. Automated off-platform cadence and cross-device key escrow are not
-complete. Field access is not approved, so this evidence does not change
+pilot. August 24 history shows completed daily snapshots of 485 MB and 472 MB,
+a completed weekly snapshot of 470 MB, and the next run due in 14 hours.
+Automated off-platform cadence and cross-device key escrow remain broader-use
+hardening. Field access is not approved, so this evidence does not change
 `field_ready: false`.

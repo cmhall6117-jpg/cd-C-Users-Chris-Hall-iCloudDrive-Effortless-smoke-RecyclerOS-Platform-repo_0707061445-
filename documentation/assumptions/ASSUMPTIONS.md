@@ -50,14 +50,17 @@
   repository and deployment branch. Static Google service account keys are
   forbidden.
 - Railway is the approved cost-bounded pilot provider, not the approved
-  production provider. The private Hobby project `recycleros-pilot` is live;
+  production provider. The private Pro project `recycleros-pilot` is live;
   its existence does not authorize production traffic or production data.
-- The Railway planning envelope is USD 12-25 monthly with a USD 20 alert and USD 30 hard limit; field access remains blocked if the plan cannot enforce or evidence those controls.
+- The Railway planning envelope is USD 20-25 monthly with a USD 20 alert and USD 30 hard limit; field access remains blocked if the plan cannot enforce or evidence those controls.
 - The Railway API uses one US East replica, one worker, serverless sleep, a 512 MiB memory limit, and private PostgreSQL networking for a maximum of two testers.
 - Railway's PostgreSQL template is unmanaged. The August 9 manual encrypted
-  off-platform backup and clean restore proves one recovery point, but does not
-  replace native schedules, automated retention, cross-device key escrow, or an
-  assigned restore owner.
+  off-platform backup and clean restore proves one recovery point; PITR and
+  daily/weekly native schedules are active. Automated off-platform retention
+  and cross-device key escrow remain separate operational requirements.
+- Chris Hall is the named restore and support owner for the one-person Railway
+  pilot. These assignments must be revisited before adding another tester or
+  promoting the environment beyond pilot scope.
 - The initial Railway pilot starts with one named operator and no credential sharing; a second tester requires a separate durable identity.
 - Railway and GitHub acceptance workflows contain no provider deployment token and cannot create, mutate, or delete live resources.
 - Railway health probes use `healthcheck.railway.app`; this exact hostname is

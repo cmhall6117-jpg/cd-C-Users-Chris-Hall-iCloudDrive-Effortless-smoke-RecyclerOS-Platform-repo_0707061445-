@@ -307,32 +307,37 @@ restore database was dropped, local plaintext and SSH keys were removed, and
 Railway reported no registered SSH keys. A human operator then deleted the
 owner-only staging dump, verified its absence, revoked the cleanup SSH key,
 removed its local files, and confirmed that Railway again reported no
-registered keys. Automated off-platform cadence, cross-device key escrow, and
-an assigned restore owner remain unverified.
+registered keys. On August 9, the project owner explicitly assigned Chris Hall
+as restore owner for the one-person pilot. Automated off-platform cadence and
+cross-device key escrow remain unverified.
 
-Impact: PITR, native daily/weekly schedules, and one independent restore point
-are proven, but off-platform automation and recovery ownership are not yet
-approved.
+Impact: PITR, native daily/weekly schedules, one independent restore point, and
+restore ownership are proven, but off-platform automation is not complete.
 
 Next action: Confirm the first scheduled daily run, automate off-platform
-cadence and retention, escrow the recovery key, assign the restore owner, and
-approve the RPO/RTO.
+cadence and retention, escrow the recovery key, and approve the RPO/RTO.
 
 ### Medium
 
-#### DEF-RAILWAY-004: Railway monitoring and protected acceptance are absent
+#### DEF-RAILWAY-004: Railway protected acceptance awaits field approval
 
-Status: open, external blocker
+Status: open, partially mitigated approval blocker
 
 Evidence: The protected GitHub `railway-pilot` environment exists and Railway
-Wait for CI is enabled with one valid check suite. Public readiness checks pass.
-Continuous uptime monitoring, alert delivery testing, and field/support owner
-approvals are not complete.
+Wait for CI is enabled with one valid check suite. PR `#15` merged the monitor
+to `main` as commit `e2b1fee3c83a03daf6aec31d5bf3e354133564b8`. Healthy
+workflow run `31331712419` passed. Simulated-failure run `31331739729` failed as
+designed and opened incident `#16`. Recovery run `31331787276` passed and
+closed that same incident with a recovery comment. The two-hour schedule is
+active on the default branch. On August 9, the project owner explicitly assigned
+Chris Hall as support owner for the one-person pilot. Field access is not yet
+approved.
 
-Impact: Failures or spending changes may not reach an accountable operator.
+Impact: Readiness failures now create durable incidents with an accountable
+support owner, but field access remains blocked.
 
-Next action: Configure and test continuous uptime and cost alert delivery,
-assign owners, and run the protected manual acceptance workflow.
+Next action: Approve field access, set the contract lifecycle to verified, and
+run the protected manual acceptance workflow.
 
 #### DEF-RAILWAY-005: A second field tester lacks a separate account path
 

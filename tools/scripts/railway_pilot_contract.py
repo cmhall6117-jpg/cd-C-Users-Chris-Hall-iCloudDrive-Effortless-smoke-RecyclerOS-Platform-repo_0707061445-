@@ -22,7 +22,7 @@ EXPECTED_VARIABLES = {
     "RECYCLEROS_TRUSTED_HOSTS": (
         "${{RAILWAY_PUBLIC_DOMAIN}},healthcheck.railway.app"
     ),
-    "RECYCLEROS_CORS_ORIGINS": "",
+    "RECYCLEROS_CORS_ORIGINS": "https://cmhall6117-jpg.github.io",
     "RECYCLEROS_CORS_ORIGIN_REGEX": "a^",
     "RECYCLEROS_FORWARDED_ALLOW_IPS": "127.0.0.1",
     "RECYCLEROS_API_WORKERS": "1",
@@ -197,6 +197,23 @@ def validate_contract(
     for key, expected in expected_runtime.items():
         if runtime.get(key) != expected:
             errors.append(f"runtime.{key} must be {expected!r}")
+
+    frontend = contract.get("frontend", {})
+    expected_frontend = {
+        "provider": "github_pages",
+        "origin": "https://cmhall6117-jpg.github.io",
+        "app_url": (
+            "https://cmhall6117-jpg.github.io/"
+            "cd-C-Users-Chris-Hall-iCloudDrive-Effortless-smoke-"
+            "RecyclerOS-Platform-repo_0707061445-/"
+        ),
+        "api_url": "https://recycleros-api-pilot.up.railway.app",
+        "public_login_shell": True,
+        "credentials_embedded": False,
+    }
+    for key, expected in expected_frontend.items():
+        if frontend.get(key) != expected:
+            errors.append(f"frontend.{key} must be {expected!r}")
 
     database = contract.get("database", {})
     expected_database = {

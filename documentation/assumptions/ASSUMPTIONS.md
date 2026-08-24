@@ -74,3 +74,7 @@
   allowed alongside the assigned public API hostname.
 - GitHub-backed Railway deployments use the injected `RAILWAY_GIT_COMMIT_SHA`
   as the authoritative runtime release identity.
+- The one-person iPhone pilot may use the public GitHub Pages login shell at the
+  exact origin `https://cmhall6117-jpg.github.io`. The shell embeds no
+  credential, permits synthetic or authorized pilot data only, and does not
+  authorize public registration or production traffic.

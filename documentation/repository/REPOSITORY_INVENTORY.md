@@ -1286,6 +1286,7 @@ preserved.
 
 ## Railway Pilot Environment Contributions
 
+- `.github/workflows/flutter-pilot-web.yml`
 - `.github/workflows/railway-pilot-acceptance.yml`
 - `.github/workflows/railway-pilot-monitor.yml`
 - `deploy/railway/pilot/railway.json`
@@ -1295,6 +1296,10 @@ preserved.
 - `tools/scripts/railway_field_smoke.py`
 - `services/api/tests/test_railway_pilot_contract.py`
 - `services/api/tests/test_railway_field_smoke.py`
+- `apps/recycleros_pro_mobile/web/index.html`
+- `apps/recycleros_pro_mobile/web/manifest.json`
+- `apps/recycleros_pro_mobile/web/robots.txt`
+- `documentation/deployment/FLUTTER_WEB_PILOT_RUNBOOK.md`
 - `documentation/deployment/RAILWAY_PILOT_SETUP.md`
 - `documentation/deployment/RAILWAY_PILOT_RUNBOOK.md`
 - `documentation/release/RAILWAY_PILOT_ENVIRONMENT_PR.md`

@@ -59,6 +59,31 @@ def test_production_hides_docs_and_adds_security_headers(monkeypatch):
     assert openapi.status_code == 404
 
 
+def test_production_allows_exact_flutter_pilot_origin(monkeypatch):
+    _production_environment(monkeypatch)
+    origin = "https://cmhall6117-jpg.github.io"
+    monkeypatch.setenv("RECYCLEROS_CORS_ORIGINS", origin)
+
+    with TestClient(
+        create_app(store=InMemoryStore(), auth_service=LocalAuthService([])),
+        base_url="https://api.example.com",
+    ) as client:
+        response = client.options(
+            "/v1/opportunities",
+            headers={
+                "Origin": origin,
+                "Access-Control-Request-Method": "POST",
+                "Access-Control-Request-Headers": (
+                    "authorization,content-type,x-organization-id,"
+                    "x-workspace-id"
+                ),
+            },
+        )
+
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == origin
+
+
 def test_railway_commit_sha_is_the_release_identity(monkeypatch):
     _production_environment(monkeypatch)
     monkeypatch.setenv("RECYCLEROS_RELEASE_SHA", "a" * 40)

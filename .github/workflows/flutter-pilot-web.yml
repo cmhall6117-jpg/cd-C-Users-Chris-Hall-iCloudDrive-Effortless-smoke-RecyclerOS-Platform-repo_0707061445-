@@ -1,0 +1,110 @@
+name: Flutter Pilot Web
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/flutter-pilot-web.yml"
+      - "apps/recycleros_pro_mobile/**"
+      - "packages/recycleros_domain/**"
+      - "deploy/railway/pilot/pilot.contract.json"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/flutter-pilot-web.yml"
+      - "apps/recycleros_pro_mobile/**"
+      - "packages/recycleros_domain/**"
+      - "deploy/railway/pilot/pilot.contract.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: flutter-pilot-web
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Read and verify pilot endpoints
+        id: pilot
+        shell: bash
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          import os
+          from pathlib import Path
+
+          contract = json.loads(
+              Path("deploy/railway/pilot/pilot.contract.json").read_text(
+                  encoding="utf-8"
+              )
+          )
+          frontend = contract["frontend"]
+          expected_origin = f"https://{os.environ['GITHUB_REPOSITORY_OWNER']}.github.io"
+          expected_path = f"/{os.environ['GITHUB_REPOSITORY'].split('/', 1)[1]}/"
+          expected_url = f"{expected_origin}{expected_path}"
+          if frontend["origin"] != expected_origin:
+              raise SystemExit("Pilot frontend origin does not match this repository owner.")
+          if frontend["app_url"] != expected_url:
+              raise SystemExit("Pilot frontend URL does not match this repository path.")
+          if frontend["api_url"] != contract["runtime"]["api_url"]:
+              raise SystemExit("Pilot frontend API does not match the runtime contract.")
+          if frontend["credentials_embedded"] is not False:
+              raise SystemExit("Pilot frontend must not embed credentials.")
+          print(f"api_url={frontend['api_url']}")
+          print(f"app_url={frontend['app_url']}")
+          print(f"base_href={expected_path}")
+          PY
+      - name: Build Flutter pilot
+        working-directory: apps/recycleros_pro_mobile
+        shell: bash
+        run: |
+          flutter pub get
+          flutter analyze
+          flutter test
+          flutter build web --release \
+            --base-href "${{ steps.pilot.outputs.base_href }}" \
+            --dart-define="RECYCLEROS_API_BASE_URL=${{ steps.pilot.outputs.api_url }}"
+          if grep -R -E -i \
+            'RECYCLEROS_(LOCAL_OPERATOR|TEST)_PASSWORD|postgres(ql)?://' \
+            build/web; then
+            echo "Credential-like material found in the web bundle."
+            exit 1
+          fi
+      - name: Configure GitHub Pages
+        if: github.event_name != 'pull_request'
+        uses: actions/configure-pages@v6
+      - name: Upload pull-request build
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: recycleros-flutter-pilot-web
+          path: apps/recycleros_pro_mobile/build/web
+          if-no-files-found: error
+          retention-days: 7
+      - name: Upload Pages artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: apps/recycleros_pro_mobile/build/web
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy Flutter pilot
+        id: deployment
+        uses: actions/deploy-pages@v5

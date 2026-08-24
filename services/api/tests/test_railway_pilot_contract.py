@@ -69,6 +69,44 @@ def test_live_contract_is_field_ready():
     assert validate_contract(_contract(), require_ready=True) == []
 
 
+def test_flutter_web_pilot_uses_exact_pages_origin_without_credentials():
+    contract = _contract()
+    frontend = contract["frontend"]
+
+    assert frontend["origin"] == "https://cmhall6117-jpg.github.io"
+    assert frontend["app_url"].startswith(f"{frontend['origin']}/")
+    assert frontend["api_url"] == contract["runtime"]["api_url"]
+    assert frontend["public_login_shell"] is True
+    assert frontend["credentials_embedded"] is False
+    assert (
+        "RECYCLEROS_CORS_ORIGINS=https://cmhall6117-jpg.github.io"
+        in _variables()
+    )
+
+
+def test_flutter_web_workflow_is_main_only_and_credential_free():
+    workflow = (
+        REPOSITORY_ROOT / ".github" / "workflows" / "flutter-pilot-web.yml"
+    ).read_text(encoding="utf-8")
+    web_index = (
+        REPOSITORY_ROOT
+        / "apps"
+        / "recycleros_pro_mobile"
+        / "web"
+        / "index.html"
+    ).read_text(encoding="utf-8")
+
+    assert "secrets." not in workflow
+    assert "github.event_name != 'pull_request'" in workflow
+    assert "github.ref == 'refs/heads/main'" in workflow
+    assert "RECYCLEROS_API_BASE_URL=${{ steps.pilot.outputs.api_url }}" in workflow
+    assert "actions/configure-pages@v6" in workflow
+    assert "actions/upload-pages-artifact@v5" in workflow
+    assert "actions/deploy-pages@v5" in workflow
+    assert '<base href="$FLUTTER_BASE_HREF">' in web_index
+    assert "noindex, nofollow, noarchive" in web_index
+
+
 def test_verified_contract_passes_field_readiness():
     assert validate_contract(_ready_contract(), require_ready=True) == []
 

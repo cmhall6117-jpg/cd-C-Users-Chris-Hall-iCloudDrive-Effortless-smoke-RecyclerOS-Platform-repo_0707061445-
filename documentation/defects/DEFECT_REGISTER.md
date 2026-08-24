@@ -324,7 +324,7 @@ key, and approve the RPO/RTO before expanding beyond the one-person pilot.
 
 #### DEF-RAILWAY-004: Railway protected acceptance awaits final execution
 
-Status: open, acceptance execution pending
+Status: closed on August 24, 2026
 
 Evidence: The protected GitHub `railway-pilot` environment exists and Railway
 Wait for CI is enabled with one valid check suite. PR `#15` merged the monitor
@@ -335,14 +335,21 @@ closed that same incident with a recovery comment. The two-hour schedule is
 active on the default branch. On August 9, the project owner explicitly assigned
 Chris Hall as support owner for the one-person pilot. On August 24, the project
 owner approved Chris Hall as the only field tester and recorded evidence
-`project-owner-approval-2026-08-24` in the verified contract.
+`project-owner-approval-2026-08-24` in the verified contract. PR `#19` merged
+the verified one-person contract to `main` as
+`e99fc294acffc69e078f134ab38344caf2d7401f` after push run `32733071474` and
+pull-request run `32733139755` passed all 10 jobs. Protected acceptance run
+`32770410381` then passed contract, public-endpoint, and evidence jobs. The live
+endpoint returned HTTP 200 for liveness, readiness, and release identity; TLS
+1.3 had 63 days remaining, required security headers were present, and docs and
+OpenAPI returned HTTP 404.
 
-Impact: Readiness failures now create durable incidents with an accountable
-support owner. The field gate remains incomplete until the protected workflow
-validates the committed contract and deployed endpoint.
+Impact: None remaining for the one-person Railway field-access gate.
 
-Next action: Run the protected manual acceptance workflow and retain its exact
-GitHub Actions run evidence.
+Resolution: A temporary `main` environment allowlist rule enabled the read-only
+protected run and was removed afterward. Verification showed that the original
+`codex/railway-pilot-environment` rule is again the environment's only allowed
+branch.
 
 #### DEF-RAILWAY-005: A second field tester lacks a separate account path
 

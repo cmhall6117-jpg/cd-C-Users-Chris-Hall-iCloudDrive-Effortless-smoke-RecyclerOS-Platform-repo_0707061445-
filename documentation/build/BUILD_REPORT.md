@@ -270,5 +270,8 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
 - Recovery handling: issue `#16` closed as completed with a recovery comment
 - Schedule: active every two hours on the default branch
 - Support owner: Chris Hall, approved for the one-person pilot on August 9
-- Gate result: uptime, readiness-incident delivery, and support ownership
-  passed; field approval remains blocked
+- Field tester: Chris Hall, approved as the only tester on August 24
+- Contract: lifecycle `verified`, `maximum_testers: 1`, approval evidence
+  `project-owner-approval-2026-08-24`
+- Gate result: uptime, readiness-incident delivery, support ownership, and
+  one-person field approval passed; protected acceptance is pending

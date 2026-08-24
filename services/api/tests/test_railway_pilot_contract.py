@@ -54,24 +54,19 @@ def _ready_contract() -> dict:
         "restore_owner_assigned": True,
         "support_owner_assigned": True,
         "owner_assignment_evidence": "owner-approval-100",
+        "field_access_evidence": "field-approval-100",
     }
     return contract
 
 
-def test_planned_railway_pilot_is_structurally_valid():
+def test_committed_railway_pilot_is_structurally_valid():
     assert validate_contract(_contract()) == []
     assert validate_railway_config(_config()) == []
     assert validate_variable_template(_variables()) == []
 
 
-def test_planned_contract_is_not_field_ready():
-    errors = validate_contract(_contract(), require_ready=True)
-
-    assert "lifecycle must be verified for field readiness" in errors
-    assert "database.daily_backup_enabled must be true" not in errors
-    assert "observability.uptime_check_configured must be true" not in errors
-    assert "approvals.restore_owner_assigned must be true" not in errors
-    assert "approvals.field_access must be true" in errors
+def test_live_contract_is_field_ready():
+    assert validate_contract(_contract(), require_ready=True) == []
 
 
 def test_verified_contract_passes_field_readiness():
@@ -83,12 +78,15 @@ def test_verified_lifecycle_cannot_bypass_readiness_in_normal_ci():
     contract["lifecycle"] = "verified"
     contract["database"]["daily_backup_enabled"] = False
     contract["database"]["weekly_backup_enabled"] = False
+    contract["approvals"]["field_access"] = False
+    contract["approvals"]["field_access_evidence"] = ""
 
     errors = validate_contract(contract)
 
     assert "database.daily_backup_enabled must be true" in errors
     assert "database.weekly_backup_enabled must be true" in errors
     assert "approvals.field_access must be true" in errors
+    assert "approvals.field_access_evidence is required" in errors
 
 
 def test_contract_rejects_credentials_and_cost_drift():

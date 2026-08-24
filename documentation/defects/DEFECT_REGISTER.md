@@ -322,9 +322,9 @@ key, and approve the RPO/RTO before expanding beyond the one-person pilot.
 
 ### Medium
 
-#### DEF-RAILWAY-004: Railway protected acceptance awaits field approval
+#### DEF-RAILWAY-004: Railway protected acceptance awaits final execution
 
-Status: open, partially mitigated approval blocker
+Status: open, acceptance execution pending
 
 Evidence: The protected GitHub `railway-pilot` environment exists and Railway
 Wait for CI is enabled with one valid check suite. PR `#15` merged the monitor
@@ -333,14 +333,16 @@ workflow run `31331712419` passed. Simulated-failure run `31331739729` failed as
 designed and opened incident `#16`. Recovery run `31331787276` passed and
 closed that same incident with a recovery comment. The two-hour schedule is
 active on the default branch. On August 9, the project owner explicitly assigned
-Chris Hall as support owner for the one-person pilot. Field access is not yet
-approved.
+Chris Hall as support owner for the one-person pilot. On August 24, the project
+owner approved Chris Hall as the only field tester and recorded evidence
+`project-owner-approval-2026-08-24` in the verified contract.
 
 Impact: Readiness failures now create durable incidents with an accountable
-support owner, but field access remains blocked.
+support owner. The field gate remains incomplete until the protected workflow
+validates the committed contract and deployed endpoint.
 
-Next action: Approve field access, set the contract lifecycle to verified, and
-run the protected manual acceptance workflow.
+Next action: Run the protected manual acceptance workflow and retain its exact
+GitHub Actions run evidence.
 
 #### DEF-RAILWAY-005: A second field tester lacks a separate account path
 

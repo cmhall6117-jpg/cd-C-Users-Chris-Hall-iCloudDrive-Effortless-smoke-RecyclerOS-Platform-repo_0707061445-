@@ -280,9 +280,9 @@ Impact: Remote runtime, login, and tenant acceptance can run.
 
 Next action: Preserve exact release and endpoint evidence for each deployment.
 
-#### DEF-RAILWAY-003: Railway recovery operations are not fully approved
+#### DEF-RAILWAY-003: Off-platform recovery automation remains manual
 
-Status: open, partially mitigated external blocker
+Status: open, non-blocking pilot hardening
 
 Evidence: PostgreSQL 16 is pinned to private 5 GiB US East volume
 `postgres-volume-gHwe`. On August 9, 2026, the owner upgraded to Pro and enabled
@@ -298,8 +298,10 @@ The volume-backup panel also shows a successful 164 MB manual backup at 12:34
 EDT and an active schedule with its next backup due in six hours. Schedule
 configuration confirms Daily is enabled every 24 hours with six-day retention
 and Weekly is enabled every seven days with one-month retention. Monthly is
-intentionally disabled. Earlier on August 9, a PostgreSQL 16.14 custom dump was
-copied off-platform, its
+intentionally disabled. On August 24, live backup history showed two completed
+daily-schedule snapshots at 485 MB and 472 MB, a completed weekly-schedule
+snapshot at 470 MB, and the next scheduled run due in 14 hours. Earlier on
+August 9, a PostgreSQL 16.14 custom dump was copied off-platform, its
 server and downloaded SHA-256 values matched, and its encrypted copy was
 retained outside Git. A clean-target restore passed with 24 public tables, 11
 migration-ledger rows, and expected pilot identity records. The temporary
@@ -311,11 +313,12 @@ registered keys. On August 9, the project owner explicitly assigned Chris Hall
 as restore owner for the one-person pilot. Automated off-platform cadence and
 cross-device key escrow remain unverified.
 
-Impact: PITR, native daily/weekly schedules, one independent restore point, and
-restore ownership are proven, but off-platform automation is not complete.
+Impact: The one-person pilot has PITR, proven native daily/weekly execution, one
+independent restore point, and assigned ownership. Off-platform automation and
+cross-device key escrow remain defense-in-depth work before broader use.
 
-Next action: Confirm the first scheduled daily run, automate off-platform
-cadence and retention, escrow the recovery key, and approve the RPO/RTO.
+Next action: Automate off-platform cadence and retention, escrow the recovery
+key, and approve the RPO/RTO before expanding beyond the one-person pilot.
 
 ### Medium
 

@@ -219,9 +219,9 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
 - Evidence CI: all 22 checks passed on push run `31314925876` and pull-request
   run `31315025909` for draft pull request `#15`
 - Updated Railway contract validation: `valid: true`, `field_ready: false`
-- Remaining release blockers: native and scheduled off-platform recovery,
-  cross-device key escrow, continuous monitoring and alert delivery, support
-  ownership, field approval, and a separate second-tester identity
+- Remaining release blockers at that evidence point: field approval and a
+  separate second-tester identity. Off-platform automation and cross-device key
+  escrow remain hardening work for broader use.
 
 ## Railway Recovery Drill
 
@@ -253,8 +253,10 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
 - Native schedules: Daily every 24 hours with six-day retention and Weekly
   every seven days with one-month retention; next backup due in six hours
 - Restore owner: Chris Hall, approved for the one-person pilot on August 9
-- Gate result: independent restore, live PITR, native schedules, and recovery
-  ownership passed; off-platform automation remains blocked
+- Scheduled execution evidence on August 24: daily snapshots of 485 MB and
+  472 MB, plus a weekly snapshot of 470 MB; next run due in 14 hours
+- Gate result: independent restore, live PITR, native scheduled execution, and
+  recovery ownership passed for the one-person pilot
 
 ## Railway Monitor Activation
 

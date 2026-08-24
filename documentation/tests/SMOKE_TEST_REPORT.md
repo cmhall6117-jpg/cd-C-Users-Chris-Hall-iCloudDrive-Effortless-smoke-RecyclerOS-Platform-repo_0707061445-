@@ -323,10 +323,24 @@ blocked.
 - 164 MB manual native volume backup at 12:34 EDT: passed
 - daily schedule every 24 hours with six-day retention: passed
 - weekly schedule every seven days with one-month retention: passed
+- August 24 scheduled daily snapshots: passed, 485 MB and 472 MB
+- August 24 scheduled weekly snapshot: passed, 470 MB
+- next scheduled backup: active, due in 14 hours
 - automated off-platform retention and cross-device key escrow: not passed
 
 No database password, bearer token, plaintext encryption secret, or plaintext
 database archive was written to Git.
+
+## Railway Scheduled Backup Evidence
+
+Result on August 24, 2026: passed for the one-person pilot.
+
+- latest daily backup: completed 9 hours before capture, 485 MB
+- prior daily backup: completed 1 day before capture, 472 MB
+- weekly backup: completed 1 day before capture, 470 MB
+- next scheduled backup: due in 14 hours
+- evidence: `documentation/release/evidence/railway/2026-08-24-scheduled-volume-backups.jpg`
+- SHA-256: `39d270b2d85de6c5301209e7c43a5bbba85f32f7eb2bb95f21c352a695b82181`
 
 ## Railway Monitor Incident Drill
 

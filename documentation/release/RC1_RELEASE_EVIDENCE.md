@@ -130,6 +130,8 @@ Cloud resources.
 | Runtime, domain, and sealed variables | Passed live | Successful US East API/PostgreSQL deployments, public HTTPS API, private database, sealed operator credential, exact release identity. |
 | Database backup and restore | Passed for one-person pilot | August 9 custom dump, checksum match, encrypted off-platform copy, clean restore, staging cleanup, live PITR, and restore-owner assignment passed. August 24 history proves daily and weekly native schedules produced real snapshots. Off-platform automation and key escrow remain broader-use hardening under `DEF-RAILWAY-003`. |
 | Monitoring and protected acceptance | Passed for one-person pilot | Two-hour monitoring, simulated incident delivery and recovery, owner approval, and protected acceptance run `32770410381` passed. `DEF-RAILWAY-004` is closed. |
+| Live tenant-scoped API working path | Passed for one-person pilot | Field run `20260824212230-5fd820be` passed 18 checks from login through inventory and revoked-session rejection. |
+| Manual Flutter device working path | Blocked evidence | No Flutter SDK or connected test device was available for this session; `DEF-RAILWAY-006`. |
 | Second unique tester identity | Blocked for tester two | `DEF-RAILWAY-005`. |
 
 Passed Railway gates above have live command or endpoint evidence. The contract
@@ -210,3 +212,16 @@ liveness, readiness, and exact release identity; all required security headers;
 and HTTP 404 for docs and OpenAPI. The temporary `main` environment policy used
 for the read-only run was removed, and only the original
 `codex/railway-pilot-environment` policy remains.
+
+One-person synthetic field run `20260824212230-5fd820be` exercised the live API
+from login and tenant selection through Mission Control data, opportunity,
+vehicle, procurement, pick list, Focus Point, inventory intake, logout, and
+revoked-session rejection. All 18 checks passed. Missing tenant context returned
+HTTP 400, mismatched context returned HTTP 403, and the revoked token returned
+HTTP 401. The run created `OPP-000001`, `VEH-000001`, and `INV-000001` under
+`org-local` / `workspace-local`. Sanitized evidence is retained at
+`documentation/release/evidence/railway/2026-08-24-one-person-field-smoke.json`
+with SHA-256
+`7ceffa050ddba5a2901ac7794747b8882d105812536c10be24313a1888fc249f`.
+No credential or token is present. Manual Flutter device interaction remains a
+separate evidence gate under `DEF-RAILWAY-006`.

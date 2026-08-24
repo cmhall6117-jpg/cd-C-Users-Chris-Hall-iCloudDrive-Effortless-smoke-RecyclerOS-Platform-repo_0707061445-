@@ -363,6 +363,23 @@ Impact: One named tester can be assigned; a second must not share credentials.
 Next action: Pilot with one named operator or separately approve a minimal,
 audited account-provisioning operation before adding the second tester.
 
+#### DEF-RAILWAY-006: Manual Flutter device field session is not evidenced
+
+Status: open, test-evidence gap
+
+Evidence: Live synthetic API run `20260824212230-5fd820be` passed all 18 checks
+from login through inventory intake and session revocation. Flutter analyze,
+widget tests, and live local gateway integration pass in CI, but this workstation
+has no Flutter SDK or connected pilot device for a manual live UI session.
+
+Impact: The one-person tenant-scoped API path is verified, but this evidence
+does not prove rendering, touch interaction, navigation ergonomics, or device
+network behavior against Railway.
+
+Next action: Install the approved pilot build on Chris Hall's device, complete
+the runbook path with synthetic data, capture non-secret screen evidence, and
+record the device, app commit, timestamps, and observed defects.
+
 ## Production Launch Preparation
 
 ### High

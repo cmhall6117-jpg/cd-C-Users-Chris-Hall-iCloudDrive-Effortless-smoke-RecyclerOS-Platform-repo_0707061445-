@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "run_id": "20260824212230-5fd820be",
+  "executed_at": "2026-08-24T21:22:30.330476+00:00",
+  "base_url": "https://recycleros-api-pilot.up.railway.app",
+  "release_sha": "5784f4526e97de7cc60538d00ecc6977ca13a375",
+  "tester": "operator@effortlesssmoke.com",
+  "scope": "one_person_synthetic_field_smoke",
+  "passed": true,
+  "tenant": {
+    "organization_id": "org-local",
+    "workspace_id": "workspace-local",
+    "role": "operator"
+  },
+  "records": {
+    "opportunity_code": "OPP-000001",
+    "vehicle_code": "VEH-000001",
+    "inventory_code": "INV-000001"
+  },
+  "checks": [
+    {
+      "name": "liveness",
+      "status": "passed",
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "readiness",
+      "status": "passed",
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "release_identity",
+      "status": "passed",
+      "detail": "5784f4526e97de7cc60538d00ecc6977ca13a375"
+    },
+    {
+      "name": "login",
+      "status": "passed",
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "organization_workspace_selection",
+      "status": "passed",
+      "detail": "operator"
+    },
+    {
+      "name": "authenticated_identity",
+      "status": "passed",
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "missing_tenant_rejected",
+      "status": "passed",
+      "detail": "HTTP 400"
+    },
+    {
+      "name": "mismatched_tenant_rejected",
+      "status": "passed",
+      "detail": "HTTP 403"
+    },
+    {
+      "name": "mission_control_data",
+      "status": "passed",
+      "detail": "HTTP 200"
+    },
+    {
+      "name": "opportunity_discovery",
+      "status": "passed",
+      "detail": "OPP-000001"
+    },
+    {
+      "name": "opportunity_list",
+      "status": "passed",
+      "detail": "created record visible"
+    },
+    {
+      "name": "vehicle_record",
+      "status": "passed",
+      "detail": "VEH-000001"
+    },
+    {
+      "name": "procurement",
+      "status": "passed",
+      "detail": "3 scenarios; partOut recommended"
+    },
+    {
+      "name": "pick_list",
+      "status": "passed",
+      "detail": "available"
+    },
+    {
+      "name": "focus_point",
+      "status": "passed",
+      "detail": "completed"
+    },
+    {
+      "name": "inventory_intake",
+      "status": "passed",
+      "detail": "INV-000001"
+    },
+    {
+      "name": "logout",
+      "status": "passed",
+      "detail": "HTTP 204"
+    },
+    {
+      "name": "revoked_session_rejected",
+      "status": "passed",
+      "detail": "HTTP 401"
+    }
+  ]
+}

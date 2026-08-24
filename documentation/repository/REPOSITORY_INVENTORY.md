@@ -1292,10 +1292,13 @@ preserved.
 - `deploy/railway/pilot/variables.example`
 - `deploy/railway/pilot/pilot.contract.json`
 - `tools/scripts/railway_pilot_contract.py`
+- `tools/scripts/railway_field_smoke.py`
 - `services/api/tests/test_railway_pilot_contract.py`
+- `services/api/tests/test_railway_field_smoke.py`
 - `documentation/deployment/RAILWAY_PILOT_SETUP.md`
 - `documentation/deployment/RAILWAY_PILOT_RUNBOOK.md`
 - `documentation/release/RAILWAY_PILOT_ENVIRONMENT_PR.md`
+- `documentation/release/evidence/railway/2026-08-24-one-person-field-smoke.json`
 
 The branch also updates `services/api/Dockerfile` so the healthcheck honors the
 platform-assigned port, and extends RC1 CI, recovery, monitoring, and evidence

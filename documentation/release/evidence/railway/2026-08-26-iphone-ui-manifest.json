@@ -56,7 +56,16 @@
     "inventory_intake",
     "logout_and_revoked_session"
   ],
-  "observed_defects": [],
+  "observed_defects": [
+    {
+      "id": "DEF-RAILWAY-008",
+      "severity": "high",
+      "status": "open_fix_candidate",
+      "detail": "After browser session state was lost, Opportunity Discovery rendered with write actions disabled instead of returning to sign-in.",
+      "evidence_retained": false,
+      "evidence_note": "The submitted screenshot was not retained because it may contain a real VIN."
+    }
+  ],
   "screenshots": [
     {
       "file": "2026-08-26-iphone-workspace-selection.jpg",

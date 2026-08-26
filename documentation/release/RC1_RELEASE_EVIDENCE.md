@@ -233,10 +233,12 @@ operator credential was recorded as `DEF-RAILWAY-007`. The recovery candidate
 adds an explicit no-echo command that transactionally rotates the PostgreSQL
 credential, revokes active sessions, clears login lockouts, and records a
 non-secret audit event. Local compilation passed and the backend suite reported
-78 passed with 3 PostgreSQL-only tests skipped.
+78 passed with 3 PostgreSQL-only tests skipped. GitHub push run `32957902186`
+and pull-request run `32957922930` passed all 11 RC1 jobs on both paths,
+including clean PostgreSQL execution and pilot container packaging.
 
 No RC1 or field-access gate is passed by this candidate. Required evidence still
-includes a passing CI PostgreSQL job, deployment of the reviewed command, live
-rotation by the approved owner, synchronization of the sealed Railway variable,
-HTTP 200 readiness, and successful Flutter login. No live secret or Railway
-resource was changed while preparing this candidate.
+includes deployment of the reviewed command, live rotation by the approved
+owner, synchronization of the sealed Railway variable, HTTP 200 readiness, and
+successful Flutter login. No live secret or Railway resource was changed while
+preparing this candidate.

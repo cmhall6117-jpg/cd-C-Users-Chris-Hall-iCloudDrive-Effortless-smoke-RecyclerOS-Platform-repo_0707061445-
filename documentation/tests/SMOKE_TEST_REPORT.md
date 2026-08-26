@@ -435,7 +435,9 @@ recovery evidence.
 - PostgreSQL integration coverage added for old-password rejection, new-password
   acceptance, session revocation, lockout clearing, and audit-event creation
 - PostgreSQL integration execution: skipped locally because no clean database
-  runtime is available; CI evidence is required before deployment
+  runtime is available
+- GitHub push run `32957902186` and pull-request run `32957922930`: clean
+  PostgreSQL jobs passed, and every job in both 11-job RC1 matrices passed
 - live password rotation and Flutter login: not run
 
 No password, password digest, database URL, session token, or authorization

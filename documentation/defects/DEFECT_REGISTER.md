@@ -388,7 +388,8 @@ Status: open, field-test blocker
 Evidence: On August 26, 2026, the assigned tester reported that the operator
 password was not present in the approved password manager. Railway holds
 `RECYCLEROS_LOCAL_OPERATOR_PASSWORD` as a sealed variable, so its value cannot
-be retrieved.
+be retrieved. Recovery-candidate push run `32957902186` and pull-request run
+`32957922930` passed every RC1 job, including clean PostgreSQL rotation tests.
 
 Impact: The manual Flutter device session cannot start. Replacing only the
 Railway bootstrap variable would leave the existing PostgreSQL password digest

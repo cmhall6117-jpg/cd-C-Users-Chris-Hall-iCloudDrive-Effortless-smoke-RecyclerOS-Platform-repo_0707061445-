@@ -328,5 +328,7 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
 - `python -m compileall` plus entrypoint `py_compile`: passed
 - Full local backend regression: 78 passed, 3 PostgreSQL-only skipped
 - Local PostgreSQL execution: unavailable because this workstation has no
-  Docker runtime or configured `DATABASE_URL`; the CI PostgreSQL job is required
+  Docker runtime or configured `DATABASE_URL`
+- GitHub push run `32957902186` and pull-request run `32957922930`: all 11 jobs
+  passed, including clean PostgreSQL rotation coverage and pilot image packaging
 - Live Railway mutation: not performed; `DEF-RAILWAY-007` remains open

@@ -277,3 +277,46 @@ def test_production_owner_bootstrap_is_audited_and_one_time():
         audit_event = cursor.fetchone()
 
     assert audit_event == ("account_bootstrapped", "owner")
+
+
+def test_operator_password_rotation_revokes_sessions_and_clears_lockout():
+    import psycopg
+
+    _reset_auth_state()
+    auth_service = _runtime_auth(max_failures=2)
+    auth_service.bootstrap_local_operator(OPERATOR_PASSWORD)
+    session = auth_service.authenticate(OPERATOR_EMAIL, OPERATOR_PASSWORD)
+    assert session is not None
+
+    assert auth_service.authenticate(OPERATOR_EMAIL, "wrong-password") is None
+    new_password = "rotated-postgres-runtime-password"
+    revoked_sessions = auth_service.rotate_password(
+        email=OPERATOR_EMAIL,
+        password=new_password,
+    )
+
+    assert revoked_sessions == 1
+    assert auth_service.resolve(session.access_token) is None
+    assert auth_service.authenticate(OPERATOR_EMAIL, OPERATOR_PASSWORD) is None
+    assert auth_service.authenticate(OPERATOR_EMAIL, new_password) is not None
+
+    with psycopg.connect(DATABASE_URL) as conn, conn.cursor() as cursor:
+        cursor.execute(
+            "SELECT 1 FROM auth_login_attempts WHERE email = %s",
+            (OPERATOR_EMAIL,),
+        )
+        attempts = cursor.fetchone()
+        cursor.execute(
+            """
+            SELECT details->>'sessions_revoked'
+            FROM auth_audit_events
+            WHERE email = %s AND event_type = 'password_rotated'
+            ORDER BY occurred_at DESC
+            LIMIT 1
+            """,
+            (OPERATOR_EMAIL,),
+        )
+        audit_event = cursor.fetchone()
+
+    assert attempts is None
+    assert audit_event == ("1",)

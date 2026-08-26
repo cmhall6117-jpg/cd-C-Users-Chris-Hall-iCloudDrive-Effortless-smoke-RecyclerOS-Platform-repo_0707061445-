@@ -26,6 +26,7 @@ COPY services/api/src /app/services/api/src
 COPY services/api/pilot_entrypoint.py /app/services/api/pilot_entrypoint.py
 COPY services/api/production_entrypoint.py /app/services/api/production_entrypoint.py
 COPY services/api/production_bootstrap.py /app/services/api/production_bootstrap.py
+COPY services/api/operator_password_rotate.py /app/services/api/operator_password_rotate.py
 COPY tools/scripts/rc1_postgres_migrate.py /app/tools/scripts/rc1_postgres_migrate.py
 COPY database/migrations/postgres /app/database/migrations/postgres
 

@@ -44,6 +44,49 @@ The command creates clearly labeled synthetic records, logs out, verifies
 session revocation, and never serializes the password or bearer token. This API
 smoke complements but does not replace the manual Flutter device session.
 
+## Operator Credential Recovery
+
+Use this procedure when the sealed pilot password is unavailable or rotation is
+required. A sealed Railway variable cannot be read back. Changing that variable
+alone also cannot rotate an existing database credential.
+
+1. Stop field activity. Confirm the API and PostgreSQL services are healthy,
+   PITR is current, and the latest scheduled volume backup completed.
+2. Create a unique password of at least 24 characters in the approved password
+   manager. Keep that entry open, but do not place the password in chat, shell
+   history, screenshots, source control, or command arguments.
+3. Confirm the deployed API image contains
+   `services/api/operator_password_rotate.py`.
+4. Register a workstation SSH key with Railway when no approved key exists:
+
+   ```powershell
+   railway ssh keys add
+   ```
+
+5. From the linked repository directory, run the no-echo rotation command:
+
+   ```powershell
+   railway ssh --service recycleros-api --environment pilot -- `
+     python services/api/operator_password_rotate.py `
+     --confirm-email operator@effortlesssmoke.com
+   ```
+
+6. Enter the saved password twice at the private prompts. Require the command
+   to report `PASS operator credential rotated`. The transaction replaces the
+   PBKDF2 credential, revokes existing sessions, clears login lockouts, and
+   records a password-rotation audit event without the password.
+7. In Railway, open `pilot` -> `recycleros-api` -> **Variables**, edit the sealed
+   `RECYCLEROS_LOCAL_OPERATOR_PASSWORD` value to the same saved password, and
+   deploy the staged change. Do not unseal the variable.
+8. Require liveness and readiness to return HTTP 200. Sign in once through the
+   Flutter pilot, confirm the assigned organization and workspace, and close the
+   session.
+9. Record the deployment ID, rotation time, operator email, successful login,
+   and number of revoked sessions. Do not record the password, its hash, the
+   database URL, or an authorization token.
+10. Remove the temporary Railway SSH key after verification when it is not an
+    approved durable support key.
+
 ## Backup And Restore
 
 Before the first field session and after any material test data change:

@@ -20,6 +20,10 @@ contain live values.
 - backup and restore subprocess commands receive passwords through `PGPASSWORD`, not command arguments
 - generated secret files use exclusive creation and are never overwritten
 - changing the bootstrap operator file does not rotate an existing database credential
+- operator recovery uses the no-echo `operator_password_rotate.py` command,
+  revokes active sessions, clears lockouts, and writes a non-secret audit event
+- after database rotation, the approved password manager and sealed runtime
+  bootstrap variable must be updated to the same value
 
 Database and operator credential rotation require an approved operational change
 and post-rotation login/readiness verification.

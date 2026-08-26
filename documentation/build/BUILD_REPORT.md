@@ -318,7 +318,7 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
 - Remaining evidence gap: manual Flutter device interaction under
   `DEF-RAILWAY-006`
 
-## Railway Operator Credential Recovery Candidate
+## Railway Operator Credential Recovery and iPhone Evidence
 
 - Date: August 26, 2026
 - Branch: `codex/railway-operator-credential-recovery`
@@ -331,4 +331,18 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
   Docker runtime or configured `DATABASE_URL`
 - GitHub push run `32957902186` and pull-request run `32957922930`: all 11 jobs
   passed, including clean PostgreSQL rotation coverage and pilot image packaging
-- Live Railway mutation: not performed; `DEF-RAILWAY-007` remains open
+- Live Railway mutation: not performed; the assigned tester recovered and
+  successfully used the original credential
+- Credential state: PostgreSQL and sealed Railway variable unchanged
+- Recovery access cleanup: temporary Railway SSH key revoked and temporary local
+  key files removed
+- Credential defect: `DEF-RAILWAY-007` closed
+- iPhone UI smoke: login, workspace selection, and Mission Control passed
+- Flutter web deployment: workflow run `32783845146`, commit
+  `9c3814c07cab4d5c1c4301f8bf198aab5d310c36`
+- Live API health: version `0.6.0`, release
+  `e929c9977666b1fc30c7cdecbe30a2dfd3e4feef`, PostgreSQL storage and auth
+- Device-session gate: `DEF-RAILWAY-006` remains open for Opportunity Discovery
+  through Inventory Intake and logout
+- Evidence:
+  `documentation/release/evidence/railway/2026-08-26-iphone-ui-manifest.json`

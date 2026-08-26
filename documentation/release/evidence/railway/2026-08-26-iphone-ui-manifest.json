@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "evidence_id": "railway-iphone-ui-2026-08-26",
+  "scope": "partial_manual_flutter_web_field_session",
+  "submitted_date": "2026-08-26",
+  "tester": "Chris Hall",
+  "device": {
+    "family": "iPhone",
+    "model": "not evidenced",
+    "browser": "not evidenced",
+    "browser_version": "not evidenced"
+  },
+  "frontend": {
+    "provider": "GitHub Pages",
+    "origin": "https://cmhall6117-jpg.github.io",
+    "workflow_run": 32783845146,
+    "commit": "9c3814c07cab4d5c1c4301f8bf198aab5d310c36",
+    "conclusion": "success"
+  },
+  "api": {
+    "url": "https://recycleros-api-pilot.up.railway.app",
+    "health_checked_date": "2026-08-26",
+    "status": "ok",
+    "version": "0.6.0",
+    "release": "e929c9977666b1fc30c7cdecbe30a2dfd3e4feef",
+    "storage": "postgres",
+    "auth_storage": "postgres"
+  },
+  "observations": [
+    {
+      "step": "login",
+      "result": "passed",
+      "detail": "The authenticated organization and workspace selector rendered."
+    },
+    {
+      "step": "workspace_selection",
+      "result": "passed",
+      "detail": "RecyclerOS Operations was available for Effortless Smoke, LLC with the Operator role and opened successfully."
+    },
+    {
+      "step": "mission_control",
+      "result": "passed",
+      "detail": "Mission Control rendered tenant-scoped zero-state opportunity, pick-list, and inventory metrics."
+    }
+  ],
+  "remaining_steps": [
+    "opportunity_discovery",
+    "vehicle_record",
+    "procurement",
+    "pick_list",
+    "inventory_intake",
+    "logout_and_revoked_session"
+  ],
+  "observed_defects": [],
+  "screenshots": [
+    {
+      "file": "2026-08-26-iphone-workspace-selection.jpg",
+      "displayed_clock": "4:57",
+      "sha256": "36f9cb40dd788b087cd735d8a84d7df910f99c33989b528db80f6d3f94a28b33"
+    },
+    {
+      "file": "2026-08-26-iphone-mission-control.jpg",
+      "displayed_clock": "4:58",
+      "sha256": "245aeaf74b3861a2931face31c9aaccf288b83fdd5c9b62f2c689fc770692579"
+    }
+  ],
+  "credential_material_recorded": false
+}

@@ -33,7 +33,7 @@ class FakeRc1Gateway implements Rc1Gateway {
       userId: 'user-local',
       email: email,
       displayName: 'Local Operator',
-      expiresAt: _now.add(const Duration(hours: 8)),
+      expiresAt: DateTime.now().toUtc().add(const Duration(hours: 8)),
       memberships: [
         TenantMembership(
           organizationId: 'org-local',

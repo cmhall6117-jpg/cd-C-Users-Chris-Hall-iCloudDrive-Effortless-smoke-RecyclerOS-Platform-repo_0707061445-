@@ -424,8 +424,8 @@ not claim a manual Flutter device session; that evidence remains tracked under
 
 ## Operator Credential Recovery Tests
 
-Result on August 26, 2026: passed locally, pending PostgreSQL CI and live
-recovery evidence.
+Result on August 26, 2026: recovery candidate passed CI; live rotation was not
+required.
 
 - secure prompt, confirmation, and minimum-length tests: passed
 - confirmation-email guard: passed
@@ -438,7 +438,41 @@ recovery evidence.
   runtime is available
 - GitHub push run `32957902186` and pull-request run `32957922930`: clean
   PostgreSQL jobs passed, and every job in both 11-job RC1 matrices passed
-- live password rotation and Flutter login: not run
+- the assigned tester recovered the original credential before rotation
+- live password rotation: not run; PostgreSQL and the sealed Railway variable
+  were intentionally left unchanged
+- temporary Railway recovery SSH key: revoked
+- temporary local recovery key files: removed
 
 No password, password digest, database URL, session token, or authorization
 header was written to repository evidence.
+
+## Railway iPhone UI Field Smoke
+
+Result on August 26, 2026: passed through Mission Control; remaining manual
+working-path stages are pending.
+
+- tester: Chris Hall
+- device: iPhone; model, browser, and browser version were not evidenced
+- frontend: public GitHub Pages pilot
+- frontend workflow: run `32783845146`, passed
+- frontend commit: `9c3814c07cab4d5c1c4301f8bf198aab5d310c36`
+- live API health: HTTP 200, version `0.6.0`
+- API release: `e929c9977666b1fc30c7cdecbe30a2dfd3e4feef`
+- storage and auth storage: PostgreSQL
+- login and authenticated tenant listing: passed
+- workspace selection: passed for RecyclerOS Operations
+- Mission Control rendering and zero-state metrics: passed
+- observed UI defects: none in the evidenced stages
+- pending: Opportunity Discovery, Vehicle Record, Procurement, Pick List,
+  Inventory Intake, logout, and revoked-session behavior
+- evidence manifest:
+  `documentation/release/evidence/railway/2026-08-26-iphone-ui-manifest.json`
+- workspace screenshot SHA-256:
+  `36f9cb40dd788b087cd735d8a84d7df910f99c33989b528db80f6d3f94a28b33`
+- Mission Control screenshot SHA-256:
+  `245aeaf74b3861a2931face31c9aaccf288b83fdd5c9b62f2c689fc770692579`
+
+This evidence narrows `DEF-RAILWAY-006` but does not close it. No credential,
+session token, authorization header, or database URL appears in the retained
+evidence.

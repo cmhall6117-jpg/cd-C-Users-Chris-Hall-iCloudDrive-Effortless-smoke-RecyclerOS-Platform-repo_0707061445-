@@ -226,7 +226,7 @@ with SHA-256
 No credential or token is present. Manual Flutter device interaction remains a
 separate evidence gate under `DEF-RAILWAY-006`.
 
-## Operator Credential Recovery Candidate
+## Operator Credential Recovery Resolution
 
 On August 26, 2026, loss of the password-manager copy of the sealed pilot
 operator credential was recorded as `DEF-RAILWAY-007`. The recovery candidate
@@ -237,8 +237,29 @@ non-secret audit event. Local compilation passed and the backend suite reported
 and pull-request run `32957922930` passed all 11 RC1 jobs on both paths,
 including clean PostgreSQL execution and pilot container packaging.
 
-No RC1 or field-access gate is passed by this candidate. Required evidence still
-includes deployment of the reviewed command, live rotation by the approved
-owner, synchronization of the sealed Railway variable, HTTP 200 readiness, and
-successful Flutter login. No live secret or Railway resource was changed while
-preparing this candidate.
+Before live rotation, the assigned tester recovered the original credential and
+used it successfully on the iPhone pilot. PostgreSQL and the sealed Railway
+variable remained synchronized and were not changed. The temporary recovery SSH
+key was revoked and the temporary local key files were removed. The reviewed
+rotation command remains available as a contingency, and `DEF-RAILWAY-007` is
+closed without recording any secret in repository evidence.
+
+## Partial iPhone UI Field Evidence
+
+On August 26, 2026, Chris Hall used the public GitHub Pages Flutter pilot on an
+iPhone to authenticate, render the Effortless Smoke, LLC organization and
+RecyclerOS Operations workspace, select that workspace, and reach Mission
+Control. The screen rendered tenant-scoped zero-state Opportunity, Pick List,
+and Inventory metrics. No UI defect was observed in these stages.
+
+The frontend is tied to successful workflow run `32783845146` at commit
+`9c3814c07cab4d5c1c4301f8bf198aab5d310c36`. A read-only health check reported
+the live Railway API at release
+`e929c9977666b1fc30c7cdecbe30a2dfd3e4feef`, version `0.6.0`, with PostgreSQL
+storage and auth. The screenshots, checksums, observed steps, and remaining
+steps are retained in
+`documentation/release/evidence/railway/2026-08-26-iphone-ui-manifest.json`.
+
+This evidence closes the credential blocker and narrows `DEF-RAILWAY-006`.
+Manual iPhone evidence from Opportunity Discovery through Inventory Intake and
+logout remains required before the device-session gate can pass.

@@ -365,40 +365,49 @@ audited account-provisioning operation before adding the second tester.
 
 #### DEF-RAILWAY-006: Manual Flutter device field session is not evidenced
 
-Status: open, test-evidence gap
+Status: open, partially evidenced test gap
 
 Evidence: Live synthetic API run `20260824212230-5fd820be` passed all 18 checks
 from login through inventory intake and session revocation. Flutter analyze,
-widget tests, and live local gateway integration pass in CI, but this workstation
-has no Flutter SDK or connected pilot device for a manual live UI session.
+widget tests, and live local gateway integration pass in CI. On August 26, 2026,
+Chris Hall completed login and workspace selection on an iPhone and reached
+Mission Control through the public GitHub Pages build. The frontend is tied to
+successful workflow run `32783845146` at commit
+`9c3814c07cab4d5c1c4301f8bf198aab5d310c36`; the live Railway health response
+reported API release `e929c9977666b1fc30c7cdecbe30a2dfd3e4feef`, PostgreSQL
+storage, and PostgreSQL auth. The screenshots and checksums are recorded in
+`documentation/release/evidence/railway/2026-08-26-iphone-ui-manifest.json`.
 
-Impact: The one-person tenant-scoped API path is verified, but this evidence
-does not prove rendering, touch interaction, navigation ergonomics, or device
-network behavior against Railway.
+Impact: Rendering, touch navigation, credential exchange, tenant selection, and
+device network behavior are now evidenced through Mission Control. Manual device
+interaction from Opportunity Discovery through Inventory Intake and logout is
+not yet evidenced.
 
-Next action: Deploy the credential-free GitHub Pages build, complete
-`documentation/deployment/FLUTTER_WEB_PILOT_RUNBOOK.md` on Chris Hall's iPhone
-with synthetic data, capture non-secret screen evidence, and record the device,
-app commit, timestamps, and observed defects.
+Next action: Continue `documentation/deployment/FLUTTER_WEB_PILOT_RUNBOOK.md` on
+Chris Hall's iPhone from Opportunity Discovery through Inventory Intake and
+logout, using synthetic data and retaining non-secret evidence for each stage.
 
 #### DEF-RAILWAY-007: The sealed pilot operator credential is unavailable
 
-Status: open, field-test blocker
+Status: closed
 
 Evidence: On August 26, 2026, the assigned tester reported that the operator
 password was not present in the approved password manager. Railway holds
 `RECYCLEROS_LOCAL_OPERATOR_PASSWORD` as a sealed variable, so its value cannot
 be retrieved. Recovery-candidate push run `32957902186` and pull-request run
 `32957922930` passed every RC1 job, including clean PostgreSQL rotation tests.
+Before rotation, the assigned tester recovered the original credential and used
+it successfully to reach the authenticated workspace selector and Mission
+Control on an iPhone. No database credential or sealed Railway variable was
+changed. The temporary recovery SSH key was revoked and all temporary local key
+files were removed.
 
-Impact: The manual Flutter device session cannot start. Replacing only the
-Railway bootstrap variable would leave the existing PostgreSQL password digest
-unchanged.
+Impact: None remaining. The original durable credential and sealed Railway value
+remain synchronized, and the manual Flutter device session can continue.
 
-Next action: Deploy and run the audited no-echo recovery command in
-`documentation/deployment/RAILWAY_PILOT_RUNBOOK.md`, update the password-manager
-entry and sealed Railway variable to the same value, redeploy, and retain
-readiness plus successful-login evidence before closing this defect.
+Resolution: Retain the tested recovery command as a controlled contingency. Do
+not rotate the live credential unless the approved owner initiates a future
+recovery event.
 
 ## Production Launch Preparation
 

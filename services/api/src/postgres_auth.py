@@ -331,6 +331,78 @@ class PostgresAuthService:
             )
         return user_id
 
+    def rotate_password(self, *, email: str, password: str) -> int:
+        """Replace one durable credential and revoke its active sessions."""
+        normalized_email = email.strip().casefold()
+        if not normalized_email:
+            raise ValueError("email is required")
+        if len(password) < 16:
+            raise ValueError("password must be at least 16 characters")
+
+        now = self._clock()
+        salt = secrets.token_bytes(16)
+        iterations = 200_000
+        digest = password_digest(password, salt, iterations)
+
+        with self._connect() as conn, conn.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT id, active
+                FROM auth_users
+                WHERE LOWER(email) = %s
+                FOR UPDATE
+                """,
+                (normalized_email,),
+            )
+            user = cursor.fetchone()
+            if user is None:
+                raise RuntimeError("The account does not exist.")
+            if not user["active"]:
+                raise RuntimeError("The account is inactive.")
+
+            cursor.execute(
+                """
+                INSERT INTO auth_password_credentials (
+                    user_id,
+                    password_salt,
+                    password_digest,
+                    password_iterations,
+                    updated_at
+                )
+                VALUES (%s, %s, %s, %s, %s)
+                ON CONFLICT (user_id) DO UPDATE SET
+                    password_salt = EXCLUDED.password_salt,
+                    password_digest = EXCLUDED.password_digest,
+                    password_iterations = EXCLUDED.password_iterations,
+                    updated_at = EXCLUDED.updated_at
+                """,
+                (user["id"], salt, digest, iterations, now),
+            )
+            cursor.execute(
+                """
+                UPDATE auth_sessions
+                SET revoked_at = %s
+                WHERE user_id = %s
+                  AND revoked_at IS NULL
+                """,
+                (now, user["id"]),
+            )
+            revoked_sessions = cursor.rowcount
+            cursor.execute(
+                "DELETE FROM auth_login_attempts WHERE email = %s",
+                (normalized_email,),
+            )
+            self._audit(
+                cursor,
+                event_type="password_rotated",
+                user_id=user["id"],
+                email=normalized_email,
+                occurred_at=now,
+                details={"sessions_revoked": revoked_sessions},
+            )
+
+        return revoked_sessions
+
     def authenticate(self, email: str, password: str) -> AuthSession | None:
         normalized_email = email.strip().casefold()
         now = self._clock()

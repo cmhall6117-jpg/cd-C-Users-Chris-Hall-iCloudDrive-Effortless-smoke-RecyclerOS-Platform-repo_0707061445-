@@ -14,6 +14,9 @@
 - PostgreSQL users, memberships, sessions, revocation state, login attempts, and auth audit events are durable across API restarts. Refresh tokens, password recovery, and enterprise SSO remain deferred.
 - `RECYCLEROS_DEPLOYMENT_MODE=production` requires `DATABASE_URL`; process-local providers are not an implicit production fallback.
 - The local operator password bootstraps a missing PostgreSQL account but does not rotate an existing credential during app startup.
+- Durable operator credential recovery is an explicit, audited operation; it
+  revokes existing sessions and must be followed by synchronizing the sealed
+  runtime bootstrap variable from the approved password manager.
 - The pilot API and PostgreSQL ports remain loopback-bound; remote access requires an independently managed TLS reverse proxy and DNS record.
 - Pilot runtime secrets are mounted through file references and are not committed, baked into the image, or written into evidence documents.
 - The API container applies idempotent RC1 migrations before starting one initial pilot worker.

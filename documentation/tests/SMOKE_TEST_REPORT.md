@@ -421,3 +421,22 @@ Result on August 24, 2026: passed against the live pilot.
 This result proves the live tenant-scoped API path with synthetic data. It does
 not claim a manual Flutter device session; that evidence remains tracked under
 `DEF-RAILWAY-006`.
+
+## Operator Credential Recovery Tests
+
+Result on August 26, 2026: passed locally, pending PostgreSQL CI and live
+recovery evidence.
+
+- secure prompt, confirmation, and minimum-length tests: passed
+- confirmation-email guard: passed
+- password absence from command output: passed
+- full backend regression: 78 passed, 3 skipped
+- source and operational entrypoint compilation: passed
+- PostgreSQL integration coverage added for old-password rejection, new-password
+  acceptance, session revocation, lockout clearing, and audit-event creation
+- PostgreSQL integration execution: skipped locally because no clean database
+  runtime is available; CI evidence is required before deployment
+- live password rotation and Flutter login: not run
+
+No password, password digest, database URL, session token, or authorization
+header was written to repository evidence.

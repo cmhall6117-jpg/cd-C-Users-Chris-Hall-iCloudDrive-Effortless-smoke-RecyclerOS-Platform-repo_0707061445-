@@ -225,3 +225,18 @@ with SHA-256
 `7ceffa050ddba5a2901ac7794747b8882d105812536c10be24313a1888fc249f`.
 No credential or token is present. Manual Flutter device interaction remains a
 separate evidence gate under `DEF-RAILWAY-006`.
+
+## Operator Credential Recovery Candidate
+
+On August 26, 2026, loss of the password-manager copy of the sealed pilot
+operator credential was recorded as `DEF-RAILWAY-007`. The recovery candidate
+adds an explicit no-echo command that transactionally rotates the PostgreSQL
+credential, revokes active sessions, clears login lockouts, and records a
+non-secret audit event. Local compilation passed and the backend suite reported
+78 passed with 3 PostgreSQL-only tests skipped.
+
+No RC1 or field-access gate is passed by this candidate. Required evidence still
+includes a passing CI PostgreSQL job, deployment of the reviewed command, live
+rotation by the approved owner, synchronization of the sealed Railway variable,
+HTTP 200 readiness, and successful Flutter login. No live secret or Railway
+resource was changed while preparing this candidate.

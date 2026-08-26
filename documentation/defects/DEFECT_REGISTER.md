@@ -381,6 +381,24 @@ Next action: Deploy the credential-free GitHub Pages build, complete
 with synthetic data, capture non-secret screen evidence, and record the device,
 app commit, timestamps, and observed defects.
 
+#### DEF-RAILWAY-007: The sealed pilot operator credential is unavailable
+
+Status: open, field-test blocker
+
+Evidence: On August 26, 2026, the assigned tester reported that the operator
+password was not present in the approved password manager. Railway holds
+`RECYCLEROS_LOCAL_OPERATOR_PASSWORD` as a sealed variable, so its value cannot
+be retrieved.
+
+Impact: The manual Flutter device session cannot start. Replacing only the
+Railway bootstrap variable would leave the existing PostgreSQL password digest
+unchanged.
+
+Next action: Deploy and run the audited no-echo recovery command in
+`documentation/deployment/RAILWAY_PILOT_RUNBOOK.md`, update the password-manager
+entry and sealed Railway variable to the same value, redeploy, and retain
+readiness plus successful-login evidence before closing this defect.
+
 ## Production Launch Preparation
 
 ### High

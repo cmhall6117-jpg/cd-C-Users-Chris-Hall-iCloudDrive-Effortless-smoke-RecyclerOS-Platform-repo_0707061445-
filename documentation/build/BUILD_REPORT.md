@@ -317,3 +317,16 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
   database URL present
 - Remaining evidence gap: manual Flutter device interaction under
   `DEF-RAILWAY-006`
+
+## Railway Operator Credential Recovery Candidate
+
+- Date: August 26, 2026
+- Branch: `codex/railway-operator-credential-recovery`
+- Added a no-echo durable password-rotation command to the API image
+- Rotation transaction replaces the PBKDF2 credential, revokes active sessions,
+  clears login lockouts, and writes a non-secret audit event
+- `python -m compileall` plus entrypoint `py_compile`: passed
+- Full local backend regression: 78 passed, 3 PostgreSQL-only skipped
+- Local PostgreSQL execution: unavailable because this workstation has no
+  Docker runtime or configured `DATABASE_URL`; the CI PostgreSQL job is required
+- Live Railway mutation: not performed; `DEF-RAILWAY-007` remains open

@@ -13,6 +13,7 @@ import pilot_postgres_backup  # noqa: E402
 import pilot_postgres_create_database  # noqa: E402
 import pilot_postgres_restore  # noqa: E402
 import pilot_prepare_secrets  # noqa: E402
+import operator_password_rotate  # noqa: E402
 import production_bootstrap  # noqa: E402
 import production_release_manifest  # noqa: E402
 import rc1_postgres_migrate  # noqa: E402
@@ -144,6 +145,75 @@ def test_production_bootstrap_requires_exact_owner_confirmation(
 
     with pytest.raises(RuntimeError, match="exactly match"):
         production_bootstrap.main()
+
+
+def test_operator_password_rotation_prompts_without_environment_secret(
+    monkeypatch,
+    capsys,
+):
+    captured = {}
+
+    class FakeAuthService:
+        def __init__(self, database_url):
+            captured["database_url"] = database_url
+
+        def rotate_password(self, *, email, password):
+            captured["email"] = email
+            captured["password"] = password
+            return 3
+
+    password = "new-pilot-operator-password"
+    prompts = iter((password, password))
+    monkeypatch.setenv("DATABASE_URL", DATABASE_URL)
+    monkeypatch.setattr(
+        operator_password_rotate,
+        "PostgresAuthService",
+        FakeAuthService,
+    )
+    monkeypatch.setattr(
+        operator_password_rotate.getpass,
+        "getpass",
+        lambda _prompt: next(prompts),
+    )
+
+    assert operator_password_rotate.main(
+        ["--confirm-email", operator_password_rotate.PILOT_OPERATOR_EMAIL]
+    ) == 0
+    assert captured == {
+        "database_url": DATABASE_URL,
+        "email": operator_password_rotate.PILOT_OPERATOR_EMAIL,
+        "password": password,
+    }
+    assert password not in capsys.readouterr().out
+
+
+def test_operator_password_rotation_rejects_mismatched_confirmation(monkeypatch):
+    monkeypatch.setenv("DATABASE_URL", DATABASE_URL)
+    monkeypatch.setattr(
+        operator_password_rotate.getpass,
+        "getpass",
+        lambda _prompt: pytest.fail("password prompt must not run"),
+    )
+
+    with pytest.raises(RuntimeError, match="exactly match"):
+        operator_password_rotate.main(
+            ["--confirm-email", "another-user@example.com"]
+        )
+
+
+def test_operator_password_rotation_rejects_short_password(monkeypatch):
+    prompts = iter(("too-short", "too-short"))
+    monkeypatch.setenv("DATABASE_URL", DATABASE_URL)
+    monkeypatch.setattr(
+        operator_password_rotate.getpass,
+        "getpass",
+        lambda _prompt: next(prompts),
+    )
+
+    with pytest.raises(RuntimeError, match="at least 24"):
+        operator_password_rotate.main(
+            ["--confirm-email", operator_password_rotate.PILOT_OPERATOR_EMAIL]
+        )
 
 
 def test_production_release_manifest_pins_image_and_migrations():

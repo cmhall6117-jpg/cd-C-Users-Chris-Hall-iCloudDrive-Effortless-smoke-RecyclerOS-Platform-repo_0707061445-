@@ -41,10 +41,15 @@
       "step": "mission_control",
       "result": "passed",
       "detail": "Mission Control rendered tenant-scoped zero-state opportunity, pick-list, and inventory metrics."
+    },
+    {
+      "step": "opportunity_discovery_navigation",
+      "result": "passed",
+      "detail": "Opportunity Discovery opened and rendered the new-opportunity form, disabled pre-validation action, and empty active-opportunities state."
     }
   ],
   "remaining_steps": [
-    "opportunity_discovery",
+    "opportunity_creation",
     "vehicle_record",
     "procurement",
     "pick_list",
@@ -62,6 +67,11 @@
       "file": "2026-08-26-iphone-mission-control.jpg",
       "displayed_clock": "4:58",
       "sha256": "245aeaf74b3861a2931face31c9aaccf288b83fdd5c9b62f2c689fc770692579"
+    },
+    {
+      "file": "2026-08-26-iphone-opportunity-discovery-empty.jpg",
+      "displayed_clock": "5:22",
+      "sha256": "a1e9e66a7323c002996dcba123c8b4db37aa20e5972a1d5d6e8b68c6036d9b51"
     }
   ],
   "credential_material_recorded": false

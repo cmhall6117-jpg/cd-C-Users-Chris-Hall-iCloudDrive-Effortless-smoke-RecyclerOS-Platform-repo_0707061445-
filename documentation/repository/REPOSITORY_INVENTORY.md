@@ -1308,6 +1308,15 @@ preserved.
 - `documentation/release/evidence/railway/2026-08-26-iphone-workspace-selection.jpg`
 - `documentation/release/evidence/railway/2026-08-26-iphone-mission-control.jpg`
 - `documentation/release/evidence/railway/2026-08-26-iphone-opportunity-discovery-empty.jpg`
+- `documentation/release/evidence/railway/2026-08-27-iphone-opportunity-created.jpg`
+- `documentation/release/evidence/railway/2026-08-27-iphone-vehicle-record.jpg`
+- `documentation/release/evidence/railway/2026-08-27-iphone-procurement-analysis.jpg`
+- `documentation/release/evidence/railway/2026-08-27-iphone-pick-list-awaiting-availability.jpg`
+- `documentation/release/evidence/railway/2026-08-27-iphone-pick-list-available.jpg`
+- `documentation/release/evidence/railway/2026-08-27-iphone-focus-point-open.jpg`
+- `documentation/release/evidence/railway/2026-08-27-iphone-focus-point-selected.jpg`
+- `documentation/release/evidence/railway/2026-08-27-iphone-inventory-intake-ready.jpg`
+- `documentation/release/evidence/railway/2026-08-27-iphone-inventory-created.jpg`
 
 The branch also updates `services/api/Dockerfile` so the healthcheck honors the
 platform-assigned port, and extends RC1 CI, recovery, monitoring, and evidence
@@ -1315,6 +1324,6 @@ documents. These files are credential-free and activate no vertical slice. The
 monitor performs read-only public endpoint checks; its scoped GitHub token can
 only maintain the single readiness incident issue.
 
-The August 26 iPhone files are operator-supplied, non-secret field evidence for
-the existing Flutter pilot. They are not generated package contributions and do
-not add or activate a vertical slice.
+The August 26-27 iPhone files are operator-supplied, non-secret field evidence
+for the existing Flutter pilot. They are not generated package contributions
+and do not add or activate a vertical slice.

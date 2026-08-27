@@ -449,38 +449,76 @@ header was written to repository evidence.
 
 ## Railway iPhone UI Field Smoke
 
-Result on August 26, 2026: passed through Mission Control; remaining manual
-working-path stages are pending.
+Result through August 27, 2026: passed through Inventory Intake creation;
+logout remains blocked by missing Flutter functionality.
 
 - tester: Chris Hall
 - device: iPhone; model, browser, and browser version were not evidenced
 - frontend: public GitHub Pages pilot
-- frontend workflow: run `32783845146`, passed
-- frontend commit: `9c3814c07cab4d5c1c4301f8bf198aab5d310c36`
+- initial frontend workflow: run `32783845146`, passed
+- guarded frontend workflow: run `33061203825`, passed
+- guarded frontend commit: `d4e1da2fe6b6f5c29af9de95c2c444445744c69c`
 - live API health: HTTP 200, version `0.6.0`
 - API release: `e929c9977666b1fc30c7cdecbe30a2dfd3e4feef`
 - storage and auth storage: PostgreSQL
 - login and authenticated tenant listing: passed
 - workspace selection: passed for RecyclerOS Operations
 - Mission Control rendering and zero-state metrics: passed
-- observed UI defects: none in the evidenced stages
-- pending: Opportunity Discovery, Vehicle Record, Procurement, Pick List,
-  Inventory Intake, logout, and revoked-session behavior
+- Opportunity Discovery: synthetic opportunity `OPP-000002` created with a
+  blank VIN
+- Vehicle Record: linked vehicle `VEH-000002` rendered with its timeline and
+  synthetic operating facts
+- Procurement: later synthetic opportunity `OPP-000003` rendered three
+  scenarios with Part-Out recommended
+- Pick List: Part-Out approval queued one synthetic vehicle; Available selection
+  enabled Open Focus Point
+- Focus Point entry: active KPI timer, confirmed yard and row, five part choices,
+  and pre-selection disabled completion rendered
+- Focus Point completion: selecting `ECM / PCM` and `LED Headlights` enabled the
+  action; completion succeeded and opened Inventory Intake
+- Inventory Intake readiness: selected part, storage location `A-12`, Used
+  Untested condition, Available status, and enabled Create Inventory rendered
+- Inventory item creation: `INV-000002` saved and rendered its ready-for-sync
+  confirmation, one-item session count, and Session Inventory entry
+- continuity limitation: retained screenshots span two synthetic attempts and
+  do not prove one uninterrupted entity chain across every stage
+- observed UI defect: `DEF-RAILWAY-008`, closed after guarded-build retest
+- pending: logout and revoked-session behavior; blocked by `DEF-RAILWAY-009`
 - evidence manifest:
   `documentation/release/evidence/railway/2026-08-26-iphone-ui-manifest.json`
 - workspace screenshot SHA-256:
   `36f9cb40dd788b087cd735d8a84d7df910f99c33989b528db80f6d3f94a28b33`
 - Mission Control screenshot SHA-256:
   `245aeaf74b3861a2931face31c9aaccf288b83fdd5c9b62f2c689fc770692579`
+- Opportunity creation screenshot SHA-256:
+  `09f3ddda7bf057359ab3fa818276487dbd8c9f2fc49c4e3421d91a131ea4b200`
+- Vehicle Record screenshot SHA-256:
+  `8e0b469288beb077198314d56261eef40b2f1c289170b5734714e51ae8e3232d`
+- Procurement screenshot SHA-256:
+  `04ceaaf7fa92e06b4c8071b0503c258bf1de53212ac64b935c2652a08a3e1736`
+- Pick List awaiting-availability screenshot SHA-256:
+  `9a3f09528f84a25f31e92b7c25d2cb77a13ea93b5f8d0693d26d9ae914561ed6`
+- Pick List available screenshot SHA-256:
+  `907e30f4c76eb197aedb5d155be9226ff099b97a21f04af26a0c6ea430cd7ca2`
+- Focus Point entry screenshot SHA-256:
+  `65929a03782faf819db560bc7df20715ca03a23167799ce98d43b3c0ad6a0146`
+- Focus Point selected screenshot SHA-256:
+  `19b6ebb0137247648dd5b521e8ba5ded3d9bf9e78a6c85a29af76b6f678aeaa5`
+- Inventory Intake ready screenshot SHA-256:
+  `8604b7177dc1c9cdf615ac394945a4df0ebde2fe35f3a95e7801ba7f60d47739`
+- Inventory created screenshot SHA-256:
+  `619b53c848d990aca8ce8a38f442e3470fa49116db719414c0a4fde720e706da`
+- duplicate Pick List submission: byte-identical to the retained
+  awaiting-availability screenshot and omitted
 
 This evidence narrows `DEF-RAILWAY-006` but does not close it. No credential,
 session token, authorization header, or database URL appears in the retained
 evidence.
 
-## Flutter Browser Session Guard Candidate
+## Flutter Browser Session Guard
 
-Result on August 26, 2026: field defect reproduced by code-path analysis; fix
-implemented and pending CI plus live redeployment.
+Result on August 27, 2026: passed CI, deployment, and live iPhone opportunity
+creation retest.
 
 - defect: `DEF-RAILWAY-008`
 - trigger: browser reload, iOS tab eviction, or operational deep link without the
@@ -497,5 +535,16 @@ implemented and pending CI plus live redeployment.
   render login and must not render the New Opportunity form
 - local Flutter execution: blocked because this workstation has no Flutter or
   Dart SDK
-- required evidence: green Flutter analyze/tests, successful GitHub Pages
-  deployment, and iPhone opportunity creation with synthetic data
+- corrected CI run `33020582147`: all jobs passed, including Flutter analyze,
+  Flutter tests, and the deep-link regression
+- GitHub Pages workflow run `33061203825`: build and deploy passed for merge
+  commit `d4e1da2fe6b6f5c29af9de95c2c444445744c69c`
+- public pilot endpoint after deployment: HTTP 200
+- live iPhone result: synthetic opportunity `OPP-000002` created with a blank
+  VIN; the active-opportunity card and Create Vehicle Record action rendered
+- sanitized screenshot SHA-256:
+  `09f3ddda7bf057359ab3fa818276487dbd8c9f2fc49c4e3421d91a131ea4b200`
+- defect result: `DEF-RAILWAY-008` closed
+- remaining device evidence: logout and revoked-session behavior under
+  `DEF-RAILWAY-006`, blocked by missing client functionality in
+  `DEF-RAILWAY-009`

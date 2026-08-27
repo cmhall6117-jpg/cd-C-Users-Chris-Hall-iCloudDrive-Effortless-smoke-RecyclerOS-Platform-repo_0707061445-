@@ -347,7 +347,7 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
 - Evidence:
   `documentation/release/evidence/railway/2026-08-26-iphone-ui-manifest.json`
 
-## Flutter Browser Session Guard Candidate
+## Flutter Browser Session Guard
 
 - Date: August 26, 2026
 - Branch: `codex/railway-pilot-full-ui-acceptance`
@@ -361,4 +361,24 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
 - Updated the iPhone runbook with in-memory session recovery behavior
 - Local Flutter analyze/tests: not run; Flutter and Dart are unavailable on this
   workstation
-- Live deployment and iPhone retest: pending CI and GitHub Pages publication
+- Corrected CI run `33020582147`: all jobs passed, including Flutter analyze,
+  Flutter tests, backend, migrations, tenant isolation, and release evidence
+- Pull request `#26`: merged as
+  `d4e1da2fe6b6f5c29af9de95c2c444445744c69c`
+- GitHub Pages workflow run `33061203825`: build and deploy passed
+- Public pilot endpoint: HTTP 200 after deployment
+- iPhone retest: synthetic opportunity `OPP-000002` created with a blank VIN;
+  Create Vehicle Record rendered enabled; linked vehicle `VEH-000002` then
+  rendered with its timeline and synthetic operating facts
+- Later synthetic attempt `OPP-000003`: three Procurement scenarios rendered;
+  Part-Out approval created a queued Pick List vehicle; Available selection
+  enabled Focus Point; selecting two synthetic parts enabled and completed Focus
+  Point; Inventory Intake opened with the expected selected part and defaults;
+  Create Inventory saved `INV-000002` and rendered ready-for-sync confirmation
+- Evidence limitation: retained screenshots span two synthetic attempts and do
+  not prove one uninterrupted entity chain across every stage
+- Defect `DEF-RAILWAY-008`: closed on August 27, 2026
+- Broader device-session gate `DEF-RAILWAY-006`: remains open for logout and
+  revoked-session evidence
+- New blocker `DEF-RAILWAY-009`: Flutter exposes no logout control or gateway
+  revocation operation; implementation and deployment are required

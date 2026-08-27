@@ -377,15 +377,25 @@ successful workflow run `32783845146` at commit
 reported API release `e929c9977666b1fc30c7cdecbe30a2dfd3e4feef`, PostgreSQL
 storage, and PostgreSQL auth. The screenshots and checksums are recorded in
 `documentation/release/evidence/railway/2026-08-26-iphone-ui-manifest.json`.
+On August 27, the guarded Pages build created synthetic opportunity `OPP-000002`
+and linked vehicle `VEH-000002` on the iPhone. The Vehicle Record rendered its
+tenant-linked timeline and synthetic operating facts. A later synthetic attempt
+at `OPP-000003` rendered three Procurement scenarios, created a queued Pick List
+vehicle, persisted its Available selection, and opened Focus Point with the KPI
+timer active. The manifest records that the retained screenshots do not prove
+one uninterrupted entity chain across both synthetic attempts. Selecting
+`ECM / PCM` and `LED Headlights` enabled and completed Focus Point, and Inventory
+Intake opened with the expected selected part and defaults. Create Inventory
+then saved `INV-000002` and rendered its ready-for-sync confirmation and Session
+Inventory entry.
 
 Impact: Rendering, touch navigation, credential exchange, tenant selection, and
-device network behavior are now evidenced through Mission Control. Manual device
-interaction from Opportunity Discovery through Inventory Intake and logout is
-not yet evidenced.
+device network behavior are now evidenced through Inventory Intake creation.
+Manual logout and revoked-session behavior are not yet evidenced.
 
 Next action: Continue `documentation/deployment/FLUTTER_WEB_PILOT_RUNBOOK.md` on
-Chris Hall's iPhone from Opportunity Discovery through Inventory Intake and
-logout, using synthetic data and retaining non-secret evidence for each stage.
+Chris Hall's iPhone by deploying a Flutter logout control, logging out, and
+retaining non-secret evidence that the client returns to login.
 
 #### DEF-RAILWAY-007: The sealed pilot operator credential is unavailable
 
@@ -411,7 +421,7 @@ recovery event.
 
 #### DEF-RAILWAY-008: Browser reload opens an operational form without session context
 
-Status: open, field-test blocker; fix candidate implemented
+Status: closed on August 27, 2026
 
 Evidence: On August 26, 2026, an iPhone field session reopened Opportunity
 Discovery with populated local form fields while Create Opportunity remained
@@ -426,15 +436,38 @@ Impact: iOS tab eviction, browser refresh, or reopening an operational URL can
 strand a field operator on a read-only-looking form with no explanation, blocking
 the primary working path.
 
-Fix candidate: Guard all operational routes. Unauthenticated or expired sessions
-return to login, authenticated sessions without a selected workspace return to
-workspace selection, and write permission requires a selected workspace plus a
-normalized owner, admin, or operator role. A widget regression test covers an
-unauthenticated Opportunity Discovery deep link.
+Resolution: PR `#26` guarded all operational routes. Unauthenticated or expired
+sessions return to login, authenticated sessions without a selected workspace
+return to workspace selection, and write permission requires a selected
+workspace plus a normalized owner, admin, or operator role. Corrected CI run
+`33020582147` passed all jobs, including Flutter analyze, Flutter tests, and the
+unauthenticated deep-link regression. GitHub Pages workflow run `33061203825`
+deployed merge commit `d4e1da2fe6b6f5c29af9de95c2c444445744c69c`.
 
-Next action: Pass Flutter analyze and tests in CI, deploy the updated GitHub Pages
-artifact, then repeat login, workspace selection, and synthetic opportunity
-creation on the iPhone before closing this defect.
+Live verification: On August 27, Chris Hall signed in again on the deployed
+build and created synthetic opportunity `OPP-000002` with a blank VIN. The
+active-opportunity card and enabled Create Vehicle Record action rendered. The
+sanitized screenshot and checksum are recorded in the iPhone evidence manifest.
+
+#### DEF-RAILWAY-009: Flutter field operator cannot log out
+
+Status: open, field-test blocker
+
+Evidence: The live iPhone path reached Inventory Intake and created
+`INV-000002`, but the Flutter UI exposes no logout control. Repository inspection
+confirmed no logout or sign-out action in the mobile screens, no logout method
+on `Rc1Gateway`, and no client call to the existing backend
+`POST /v1/auth/logout` endpoint. Backend automated coverage already proves that
+this endpoint returns HTTP 204 and rejects the revoked bearer session afterward.
+
+Impact: A field operator cannot intentionally revoke the current session from
+the browser UI. Closing the tab only discards in-memory client state and is not
+evidence of server-side revocation, so the final device-session gate cannot pass.
+
+Next action: Add a gateway logout operation, clear client workflow state after
+successful revocation, expose a clear logout command on an authenticated screen,
+add Dio/fake/widget tests, deploy the Pages build, and complete the iPhone logout
+retest.
 
 ## Production Launch Preparation
 

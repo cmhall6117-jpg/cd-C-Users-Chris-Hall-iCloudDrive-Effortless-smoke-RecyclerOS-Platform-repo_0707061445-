@@ -40,6 +40,10 @@ memory and is discarded when the page is closed or refreshed.
 Use Safari on Chris Hall's approved iPhone. Private Browsing is preferred for
 the first session because the RC1 client does not yet provide a UI logout.
 
+The RC1 browser session is held in memory. If iOS reloads or evicts the tab, the
+app must return to sign-in. Sign in and select the workspace again; do not enter
+operational data into a form that reopened without those steps.
+
 1. Open the Pages URL and confirm the address bar shows HTTPS.
 2. Sign in as `operator@effortlesssmoke.com` with the sealed operator password.
 3. Select the Effortless Smoke organization and Local Operations workspace.

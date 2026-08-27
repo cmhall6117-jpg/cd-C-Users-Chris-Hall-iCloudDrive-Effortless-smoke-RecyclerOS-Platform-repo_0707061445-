@@ -67,11 +67,11 @@ class Rc1WorkflowState {
     return null;
   }
 
-  bool get canOperate => const {
+  bool get canOperate => workspaceSelected && const {
         'owner',
         'admin',
         'operator',
-      }.contains(workspaceRole);
+      }.contains(workspaceRole.trim().toLowerCase());
 
   TenantScope get tenant => TenantScope(
         organizationId: organizationId,

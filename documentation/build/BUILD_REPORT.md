@@ -346,3 +346,19 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
   through Inventory Intake and logout
 - Evidence:
   `documentation/release/evidence/railway/2026-08-26-iphone-ui-manifest.json`
+
+## Flutter Browser Session Guard Candidate
+
+- Date: August 26, 2026
+- Branch: `codex/railway-pilot-full-ui-acceptance`
+- Defect: `DEF-RAILWAY-008`
+- Added operational-route guards for missing, expired, and workspace-unselected
+  session state
+- Hardened write permission to require workspace selection and a normalized
+  owner, admin, or operator role
+- Added an unauthenticated Opportunity Discovery deep-link widget regression
+  test
+- Updated the iPhone runbook with in-memory session recovery behavior
+- Local Flutter analyze/tests: not run; Flutter and Dart are unavailable on this
+  workstation
+- Live deployment and iPhone retest: pending CI and GitHub Pages publication

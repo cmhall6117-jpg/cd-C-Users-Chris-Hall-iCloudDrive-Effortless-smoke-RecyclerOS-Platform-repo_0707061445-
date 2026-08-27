@@ -476,3 +476,26 @@ working-path stages are pending.
 This evidence narrows `DEF-RAILWAY-006` but does not close it. No credential,
 session token, authorization header, or database URL appears in the retained
 evidence.
+
+## Flutter Browser Session Guard Candidate
+
+Result on August 26, 2026: field defect reproduced by code-path analysis; fix
+implemented and pending CI plus live redeployment.
+
+- defect: `DEF-RAILWAY-008`
+- trigger: browser reload, iOS tab eviction, or operational deep link without the
+  in-memory authenticated workflow state
+- prior result: Opportunity Discovery rendered with Create Opportunity disabled
+- data mutation: none; the disabled action could not submit the form
+- privacy handling: the supplied screenshot is not retained because it may
+  contain a real VIN
+- fix: route unauthenticated or expired sessions to login and unselected sessions
+  to workspace selection
+- permission hardening: require a selected workspace and normalize the role
+  before enabling write actions
+- regression coverage: unauthenticated Opportunity Discovery deep link must
+  render login and must not render the New Opportunity form
+- local Flutter execution: blocked because this workstation has no Flutter or
+  Dart SDK
+- required evidence: green Flutter analyze/tests, successful GitHub Pages
+  deployment, and iPhone opportunity creation with synthetic data

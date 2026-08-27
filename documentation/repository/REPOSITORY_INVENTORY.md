@@ -1307,6 +1307,7 @@ preserved.
 - `documentation/release/evidence/railway/2026-08-26-iphone-ui-manifest.json`
 - `documentation/release/evidence/railway/2026-08-26-iphone-workspace-selection.jpg`
 - `documentation/release/evidence/railway/2026-08-26-iphone-mission-control.jpg`
+- `documentation/release/evidence/railway/2026-08-26-iphone-opportunity-discovery-empty.jpg`
 
 The branch also updates `services/api/Dockerfile` so the healthcheck honors the
 platform-assigned port, and extends RC1 CI, recovery, monitoring, and evidence

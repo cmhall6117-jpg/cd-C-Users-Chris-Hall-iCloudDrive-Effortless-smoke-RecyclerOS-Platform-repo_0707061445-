@@ -409,6 +409,33 @@ Resolution: Retain the tested recovery command as a controlled contingency. Do
 not rotate the live credential unless the approved owner initiates a future
 recovery event.
 
+#### DEF-RAILWAY-008: Browser reload opens an operational form without session context
+
+Status: open, field-test blocker; fix candidate implemented
+
+Evidence: On August 26, 2026, an iPhone field session reopened Opportunity
+Discovery with populated local form fields while Create Opportunity remained
+disabled. The button is disabled only while the workflow is busy or the selected
+workspace role cannot operate. Code review confirmed that a browser reload loses
+the in-memory session and workspace role, while the router previously allowed
+the operational deep link to render without authentication. No create request
+was possible, so the entered form values were not submitted to the API. The
+submitted screenshot is not retained because it may contain a real VIN.
+
+Impact: iOS tab eviction, browser refresh, or reopening an operational URL can
+strand a field operator on a read-only-looking form with no explanation, blocking
+the primary working path.
+
+Fix candidate: Guard all operational routes. Unauthenticated or expired sessions
+return to login, authenticated sessions without a selected workspace return to
+workspace selection, and write permission requires a selected workspace plus a
+normalized owner, admin, or operator role. A widget regression test covers an
+unauthenticated Opportunity Discovery deep link.
+
+Next action: Pass Flutter analyze and tests in CI, deploy the updated GitHub Pages
+artifact, then repeat login, workspace selection, and synthetic opportunity
+creation on the iPhone before closing this defect.
+
 ## Production Launch Preparation
 
 ### High

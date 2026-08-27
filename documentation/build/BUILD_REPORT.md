@@ -373,9 +373,12 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
 - Later synthetic attempt `OPP-000003`: three Procurement scenarios rendered;
   Part-Out approval created a queued Pick List vehicle; Available selection
   enabled Focus Point; selecting two synthetic parts enabled and completed Focus
-  Point; Inventory Intake opened with the expected selected part and defaults
+  Point; Inventory Intake opened with the expected selected part and defaults;
+  Create Inventory saved `INV-000002` and rendered ready-for-sync confirmation
 - Evidence limitation: retained screenshots span two synthetic attempts and do
   not prove one uninterrupted entity chain across every stage
 - Defect `DEF-RAILWAY-008`: closed on August 27, 2026
-- Broader device-session gate `DEF-RAILWAY-006`: remains open for inventory item
-  creation and logout
+- Broader device-session gate `DEF-RAILWAY-006`: remains open for logout and
+  revoked-session evidence
+- New blocker `DEF-RAILWAY-009`: Flutter exposes no logout control or gateway
+  revocation operation; implementation and deployment are required

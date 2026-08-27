@@ -1316,6 +1316,7 @@ preserved.
 - `documentation/release/evidence/railway/2026-08-27-iphone-focus-point-open.jpg`
 - `documentation/release/evidence/railway/2026-08-27-iphone-focus-point-selected.jpg`
 - `documentation/release/evidence/railway/2026-08-27-iphone-inventory-intake-ready.jpg`
+- `documentation/release/evidence/railway/2026-08-27-iphone-inventory-created.jpg`
 
 The branch also updates `services/api/Dockerfile` so the healthcheck honors the
 platform-assigned port, and extends RC1 CI, recovery, monitoring, and evidence

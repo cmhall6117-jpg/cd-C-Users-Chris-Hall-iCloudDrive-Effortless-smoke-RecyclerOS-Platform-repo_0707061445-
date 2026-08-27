@@ -131,7 +131,7 @@ Cloud resources.
 | Database backup and restore | Passed for one-person pilot | August 9 custom dump, checksum match, encrypted off-platform copy, clean restore, staging cleanup, live PITR, and restore-owner assignment passed. August 24 history proves daily and weekly native schedules produced real snapshots. Off-platform automation and key escrow remain broader-use hardening under `DEF-RAILWAY-003`. |
 | Monitoring and protected acceptance | Passed for one-person pilot | Two-hour monitoring, simulated incident delivery and recovery, owner approval, and protected acceptance run `32770410381` passed. `DEF-RAILWAY-004` is closed. |
 | Live tenant-scoped API working path | Passed for one-person pilot | Field run `20260824212230-5fd820be` passed 18 checks from login through inventory and revoked-session rejection. |
-| Manual Flutter device working path | Partially passed | iPhone evidence covers login through Vehicle Record on `OPP-000002` / `VEH-000002` and Procurement through Inventory Intake readiness on later synthetic attempt `OPP-000003`; inventory creation and logout remain under `DEF-RAILWAY-006`. |
+| Manual Flutter device working path | Partially passed | iPhone evidence covers login through Vehicle Record on `OPP-000002` / `VEH-000002` and Procurement through inventory `INV-000002` on later synthetic attempt `OPP-000003`; logout remains under `DEF-RAILWAY-006` and is blocked by `DEF-RAILWAY-009`. |
 | Second unique tester identity | Blocked for tester two | `DEF-RAILWAY-005`. |
 
 Passed Railway gates above have live command or endpoint evidence. The contract
@@ -275,10 +275,15 @@ List vehicle after Part-Out approval, enabled Focus Point after Available was
 selected, and opened Focus Point with the KPI timer active. Selecting `ECM / PCM`
 and `LED Headlights` enabled and completed Focus Point. Inventory Intake then
 opened with the selected part, storage location `A-12`, Used Untested condition,
-Available status, and enabled Create Inventory action.
+Available status, and enabled Create Inventory action. Submitting the form saved
+`INV-000002` and rendered its ready-for-sync confirmation and Session Inventory
+entry.
 
 The retained screenshots span two synthetic attempts, so they prove manual
 stage behavior through Focus Point entry but not one uninterrupted entity chain
 across every stage. This closes `DEF-RAILWAY-008` and further narrows
-`DEF-RAILWAY-006`. Manual iPhone evidence for inventory item creation and logout
-remains required before the device-session gate can pass.
+`DEF-RAILWAY-006`. Manual iPhone evidence now remains only for logout and
+revoked-session behavior. Repository inspection found that Flutter has no logout
+control or gateway revocation operation, recorded as `DEF-RAILWAY-009`; the
+device-session gate cannot pass until that functionality is implemented,
+deployed, and retested.

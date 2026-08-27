@@ -449,8 +449,8 @@ header was written to repository evidence.
 
 ## Railway iPhone UI Field Smoke
 
-Result through August 27, 2026: passed through Inventory Intake readiness;
-remaining manual working-path stages are pending.
+Result through August 27, 2026: passed through Inventory Intake creation;
+logout remains blocked by missing Flutter functionality.
 
 - tester: Chris Hall
 - device: iPhone; model, browser, and browser version were not evidenced
@@ -478,10 +478,12 @@ remaining manual working-path stages are pending.
   action; completion succeeded and opened Inventory Intake
 - Inventory Intake readiness: selected part, storage location `A-12`, Used
   Untested condition, Available status, and enabled Create Inventory rendered
+- Inventory item creation: `INV-000002` saved and rendered its ready-for-sync
+  confirmation, one-item session count, and Session Inventory entry
 - continuity limitation: retained screenshots span two synthetic attempts and
   do not prove one uninterrupted entity chain across every stage
 - observed UI defect: `DEF-RAILWAY-008`, closed after guarded-build retest
-- pending: inventory item creation, logout, and revoked-session behavior
+- pending: logout and revoked-session behavior; blocked by `DEF-RAILWAY-009`
 - evidence manifest:
   `documentation/release/evidence/railway/2026-08-26-iphone-ui-manifest.json`
 - workspace screenshot SHA-256:
@@ -504,6 +506,8 @@ remaining manual working-path stages are pending.
   `19b6ebb0137247648dd5b521e8ba5ded3d9bf9e78a6c85a29af76b6f678aeaa5`
 - Inventory Intake ready screenshot SHA-256:
   `8604b7177dc1c9cdf615ac394945a4df0ebde2fe35f3a95e7801ba7f60d47739`
+- Inventory created screenshot SHA-256:
+  `619b53c848d990aca8ce8a38f442e3470fa49116db719414c0a4fde720e706da`
 - duplicate Pick List submission: byte-identical to the retained
   awaiting-availability screenshot and omitted
 
@@ -541,5 +545,6 @@ creation retest.
 - sanitized screenshot SHA-256:
   `09f3ddda7bf057359ab3fa818276487dbd8c9f2fc49c4e3421d91a131ea4b200`
 - defect result: `DEF-RAILWAY-008` closed
-- remaining device evidence: inventory item creation, logout, and revoked-session
-  behavior under `DEF-RAILWAY-006`
+- remaining device evidence: logout and revoked-session behavior under
+  `DEF-RAILWAY-006`, blocked by missing client functionality in
+  `DEF-RAILWAY-009`

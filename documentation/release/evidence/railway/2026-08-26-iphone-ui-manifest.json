@@ -104,6 +104,12 @@
       "result": "passed",
       "observed_date": "2026-08-27",
       "detail": "Inventory Intake rendered with ECM / PCM, storage location A-12, condition Used Untested, status Available, zero session items, and Create Inventory enabled."
+    },
+    {
+      "step": "inventory_item_creation",
+      "result": "passed",
+      "observed_date": "2026-08-27",
+      "detail": "Create Inventory saved ECM / PCM as INV-000002. The ready-for-sync confirmation, one-item session count, and Session Inventory entry rendered."
     }
   ],
   "continuity_note": {
@@ -111,7 +117,6 @@
     "detail": "Opportunity and Vehicle Record evidence used OPP-000002 and VEH-000002. Procurement evidence shows a later synthetic opportunity OPP-000003. These screenshots prove manual stage behavior through Focus Point entry but do not prove one uninterrupted entity chain across every retained screenshot."
   },
   "remaining_steps": [
-    "inventory_item_creation",
     "logout_and_revoked_session"
   ],
   "observed_defects": [
@@ -125,6 +130,14 @@
       "sensitive_reproduction_evidence_note": "The original reproduction screenshot was not retained because it may contain a real VIN.",
       "sanitized_resolution_evidence_retained": true,
       "sanitized_resolution_evidence_file": "2026-08-27-iphone-opportunity-created.jpg"
+    },
+    {
+      "id": "DEF-RAILWAY-009",
+      "severity": "high",
+      "status": "open_implementation_required",
+      "detail": "The Flutter client has no logout control and Rc1Gateway has no logout operation, so a field operator cannot revoke the bearer session from the UI.",
+      "evidence_retained": true,
+      "evidence_note": "Repository code inspection and the completed iPhone path through Inventory Intake establish the missing final action."
     }
   ],
   "screenshots": [
@@ -182,6 +195,11 @@
       "file": "2026-08-27-iphone-inventory-intake-ready.jpg",
       "displayed_clock": "12:35",
       "sha256": "8604b7177dc1c9cdf615ac394945a4df0ebde2fe35f3a95e7801ba7f60d47739"
+    },
+    {
+      "file": "2026-08-27-iphone-inventory-created.jpg",
+      "displayed_clock": "12:37",
+      "sha256": "619b53c848d990aca8ce8a38f442e3470fa49116db719414c0a4fde720e706da"
     }
   ],
   "duplicate_submissions_omitted": [

@@ -2,11 +2,17 @@ import 'package:recycleros_domain/recycleros_domain.dart';
 import 'package:recycleros_pro_mobile/src/data/rc1_gateway.dart';
 
 class FakeRc1Gateway implements Rc1Gateway {
-  FakeRc1Gateway({this.role = 'operator', this.signInError});
+  FakeRc1Gateway({
+    this.role = 'operator',
+    this.signInError,
+    this.logoutError,
+  });
 
   final String role;
   final String? signInError;
+  final String? logoutError;
   final List<TenantScope> seenTenants = [];
+  int logoutCalls = 0;
 
   int _opportunitySequence = 0;
   int _vehicleSequence = 0;
@@ -44,6 +50,14 @@ class FakeRc1Gateway implements Rc1Gateway {
         ),
       ],
     );
+  }
+
+  @override
+  Future<void> logout() async {
+    logoutCalls += 1;
+    if (logoutError != null) {
+      throw Rc1GatewayException(logoutError!);
+    }
   }
 
   @override

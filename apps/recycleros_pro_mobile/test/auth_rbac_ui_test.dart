@@ -51,6 +51,50 @@ void main() {
     );
     expect(createButton.onPressed, isNull);
   });
+
+  testWidgets('sign out revokes the session and returns to login', (
+    tester,
+  ) async {
+    final gateway = FakeRc1Gateway();
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [rc1GatewayProvider.overrideWithValue(gateway)],
+        child: const RecyclerOSApp(),
+      ),
+    );
+
+    await _submitLogin(tester);
+    await tester.tap(find.byKey(const Key('workspaceTile')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('signOut')));
+    await tester.pumpAndSettle();
+
+    expect(gateway.logoutCalls, 1);
+    expect(find.text('Sign in'), findsOneWidget);
+    expect(find.text('Mission Control'), findsNothing);
+  });
+
+  testWidgets('failed sign out keeps the authenticated workspace open', (
+    tester,
+  ) async {
+    final gateway = FakeRc1Gateway(logoutError: 'Sign out failed safely.');
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [rc1GatewayProvider.overrideWithValue(gateway)],
+        child: const RecyclerOSApp(),
+      ),
+    );
+
+    await _submitLogin(tester);
+    await tester.tap(find.byKey(const Key('workspaceTile')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('signOut')));
+    await tester.pumpAndSettle();
+
+    expect(gateway.logoutCalls, 1);
+    expect(find.text('Mission Control'), findsOneWidget);
+    expect(find.text('Sign out failed safely.'), findsOneWidget);
+  });
 }
 
 Future<void> _submitLogin(WidgetTester tester) async {

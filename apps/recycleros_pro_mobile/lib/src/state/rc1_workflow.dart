@@ -169,6 +169,18 @@ class Rc1WorkflowController extends StateNotifier<Rc1WorkflowState> {
     }
   }
 
+  Future<bool> logout() async {
+    _startRequest();
+    try {
+      await _gateway.logout();
+      state = const Rc1WorkflowState();
+      return true;
+    } on Object catch (error) {
+      _failRequest(error);
+      return false;
+    }
+  }
+
   void selectWorkspace(TenantMembership membership) {
     state = state.copyWith(
       organizationId: membership.organizationId,

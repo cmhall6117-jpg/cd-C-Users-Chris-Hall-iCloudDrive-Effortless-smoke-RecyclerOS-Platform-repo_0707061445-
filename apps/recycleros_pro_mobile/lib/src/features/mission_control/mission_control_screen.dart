@@ -52,6 +52,35 @@ class MissionControlScreen extends ConsumerWidget {
 
     return Rc1Scaffold(
       title: 'Mission Control',
+      actions: [
+        IconButton(
+          key: const Key('signOut'),
+          tooltip: 'Sign out',
+          onPressed: state.isBusy
+              ? null
+              : () async {
+                  final signedOut = await ref
+                      .read(rc1WorkflowProvider.notifier)
+                      .logout();
+                  if (!context.mounted) {
+                    return;
+                  }
+                  if (signedOut) {
+                    context.go(AppPaths.login);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          ref.read(rc1WorkflowProvider).errorMessage ??
+                              'Sign out failed.',
+                        ),
+                      ),
+                    );
+                  }
+                },
+          icon: const Icon(Icons.logout),
+        ),
+      ],
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [

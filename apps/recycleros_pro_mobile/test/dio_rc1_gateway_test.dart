@@ -94,4 +94,72 @@ void main() {
     expect(opportunity.opportunityId, 'opportunity-api-id');
     expect(opportunity.opportunityCode, 'OPP-000001');
   });
+
+  test('logout sends the bearer token and clears it after revocation', () async {
+    final capturedRequests = <RequestOptions>[];
+    final dio = Dio(BaseOptions(baseUrl: 'http://127.0.0.1:8000'));
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          capturedRequests.add(options);
+          if (options.path == '/v1/auth/login') {
+            handler.resolve(
+              Response<dynamic>(
+                requestOptions: options,
+                statusCode: 200,
+                data: {
+                  'access_token': 'opaque-session-token',
+                  'token_type': 'bearer',
+                  'expires_at': '2026-07-14T20:00:00Z',
+                  'identity': {
+                    'user_id': 'user-local',
+                    'email': 'operator@effortlesssmoke.com',
+                    'display_name': 'Local Operator',
+                    'memberships': [
+                      {
+                        'organization_id': 'org-local',
+                        'organization_name': 'Effortless Smoke, LLC',
+                        'workspace_id': 'workspace-local',
+                        'workspace_name': 'RecyclerOS Operations',
+                        'role': 'operator',
+                      },
+                    ],
+                  },
+                },
+              ),
+            );
+            return;
+          }
+          handler.resolve(
+            Response<dynamic>(requestOptions: options, statusCode: 204),
+          );
+        },
+      ),
+    );
+    final gateway = DioRc1Gateway(dio: dio);
+
+    await gateway.signIn(
+      email: 'operator@effortlesssmoke.com',
+      password: 'local-rc1',
+    );
+    await gateway.logout();
+
+    final logoutRequest = capturedRequests.last;
+    expect(logoutRequest.path, '/v1/auth/logout');
+    expect(logoutRequest.method, 'POST');
+    expect(
+      logoutRequest.headers['Authorization'],
+      'Bearer opaque-session-token',
+    );
+    await expectLater(
+      gateway.logout(),
+      throwsA(
+        isA<Rc1GatewayException>().having(
+          (error) => error.message,
+          'message',
+          'Sign in before logging out.',
+        ),
+      ),
+    );
+  });
 }

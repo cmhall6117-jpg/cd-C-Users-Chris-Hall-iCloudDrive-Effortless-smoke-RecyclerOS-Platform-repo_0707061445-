@@ -53,6 +53,8 @@ abstract interface class Rc1Gateway {
     required String password,
   });
 
+  Future<void> logout();
+
   Future<Opportunity> createOpportunity(
     TenantScope tenant, {
     required String title,

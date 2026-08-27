@@ -37,8 +37,8 @@ memory and is discarded when the page is closed or refreshed.
 
 ## iPhone Field Session
 
-Use Safari on Chris Hall's approved iPhone. Private Browsing is preferred for
-the first session because the RC1 client does not yet provide a UI logout.
+Use Safari on Chris Hall's approved iPhone. Private Browsing remains acceptable,
+but the deployed RC1 client must provide a server-revoking Sign out command.
 
 The RC1 browser session is held in memory. If iOS reloads or evicts the tab, the
 app must return to sign-in. Sign in and select the workspace again; do not enter
@@ -55,7 +55,10 @@ operational data into a form that reopened without those steps.
 9. Start and complete Focus Point using synthetic part selections.
 10. Complete inventory intake with a synthetic storage location.
 11. Record the created opportunity, vehicle, and inventory codes.
-12. Close the Safari tab and clear the site data after evidence is captured.
+12. Return to Mission Control and use Sign out.
+13. Confirm the app returns to Sign in and does not reopen an operational screen
+    when using browser back navigation.
+14. Close the Safari tab and clear the site data after evidence is captured.
 
 Do not use a real VIN, customer identity, payment detail, shipment, marketplace
 credential, SSO credential, or AI credential.
@@ -71,6 +74,7 @@ header:
 - tenant organization and workspace names
 - synthetic opportunity, vehicle, and inventory codes
 - result of each working-path step
+- successful Sign out and return to the Sign in screen
 - screenshots after login with any sensitive fields excluded
 - defects with screen, action, expected result, and observed result
 

@@ -548,3 +548,22 @@ creation retest.
 - remaining device evidence: logout and revoked-session behavior under
   `DEF-RAILWAY-006`, blocked by missing client functionality in
   `DEF-RAILWAY-009`
+
+## Flutter Logout Candidate
+
+Result on August 27, 2026: implementation and regression coverage added; CI and
+live iPhone execution are pending.
+
+- gateway contract: adds logout without tenant headers
+- Dio behavior: sends `POST /v1/auth/logout` with the bearer token and clears the
+  token only after HTTP success
+- controller behavior: clears the complete workflow state after revocation
+- UI behavior: Mission Control exposes an icon-based Sign out command
+- failure behavior: keeps the authenticated workspace open and shows the API
+  error when revocation fails
+- regression coverage: direct Dio request, successful widget logout, failed
+  widget logout, and the full RC1 widget path ending at Sign in
+- local Flutter execution: blocked because this workstation has no Flutter or
+  Dart SDK
+- required evidence: green Flutter analyze/tests, successful Pages deployment,
+  and iPhone Sign out plus browser-back verification

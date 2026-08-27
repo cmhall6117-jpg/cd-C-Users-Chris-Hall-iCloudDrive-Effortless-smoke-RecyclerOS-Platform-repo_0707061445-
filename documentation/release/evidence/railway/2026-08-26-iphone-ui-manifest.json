@@ -12,11 +12,27 @@
   },
   "frontend": {
     "provider": "GitHub Pages",
-    "origin": "https://cmhall6117-jpg.github.io",
-    "workflow_run": 32783845146,
-    "commit": "9c3814c07cab4d5c1c4301f8bf198aab5d310c36",
+    "origin": "https://cmhall6117-jpg.github.io/cd-C-Users-Chris-Hall-iCloudDrive-Effortless-smoke-RecyclerOS-Platform-repo_0707061445-/",
+    "workflow_run": 33061203825,
+    "commit": "d4e1da2fe6b6f5c29af9de95c2c444445744c69c",
+    "validation_ci_run": 33020582147,
+    "pull_request": 26,
     "conclusion": "success"
   },
+  "frontend_deployment_history": [
+    {
+      "purpose": "initial_phone_session",
+      "workflow_run": 32783845146,
+      "commit": "9c3814c07cab4d5c1c4301f8bf198aab5d310c36",
+      "conclusion": "success"
+    },
+    {
+      "purpose": "browser_session_guard_retest",
+      "workflow_run": 33061203825,
+      "commit": "d4e1da2fe6b6f5c29af9de95c2c444445744c69c",
+      "conclusion": "success"
+    }
+  ],
   "api": {
     "url": "https://recycleros-api-pilot.up.railway.app",
     "health_checked_date": "2026-08-26",
@@ -46,13 +62,19 @@
       "step": "opportunity_discovery_navigation",
       "result": "passed",
       "detail": "Opportunity Discovery opened and rendered the new-opportunity form, disabled pre-validation action, and empty active-opportunities state."
+    },
+    {
+      "step": "opportunity_creation",
+      "result": "passed",
+      "observed_date": "2026-08-27",
+      "detail": "After signing in again on the session-guard build, the tester created synthetic opportunity OPP-000002 with a blank VIN. The active-opportunity card and enabled Create Vehicle Record action rendered."
     }
   ],
   "remaining_steps": [
-    "opportunity_creation",
     "vehicle_record",
     "procurement",
     "pick_list",
+    "focus_point",
     "inventory_intake",
     "logout_and_revoked_session"
   ],
@@ -60,10 +82,13 @@
     {
       "id": "DEF-RAILWAY-008",
       "severity": "high",
-      "status": "open_fix_candidate",
+      "status": "closed_2026-08-27",
       "detail": "After browser session state was lost, Opportunity Discovery rendered with write actions disabled instead of returning to sign-in.",
-      "evidence_retained": false,
-      "evidence_note": "The submitted screenshot was not retained because it may contain a real VIN."
+      "resolution": "PR 26 added authentication and workspace route guards. CI run 33020582147 and Pages deployment 33061203825 passed, and the iPhone retest created OPP-000002 with synthetic data.",
+      "sensitive_reproduction_evidence_retained": false,
+      "sensitive_reproduction_evidence_note": "The original reproduction screenshot was not retained because it may contain a real VIN.",
+      "sanitized_resolution_evidence_retained": true,
+      "sanitized_resolution_evidence_file": "2026-08-27-iphone-opportunity-created.jpg"
     }
   ],
   "screenshots": [
@@ -81,6 +106,11 @@
       "file": "2026-08-26-iphone-opportunity-discovery-empty.jpg",
       "displayed_clock": "5:22",
       "sha256": "a1e9e66a7323c002996dcba123c8b4db37aa20e5972a1d5d6e8b68c6036d9b51"
+    },
+    {
+      "file": "2026-08-27-iphone-opportunity-created.jpg",
+      "displayed_clock": "6:11",
+      "sha256": "09f3ddda7bf057359ab3fa818276487dbd8c9f2fc49c4e3421d91a131ea4b200"
     }
   ],
   "credential_material_recorded": false

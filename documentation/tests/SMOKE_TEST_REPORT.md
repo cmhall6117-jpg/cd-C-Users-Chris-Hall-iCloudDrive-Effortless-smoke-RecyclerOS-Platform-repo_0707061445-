@@ -477,10 +477,10 @@ This evidence narrows `DEF-RAILWAY-006` but does not close it. No credential,
 session token, authorization header, or database URL appears in the retained
 evidence.
 
-## Flutter Browser Session Guard Candidate
+## Flutter Browser Session Guard
 
-Result on August 26, 2026: field defect reproduced by code-path analysis; fix
-implemented and pending CI plus live redeployment.
+Result on August 27, 2026: passed CI, deployment, and live iPhone opportunity
+creation retest.
 
 - defect: `DEF-RAILWAY-008`
 - trigger: browser reload, iOS tab eviction, or operational deep link without the
@@ -497,5 +497,15 @@ implemented and pending CI plus live redeployment.
   render login and must not render the New Opportunity form
 - local Flutter execution: blocked because this workstation has no Flutter or
   Dart SDK
-- required evidence: green Flutter analyze/tests, successful GitHub Pages
-  deployment, and iPhone opportunity creation with synthetic data
+- corrected CI run `33020582147`: all jobs passed, including Flutter analyze,
+  Flutter tests, and the deep-link regression
+- GitHub Pages workflow run `33061203825`: build and deploy passed for merge
+  commit `d4e1da2fe6b6f5c29af9de95c2c444445744c69c`
+- public pilot endpoint after deployment: HTTP 200
+- live iPhone result: synthetic opportunity `OPP-000002` created with a blank
+  VIN; the active-opportunity card and Create Vehicle Record action rendered
+- sanitized screenshot SHA-256:
+  `09f3ddda7bf057359ab3fa818276487dbd8c9f2fc49c4e3421d91a131ea4b200`
+- defect result: `DEF-RAILWAY-008` closed
+- remaining device evidence: Vehicle Record, Procurement, Pick List, Focus Point,
+  Inventory Intake, logout, and revoked-session behavior under `DEF-RAILWAY-006`

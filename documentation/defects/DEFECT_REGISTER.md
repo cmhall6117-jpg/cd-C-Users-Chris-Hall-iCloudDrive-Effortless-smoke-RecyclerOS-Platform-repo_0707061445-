@@ -411,7 +411,7 @@ recovery event.
 
 #### DEF-RAILWAY-008: Browser reload opens an operational form without session context
 
-Status: open, field-test blocker; fix candidate implemented
+Status: closed on August 27, 2026
 
 Evidence: On August 26, 2026, an iPhone field session reopened Opportunity
 Discovery with populated local form fields while Create Opportunity remained
@@ -426,15 +426,18 @@ Impact: iOS tab eviction, browser refresh, or reopening an operational URL can
 strand a field operator on a read-only-looking form with no explanation, blocking
 the primary working path.
 
-Fix candidate: Guard all operational routes. Unauthenticated or expired sessions
-return to login, authenticated sessions without a selected workspace return to
-workspace selection, and write permission requires a selected workspace plus a
-normalized owner, admin, or operator role. A widget regression test covers an
-unauthenticated Opportunity Discovery deep link.
+Resolution: PR `#26` guarded all operational routes. Unauthenticated or expired
+sessions return to login, authenticated sessions without a selected workspace
+return to workspace selection, and write permission requires a selected
+workspace plus a normalized owner, admin, or operator role. Corrected CI run
+`33020582147` passed all jobs, including Flutter analyze, Flutter tests, and the
+unauthenticated deep-link regression. GitHub Pages workflow run `33061203825`
+deployed merge commit `d4e1da2fe6b6f5c29af9de95c2c444445744c69c`.
 
-Next action: Pass Flutter analyze and tests in CI, deploy the updated GitHub Pages
-artifact, then repeat login, workspace selection, and synthetic opportunity
-creation on the iPhone before closing this defect.
+Live verification: On August 27, Chris Hall signed in again on the deployed
+build and created synthetic opportunity `OPP-000002` with a blank VIN. The
+active-opportunity card and enabled Create Vehicle Record action rendered. The
+sanitized screenshot and checksum are recorded in the iPhone evidence manifest.
 
 ## Production Launch Preparation
 

@@ -131,7 +131,7 @@ Cloud resources.
 | Database backup and restore | Passed for one-person pilot | August 9 custom dump, checksum match, encrypted off-platform copy, clean restore, staging cleanup, live PITR, and restore-owner assignment passed. August 24 history proves daily and weekly native schedules produced real snapshots. Off-platform automation and key escrow remain broader-use hardening under `DEF-RAILWAY-003`. |
 | Monitoring and protected acceptance | Passed for one-person pilot | Two-hour monitoring, simulated incident delivery and recovery, owner approval, and protected acceptance run `32770410381` passed. `DEF-RAILWAY-004` is closed. |
 | Live tenant-scoped API working path | Passed for one-person pilot | Field run `20260824212230-5fd820be` passed 18 checks from login through inventory and revoked-session rejection. |
-| Manual Flutter device working path | Blocked evidence | No Flutter SDK or connected test device was available for this session; `DEF-RAILWAY-006`. |
+| Manual Flutter device working path | Partially passed | iPhone evidence now covers login, workspace selection, Mission Control, Opportunity Discovery, and synthetic opportunity `OPP-000002`; Vehicle Record through logout remains under `DEF-RAILWAY-006`. |
 | Second unique tester identity | Blocked for tester two | `DEF-RAILWAY-005`. |
 
 Passed Railway gates above have live command or endpoint evidence. The contract
@@ -260,6 +260,14 @@ storage and auth. The screenshots, checksums, observed steps, and remaining
 steps are retained in
 `documentation/release/evidence/railway/2026-08-26-iphone-ui-manifest.json`.
 
-This evidence closes the credential blocker and narrows `DEF-RAILWAY-006`.
-Manual iPhone evidence from Opportunity Discovery through Inventory Intake and
-logout remains required before the device-session gate can pass.
+On August 27, PR `#26` merged the browser-session route guard as commit
+`d4e1da2fe6b6f5c29af9de95c2c444445744c69c`. Corrected CI run `33020582147`
+passed all jobs, and GitHub Pages workflow run `33061203825` successfully built
+and deployed the Flutter pilot. The public pilot endpoint returned HTTP 200.
+
+Chris Hall then signed in again on the deployed build and created synthetic
+opportunity `OPP-000002` with a blank VIN. The active-opportunity card and
+enabled Create Vehicle Record action rendered. This closes `DEF-RAILWAY-008`
+and further narrows `DEF-RAILWAY-006`. Manual iPhone evidence from Vehicle
+Record through Inventory Intake and logout remains required before the
+device-session gate can pass.

@@ -134,8 +134,9 @@
     {
       "id": "DEF-RAILWAY-009",
       "severity": "high",
-      "status": "open_implementation_required",
+      "status": "open_fix_candidate",
       "detail": "The Flutter client has no logout control and Rc1Gateway has no logout operation, so a field operator cannot revoke the bearer session from the UI.",
+      "fix_candidate": "Add POST /v1/auth/logout to the gateway, clear client state only after successful revocation, and expose Sign out on Mission Control with success and failure tests.",
       "evidence_retained": true,
       "evidence_note": "Repository code inspection and the completed iPhone path through Inventory Intake establish the missing final action."
     }

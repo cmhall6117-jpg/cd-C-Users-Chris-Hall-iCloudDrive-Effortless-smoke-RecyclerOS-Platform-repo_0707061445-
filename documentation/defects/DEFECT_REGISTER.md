@@ -451,7 +451,7 @@ sanitized screenshot and checksum are recorded in the iPhone evidence manifest.
 
 #### DEF-RAILWAY-009: Flutter field operator cannot log out
 
-Status: open, field-test blocker
+Status: open, field-test blocker; fix candidate implemented
 
 Evidence: The live iPhone path reached Inventory Intake and created
 `INV-000002`, but the Flutter UI exposes no logout control. Repository inspection
@@ -464,10 +464,15 @@ Impact: A field operator cannot intentionally revoke the current session from
 the browser UI. Closing the tab only discards in-memory client state and is not
 evidence of server-side revocation, so the final device-session gate cannot pass.
 
-Next action: Add a gateway logout operation, clear client workflow state after
-successful revocation, expose a clear logout command on an authenticated screen,
-add Dio/fake/widget tests, deploy the Pages build, and complete the iPhone logout
-retest.
+Fix candidate: Add a bearer-authenticated gateway call to
+`POST /v1/auth/logout`, clear all client workflow state only after successful
+revocation, and expose an icon-based Sign out command on Mission Control. Dio,
+fake-gateway, success, failure, and full-workflow widget coverage verify the
+request header, token clearing, state clearing, and failure preservation.
+
+Next action: Pass Flutter analyze and tests in CI, deploy the updated Pages
+build, and complete the iPhone Sign out and browser-back retest before closing
+this defect.
 
 ## Production Launch Preparation
 

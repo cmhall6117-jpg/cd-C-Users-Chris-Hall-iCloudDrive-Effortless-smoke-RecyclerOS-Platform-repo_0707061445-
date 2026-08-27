@@ -100,6 +100,14 @@ void main() {
 
     expect(find.textContaining('INV-000001'), findsWidgets);
     expect(find.text('Session Inventory'), findsOneWidget);
+    await tester.tap(find.byTooltip('Mission Control'));
+    await tester.pumpAndSettle();
+    expect(find.text('Mission Control'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('signOut')));
+    await tester.pumpAndSettle();
+
+    expect(gateway.logoutCalls, 1);
+    expect(find.text('Sign in'), findsOneWidget);
     expect(gateway.seenTenants, hasLength(8));
     expect(
       gateway.seenTenants.every(

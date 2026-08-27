@@ -382,3 +382,19 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
   revoked-session evidence
 - New blocker `DEF-RAILWAY-009`: Flutter exposes no logout control or gateway
   revocation operation; implementation and deployment are required
+
+## Flutter Logout Candidate
+
+- Date: August 27, 2026
+- Branch: `codex/railway-pilot-logout-revocation`
+- Added bearer-authenticated `POST /v1/auth/logout` gateway support
+- Clears the gateway token and complete Flutter workflow state only after the
+  backend confirms revocation
+- Keeps the authenticated workspace open and surfaces the error if revocation
+  fails
+- Added an icon-based Sign out command with a tooltip on Mission Control
+- Added Dio, fake-gateway, success, failure, and full-workflow widget coverage
+- Updated the iPhone runbook to require Sign out and browser-back verification
+- Local Flutter analyze/tests: not run; Flutter and Dart are unavailable on this
+  workstation
+- CI, Pages deployment, and live iPhone retest: pending

@@ -39,6 +39,29 @@ class DioRc1Gateway implements Rc1Gateway {
   }
 
   @override
+  Future<void> logout() async {
+    final accessToken = _accessToken;
+    if (accessToken == null) {
+      throw const Rc1GatewayException('Sign in before logging out.');
+    }
+    try {
+      await _dio.post<void>(
+        '/v1/auth/logout',
+        options: Options(
+          headers: {'Authorization': 'Bearer $accessToken'},
+        ),
+      );
+      _accessToken = null;
+    } on DioException catch (error) {
+      final data = error.response?.data;
+      final detail = data is Map ? data['detail'] : null;
+      throw Rc1GatewayException(
+        detail is String ? detail : 'RecyclerOS API request failed.',
+      );
+    }
+  }
+
+  @override
   Future<Opportunity> createOpportunity(
     TenantScope tenant, {
     required String title,

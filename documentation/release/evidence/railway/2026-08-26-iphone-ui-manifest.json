@@ -92,6 +92,18 @@
       "result": "passed",
       "observed_date": "2026-08-27",
       "detail": "Focus Point opened with an active KPI timer, confirmed yard and row, five available-part checkboxes, and completion disabled until parts are selected."
+    },
+    {
+      "step": "focus_point_completion",
+      "result": "passed",
+      "observed_date": "2026-08-27",
+      "detail": "Selecting ECM / PCM and LED Headlights enabled Complete Focus Point. Completion succeeded and navigated to Inventory Intake."
+    },
+    {
+      "step": "inventory_intake_form",
+      "result": "passed",
+      "observed_date": "2026-08-27",
+      "detail": "Inventory Intake rendered with ECM / PCM, storage location A-12, condition Used Untested, status Available, zero session items, and Create Inventory enabled."
     }
   ],
   "continuity_note": {
@@ -99,8 +111,7 @@
     "detail": "Opportunity and Vehicle Record evidence used OPP-000002 and VEH-000002. Procurement evidence shows a later synthetic opportunity OPP-000003. These screenshots prove manual stage behavior through Focus Point entry but do not prove one uninterrupted entity chain across every retained screenshot."
   },
   "remaining_steps": [
-    "focus_point_completion",
-    "inventory_intake",
+    "inventory_item_creation",
     "logout_and_revoked_session"
   ],
   "observed_defects": [
@@ -161,6 +172,16 @@
       "file": "2026-08-27-iphone-focus-point-open.jpg",
       "displayed_clock": "12:24",
       "sha256": "65929a03782faf819db560bc7df20715ca03a23167799ce98d43b3c0ad6a0146"
+    },
+    {
+      "file": "2026-08-27-iphone-focus-point-selected.jpg",
+      "displayed_clock": "12:35",
+      "sha256": "19b6ebb0137247648dd5b521e8ba5ded3d9bf9e78a6c85a29af76b6f678aeaa5"
+    },
+    {
+      "file": "2026-08-27-iphone-inventory-intake-ready.jpg",
+      "displayed_clock": "12:35",
+      "sha256": "8604b7177dc1c9cdf615ac394945a4df0ebde2fe35f3a95e7801ba7f60d47739"
     }
   ],
   "duplicate_submissions_omitted": [

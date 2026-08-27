@@ -449,8 +449,8 @@ header was written to repository evidence.
 
 ## Railway iPhone UI Field Smoke
 
-Result through August 27, 2026: passed through Focus Point entry; remaining
-manual working-path stages are pending.
+Result through August 27, 2026: passed through Inventory Intake readiness;
+remaining manual working-path stages are pending.
 
 - tester: Chris Hall
 - device: iPhone; model, browser, and browser version were not evidenced
@@ -474,11 +474,14 @@ manual working-path stages are pending.
   enabled Open Focus Point
 - Focus Point entry: active KPI timer, confirmed yard and row, five part choices,
   and pre-selection disabled completion rendered
+- Focus Point completion: selecting `ECM / PCM` and `LED Headlights` enabled the
+  action; completion succeeded and opened Inventory Intake
+- Inventory Intake readiness: selected part, storage location `A-12`, Used
+  Untested condition, Available status, and enabled Create Inventory rendered
 - continuity limitation: retained screenshots span two synthetic attempts and
   do not prove one uninterrupted entity chain across every stage
 - observed UI defect: `DEF-RAILWAY-008`, closed after guarded-build retest
-- pending: Focus Point completion, Inventory Intake, logout, and revoked-session
-  behavior
+- pending: inventory item creation, logout, and revoked-session behavior
 - evidence manifest:
   `documentation/release/evidence/railway/2026-08-26-iphone-ui-manifest.json`
 - workspace screenshot SHA-256:
@@ -497,6 +500,10 @@ manual working-path stages are pending.
   `907e30f4c76eb197aedb5d155be9226ff099b97a21f04af26a0c6ea430cd7ca2`
 - Focus Point entry screenshot SHA-256:
   `65929a03782faf819db560bc7df20715ca03a23167799ce98d43b3c0ad6a0146`
+- Focus Point selected screenshot SHA-256:
+  `19b6ebb0137247648dd5b521e8ba5ded3d9bf9e78a6c85a29af76b6f678aeaa5`
+- Inventory Intake ready screenshot SHA-256:
+  `8604b7177dc1c9cdf615ac394945a4df0ebde2fe35f3a95e7801ba7f60d47739`
 - duplicate Pick List submission: byte-identical to the retained
   awaiting-availability screenshot and omitted
 
@@ -534,5 +541,5 @@ creation retest.
 - sanitized screenshot SHA-256:
   `09f3ddda7bf057359ab3fa818276487dbd8c9f2fc49c4e3421d91a131ea4b200`
 - defect result: `DEF-RAILWAY-008` closed
-- remaining device evidence: Focus Point completion, Inventory Intake, logout,
-  and revoked-session behavior under `DEF-RAILWAY-006`
+- remaining device evidence: inventory item creation, logout, and revoked-session
+  behavior under `DEF-RAILWAY-006`

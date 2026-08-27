@@ -383,16 +383,17 @@ tenant-linked timeline and synthetic operating facts. A later synthetic attempt
 at `OPP-000003` rendered three Procurement scenarios, created a queued Pick List
 vehicle, persisted its Available selection, and opened Focus Point with the KPI
 timer active. The manifest records that the retained screenshots do not prove
-one uninterrupted entity chain across both synthetic attempts.
+one uninterrupted entity chain across both synthetic attempts. Selecting
+`ECM / PCM` and `LED Headlights` enabled and completed Focus Point, and Inventory
+Intake opened with the expected selected part and defaults.
 
 Impact: Rendering, touch navigation, credential exchange, tenant selection, and
-device network behavior are now evidenced through Focus Point entry. Manual
-Focus Point completion, Inventory Intake, and logout are not yet evidenced.
+device network behavior are now evidenced through Inventory Intake readiness.
+Manual inventory creation and logout are not yet evidenced.
 
 Next action: Continue `documentation/deployment/FLUTTER_WEB_PILOT_RUNBOOK.md` on
-Chris Hall's iPhone by selecting synthetic parts, completing Focus Point,
-finishing Inventory Intake, and logging out, retaining non-secret evidence for
-each stage.
+Chris Hall's iPhone by creating the synthetic inventory item and logging out,
+retaining non-secret evidence for each stage.
 
 #### DEF-RAILWAY-007: The sealed pilot operator credential is unavailable
 

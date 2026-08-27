@@ -372,9 +372,10 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
   rendered with its timeline and synthetic operating facts
 - Later synthetic attempt `OPP-000003`: three Procurement scenarios rendered;
   Part-Out approval created a queued Pick List vehicle; Available selection
-  enabled Focus Point; Focus Point opened with an active KPI timer
+  enabled Focus Point; selecting two synthetic parts enabled and completed Focus
+  Point; Inventory Intake opened with the expected selected part and defaults
 - Evidence limitation: retained screenshots span two synthetic attempts and do
   not prove one uninterrupted entity chain across every stage
 - Defect `DEF-RAILWAY-008`: closed on August 27, 2026
-- Broader device-session gate `DEF-RAILWAY-006`: remains open for Focus Point
-  completion, Inventory Intake, and logout
+- Broader device-session gate `DEF-RAILWAY-006`: remains open for inventory item
+  creation and logout

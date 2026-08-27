@@ -449,29 +449,38 @@ header was written to repository evidence.
 
 ## Railway iPhone UI Field Smoke
 
-Result on August 26, 2026: passed through Mission Control; remaining manual
+Result through August 27, 2026: passed through Vehicle Record; remaining manual
 working-path stages are pending.
 
 - tester: Chris Hall
 - device: iPhone; model, browser, and browser version were not evidenced
 - frontend: public GitHub Pages pilot
-- frontend workflow: run `32783845146`, passed
-- frontend commit: `9c3814c07cab4d5c1c4301f8bf198aab5d310c36`
+- initial frontend workflow: run `32783845146`, passed
+- guarded frontend workflow: run `33061203825`, passed
+- guarded frontend commit: `d4e1da2fe6b6f5c29af9de95c2c444445744c69c`
 - live API health: HTTP 200, version `0.6.0`
 - API release: `e929c9977666b1fc30c7cdecbe30a2dfd3e4feef`
 - storage and auth storage: PostgreSQL
 - login and authenticated tenant listing: passed
 - workspace selection: passed for RecyclerOS Operations
 - Mission Control rendering and zero-state metrics: passed
-- observed UI defects: none in the evidenced stages
-- pending: Opportunity Discovery, Vehicle Record, Procurement, Pick List,
-  Inventory Intake, logout, and revoked-session behavior
+- Opportunity Discovery: synthetic opportunity `OPP-000002` created with a
+  blank VIN
+- Vehicle Record: linked vehicle `VEH-000002` rendered with its timeline and
+  synthetic operating facts
+- observed UI defect: `DEF-RAILWAY-008`, closed after guarded-build retest
+- pending: Procurement, Pick List, Focus Point, Inventory Intake, logout, and
+  revoked-session behavior
 - evidence manifest:
   `documentation/release/evidence/railway/2026-08-26-iphone-ui-manifest.json`
 - workspace screenshot SHA-256:
   `36f9cb40dd788b087cd735d8a84d7df910f99c33989b528db80f6d3f94a28b33`
 - Mission Control screenshot SHA-256:
   `245aeaf74b3861a2931face31c9aaccf288b83fdd5c9b62f2c689fc770692579`
+- Opportunity creation screenshot SHA-256:
+  `09f3ddda7bf057359ab3fa818276487dbd8c9f2fc49c4e3421d91a131ea4b200`
+- Vehicle Record screenshot SHA-256:
+  `8e0b469288beb077198314d56261eef40b2f1c289170b5734714e51ae8e3232d`
 
 This evidence narrows `DEF-RAILWAY-006` but does not close it. No credential,
 session token, authorization header, or database URL appears in the retained
@@ -507,5 +516,5 @@ creation retest.
 - sanitized screenshot SHA-256:
   `09f3ddda7bf057359ab3fa818276487dbd8c9f2fc49c4e3421d91a131ea4b200`
 - defect result: `DEF-RAILWAY-008` closed
-- remaining device evidence: Vehicle Record, Procurement, Pick List, Focus Point,
-  Inventory Intake, logout, and revoked-session behavior under `DEF-RAILWAY-006`
+- remaining device evidence: Procurement, Pick List, Focus Point, Inventory
+  Intake, logout, and revoked-session behavior under `DEF-RAILWAY-006`

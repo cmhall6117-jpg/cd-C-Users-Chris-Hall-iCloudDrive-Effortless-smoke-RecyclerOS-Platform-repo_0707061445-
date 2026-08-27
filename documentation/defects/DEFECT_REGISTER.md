@@ -377,15 +377,18 @@ successful workflow run `32783845146` at commit
 reported API release `e929c9977666b1fc30c7cdecbe30a2dfd3e4feef`, PostgreSQL
 storage, and PostgreSQL auth. The screenshots and checksums are recorded in
 `documentation/release/evidence/railway/2026-08-26-iphone-ui-manifest.json`.
+On August 27, the guarded Pages build created synthetic opportunity `OPP-000002`
+and linked vehicle `VEH-000002` on the iPhone. The Vehicle Record rendered its
+tenant-linked timeline and synthetic operating facts.
 
 Impact: Rendering, touch navigation, credential exchange, tenant selection, and
-device network behavior are now evidenced through Mission Control. Manual device
-interaction from Opportunity Discovery through Inventory Intake and logout is
-not yet evidenced.
+device network behavior are now evidenced through Vehicle Record. Manual device
+interaction from Procurement through Inventory Intake and logout is not yet
+evidenced.
 
 Next action: Continue `documentation/deployment/FLUTTER_WEB_PILOT_RUNBOOK.md` on
-Chris Hall's iPhone from Opportunity Discovery through Inventory Intake and
-logout, using synthetic data and retaining non-secret evidence for each stage.
+Chris Hall's iPhone from Procurement through Inventory Intake and logout, using
+synthetic data and retaining non-secret evidence for each stage.
 
 #### DEF-RAILWAY-007: The sealed pilot operator credential is unavailable
 

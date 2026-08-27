@@ -68,10 +68,15 @@
       "result": "passed",
       "observed_date": "2026-08-27",
       "detail": "After signing in again on the session-guard build, the tester created synthetic opportunity OPP-000002 with a blank VIN. The active-opportunity card and enabled Create Vehicle Record action rendered."
+    },
+    {
+      "step": "vehicle_record",
+      "result": "passed",
+      "observed_date": "2026-08-27",
+      "detail": "The live workflow created vehicle VEH-000002 from opportunity OPP-000002. The Vehicle Record rendered the synthetic year, make, and model; VIN Pending; mileage 126000; discovered lifecycle; part out intent; and linked timeline."
     }
   ],
   "remaining_steps": [
-    "vehicle_record",
     "procurement",
     "pick_list",
     "focus_point",
@@ -111,6 +116,11 @@
       "file": "2026-08-27-iphone-opportunity-created.jpg",
       "displayed_clock": "6:11",
       "sha256": "09f3ddda7bf057359ab3fa818276487dbd8c9f2fc49c4e3421d91a131ea4b200"
+    },
+    {
+      "file": "2026-08-27-iphone-vehicle-record.jpg",
+      "displayed_clock": "6:46",
+      "sha256": "8e0b469288beb077198314d56261eef40b2f1c289170b5734714e51ae8e3232d"
     }
   ],
   "credential_material_recorded": false

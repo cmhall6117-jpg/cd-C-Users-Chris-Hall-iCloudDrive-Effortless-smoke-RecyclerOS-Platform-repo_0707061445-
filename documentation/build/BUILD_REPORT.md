@@ -368,7 +368,8 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
 - GitHub Pages workflow run `33061203825`: build and deploy passed
 - Public pilot endpoint: HTTP 200 after deployment
 - iPhone retest: synthetic opportunity `OPP-000002` created with a blank VIN;
-  Create Vehicle Record rendered enabled
+  Create Vehicle Record rendered enabled; linked vehicle `VEH-000002` then
+  rendered with its timeline and synthetic operating facts
 - Defect `DEF-RAILWAY-008`: closed on August 27, 2026
-- Broader device-session gate `DEF-RAILWAY-006`: remains open for Vehicle Record
+- Broader device-session gate `DEF-RAILWAY-006`: remains open for Procurement
   through Inventory Intake and logout

@@ -81,3 +81,8 @@
   exact origin `https://cmhall6117-jpg.github.io`. The shell embeds no
   credential, permits synthetic or authorized pilot data only, and does not
   authorize public registration or production traffic.
+- August 27 iPhone screenshots span at least two synthetic attempts:
+  `OPP-000002` / `VEH-000002` and later Procurement opportunity `OPP-000003`.
+  The retained evidence proves manual screen and mutation behavior through
+  Focus Point entry, but it does not claim one uninterrupted entity chain across
+  every screenshot.

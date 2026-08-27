@@ -131,7 +131,7 @@ Cloud resources.
 | Database backup and restore | Passed for one-person pilot | August 9 custom dump, checksum match, encrypted off-platform copy, clean restore, staging cleanup, live PITR, and restore-owner assignment passed. August 24 history proves daily and weekly native schedules produced real snapshots. Off-platform automation and key escrow remain broader-use hardening under `DEF-RAILWAY-003`. |
 | Monitoring and protected acceptance | Passed for one-person pilot | Two-hour monitoring, simulated incident delivery and recovery, owner approval, and protected acceptance run `32770410381` passed. `DEF-RAILWAY-004` is closed. |
 | Live tenant-scoped API working path | Passed for one-person pilot | Field run `20260824212230-5fd820be` passed 18 checks from login through inventory and revoked-session rejection. |
-| Manual Flutter device working path | Partially passed | iPhone evidence now covers login, workspace selection, Mission Control, Opportunity Discovery, synthetic opportunity `OPP-000002`, and linked vehicle `VEH-000002`; Procurement through logout remains under `DEF-RAILWAY-006`. |
+| Manual Flutter device working path | Partially passed | iPhone evidence covers login through Vehicle Record on `OPP-000002` / `VEH-000002` and Procurement through Focus Point entry on later synthetic attempt `OPP-000003`; Focus Point completion through logout remains under `DEF-RAILWAY-006`. |
 | Second unique tester identity | Blocked for tester two | `DEF-RAILWAY-005`. |
 
 Passed Railway gates above have live command or endpoint evidence. The contract
@@ -269,7 +269,13 @@ Chris Hall then signed in again on the deployed build and created synthetic
 opportunity `OPP-000002` with a blank VIN. The active-opportunity card and
 enabled Create Vehicle Record action rendered. The live workflow then created
 linked vehicle `VEH-000002`; its Vehicle Record rendered the synthetic operating
-facts and opportunity-to-vehicle timeline. This closes `DEF-RAILWAY-008` and
-further narrows `DEF-RAILWAY-006`. Manual iPhone evidence from Procurement
-through Inventory Intake and logout remains required before the device-session
-gate can pass.
+facts and opportunity-to-vehicle timeline. A later synthetic attempt at
+`OPP-000003` rendered all three Procurement scenarios, created a queued Pick
+List vehicle after Part-Out approval, enabled Focus Point after Available was
+selected, and opened Focus Point with the KPI timer active.
+
+The retained screenshots span two synthetic attempts, so they prove manual
+stage behavior through Focus Point entry but not one uninterrupted entity chain
+across every stage. This closes `DEF-RAILWAY-008` and further narrows
+`DEF-RAILWAY-006`. Manual iPhone evidence for Focus Point completion, Inventory
+Intake, and logout remains required before the device-session gate can pass.

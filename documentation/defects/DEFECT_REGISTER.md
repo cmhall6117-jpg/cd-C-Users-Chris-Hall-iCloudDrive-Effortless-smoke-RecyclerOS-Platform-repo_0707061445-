@@ -379,16 +379,20 @@ storage, and PostgreSQL auth. The screenshots and checksums are recorded in
 `documentation/release/evidence/railway/2026-08-26-iphone-ui-manifest.json`.
 On August 27, the guarded Pages build created synthetic opportunity `OPP-000002`
 and linked vehicle `VEH-000002` on the iPhone. The Vehicle Record rendered its
-tenant-linked timeline and synthetic operating facts.
+tenant-linked timeline and synthetic operating facts. A later synthetic attempt
+at `OPP-000003` rendered three Procurement scenarios, created a queued Pick List
+vehicle, persisted its Available selection, and opened Focus Point with the KPI
+timer active. The manifest records that the retained screenshots do not prove
+one uninterrupted entity chain across both synthetic attempts.
 
 Impact: Rendering, touch navigation, credential exchange, tenant selection, and
-device network behavior are now evidenced through Vehicle Record. Manual device
-interaction from Procurement through Inventory Intake and logout is not yet
-evidenced.
+device network behavior are now evidenced through Focus Point entry. Manual
+Focus Point completion, Inventory Intake, and logout are not yet evidenced.
 
 Next action: Continue `documentation/deployment/FLUTTER_WEB_PILOT_RUNBOOK.md` on
-Chris Hall's iPhone from Procurement through Inventory Intake and logout, using
-synthetic data and retaining non-secret evidence for each stage.
+Chris Hall's iPhone by selecting synthetic parts, completing Focus Point,
+finishing Inventory Intake, and logging out, retaining non-secret evidence for
+each stage.
 
 #### DEF-RAILWAY-007: The sealed pilot operator credential is unavailable
 

@@ -449,8 +449,8 @@ header was written to repository evidence.
 
 ## Railway iPhone UI Field Smoke
 
-Result through August 27, 2026: passed through Vehicle Record; remaining manual
-working-path stages are pending.
+Result through August 27, 2026: passed through Focus Point entry; remaining
+manual working-path stages are pending.
 
 - tester: Chris Hall
 - device: iPhone; model, browser, and browser version were not evidenced
@@ -468,9 +468,17 @@ working-path stages are pending.
   blank VIN
 - Vehicle Record: linked vehicle `VEH-000002` rendered with its timeline and
   synthetic operating facts
+- Procurement: later synthetic opportunity `OPP-000003` rendered three
+  scenarios with Part-Out recommended
+- Pick List: Part-Out approval queued one synthetic vehicle; Available selection
+  enabled Open Focus Point
+- Focus Point entry: active KPI timer, confirmed yard and row, five part choices,
+  and pre-selection disabled completion rendered
+- continuity limitation: retained screenshots span two synthetic attempts and
+  do not prove one uninterrupted entity chain across every stage
 - observed UI defect: `DEF-RAILWAY-008`, closed after guarded-build retest
-- pending: Procurement, Pick List, Focus Point, Inventory Intake, logout, and
-  revoked-session behavior
+- pending: Focus Point completion, Inventory Intake, logout, and revoked-session
+  behavior
 - evidence manifest:
   `documentation/release/evidence/railway/2026-08-26-iphone-ui-manifest.json`
 - workspace screenshot SHA-256:
@@ -481,6 +489,16 @@ working-path stages are pending.
   `09f3ddda7bf057359ab3fa818276487dbd8c9f2fc49c4e3421d91a131ea4b200`
 - Vehicle Record screenshot SHA-256:
   `8e0b469288beb077198314d56261eef40b2f1c289170b5734714e51ae8e3232d`
+- Procurement screenshot SHA-256:
+  `04ceaaf7fa92e06b4c8071b0503c258bf1de53212ac64b935c2652a08a3e1736`
+- Pick List awaiting-availability screenshot SHA-256:
+  `9a3f09528f84a25f31e92b7c25d2cb77a13ea93b5f8d0693d26d9ae914561ed6`
+- Pick List available screenshot SHA-256:
+  `907e30f4c76eb197aedb5d155be9226ff099b97a21f04af26a0c6ea430cd7ca2`
+- Focus Point entry screenshot SHA-256:
+  `65929a03782faf819db560bc7df20715ca03a23167799ce98d43b3c0ad6a0146`
+- duplicate Pick List submission: byte-identical to the retained
+  awaiting-availability screenshot and omitted
 
 This evidence narrows `DEF-RAILWAY-006` but does not close it. No credential,
 session token, authorization header, or database URL appears in the retained
@@ -516,5 +534,5 @@ creation retest.
 - sanitized screenshot SHA-256:
   `09f3ddda7bf057359ab3fa818276487dbd8c9f2fc49c4e3421d91a131ea4b200`
 - defect result: `DEF-RAILWAY-008` closed
-- remaining device evidence: Procurement, Pick List, Focus Point, Inventory
-  Intake, logout, and revoked-session behavior under `DEF-RAILWAY-006`
+- remaining device evidence: Focus Point completion, Inventory Intake, logout,
+  and revoked-session behavior under `DEF-RAILWAY-006`

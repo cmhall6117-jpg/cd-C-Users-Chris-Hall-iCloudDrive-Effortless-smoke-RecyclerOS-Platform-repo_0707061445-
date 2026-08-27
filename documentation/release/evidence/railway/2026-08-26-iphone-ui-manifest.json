@@ -74,12 +74,32 @@
       "result": "passed",
       "observed_date": "2026-08-27",
       "detail": "The live workflow created vehicle VEH-000002 from opportunity OPP-000002. The Vehicle Record rendered the synthetic year, make, and model; VIN Pending; mileage 126000; discovered lifecycle; part out intent; and linked timeline."
+    },
+    {
+      "step": "procurement_analysis",
+      "result": "passed",
+      "observed_date": "2026-08-27",
+      "detail": "For later synthetic opportunity OPP-000003, Procurement rendered Resale, Personal Use, and Part-Out scenarios. Part-Out was recommended at a $3900 max bid, $3250 projected net, and 81% confidence."
+    },
+    {
+      "step": "pick_list_creation_and_availability",
+      "result": "passed",
+      "observed_date": "2026-08-27",
+      "detail": "Approving Part-Out created one queued synthetic vehicle at Greenville Pull-A-Part, Row 12. Open Focus Point was disabled before availability selection and enabled after Available was selected."
+    },
+    {
+      "step": "focus_point_entry",
+      "result": "passed",
+      "observed_date": "2026-08-27",
+      "detail": "Focus Point opened with an active KPI timer, confirmed yard and row, five available-part checkboxes, and completion disabled until parts are selected."
     }
   ],
+  "continuity_note": {
+    "status": "not_fully_evidenced",
+    "detail": "Opportunity and Vehicle Record evidence used OPP-000002 and VEH-000002. Procurement evidence shows a later synthetic opportunity OPP-000003. These screenshots prove manual stage behavior through Focus Point entry but do not prove one uninterrupted entity chain across every retained screenshot."
+  },
   "remaining_steps": [
-    "procurement",
-    "pick_list",
-    "focus_point",
+    "focus_point_completion",
     "inventory_intake",
     "logout_and_revoked_session"
   ],
@@ -121,6 +141,33 @@
       "file": "2026-08-27-iphone-vehicle-record.jpg",
       "displayed_clock": "6:46",
       "sha256": "8e0b469288beb077198314d56261eef40b2f1c289170b5734714e51ae8e3232d"
+    },
+    {
+      "file": "2026-08-27-iphone-procurement-analysis.jpg",
+      "displayed_clock": "12:23",
+      "sha256": "04ceaaf7fa92e06b4c8071b0503c258bf1de53212ac64b935c2652a08a3e1736"
+    },
+    {
+      "file": "2026-08-27-iphone-pick-list-awaiting-availability.jpg",
+      "displayed_clock": "12:23",
+      "sha256": "9a3f09528f84a25f31e92b7c25d2cb77a13ea93b5f8d0693d26d9ae914561ed6"
+    },
+    {
+      "file": "2026-08-27-iphone-pick-list-available.jpg",
+      "displayed_clock": "12:24",
+      "sha256": "907e30f4c76eb197aedb5d155be9226ff099b97a21f04af26a0c6ea430cd7ca2"
+    },
+    {
+      "file": "2026-08-27-iphone-focus-point-open.jpg",
+      "displayed_clock": "12:24",
+      "sha256": "65929a03782faf819db560bc7df20715ca03a23167799ce98d43b3c0ad6a0146"
+    }
+  ],
+  "duplicate_submissions_omitted": [
+    {
+      "sha256": "9a3f09528f84a25f31e92b7c25d2cb77a13ea93b5f8d0693d26d9ae914561ed6",
+      "duplicate_of": "2026-08-27-iphone-pick-list-awaiting-availability.jpg",
+      "count": 1
     }
   ],
   "credential_material_recorded": false

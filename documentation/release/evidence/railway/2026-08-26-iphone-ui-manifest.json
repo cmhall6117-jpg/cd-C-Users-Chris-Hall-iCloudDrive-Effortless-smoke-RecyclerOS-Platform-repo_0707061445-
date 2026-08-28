@@ -1,22 +1,23 @@
 {
   "schema_version": 1,
   "evidence_id": "railway-iphone-ui-2026-08-26",
-  "scope": "partial_manual_flutter_web_field_session",
+  "scope": "completed_manual_flutter_web_primary_path_stage_evidence",
   "submitted_date": "2026-08-26",
+  "completed_date": "2026-08-28",
   "tester": "Chris Hall",
   "device": {
     "family": "iPhone",
     "model": "not evidenced",
-    "browser": "not evidenced",
+    "browser": "Safari",
     "browser_version": "not evidenced"
   },
   "frontend": {
     "provider": "GitHub Pages",
     "origin": "https://cmhall6117-jpg.github.io/cd-C-Users-Chris-Hall-iCloudDrive-Effortless-smoke-RecyclerOS-Platform-repo_0707061445-/",
-    "workflow_run": 33061203825,
-    "commit": "d4e1da2fe6b6f5c29af9de95c2c444445744c69c",
-    "validation_ci_run": 33020582147,
-    "pull_request": 26,
+    "workflow_run": 33119763314,
+    "commit": "d2eb96d5662318c3e389b02b78b3f84903d4d64f",
+    "validation_ci_run": 33097221722,
+    "pull_request": 28,
     "conclusion": "success"
   },
   "frontend_deployment_history": [
@@ -30,6 +31,12 @@
       "purpose": "browser_session_guard_retest",
       "workflow_run": 33061203825,
       "commit": "d4e1da2fe6b6f5c29af9de95c2c444445744c69c",
+      "conclusion": "success"
+    },
+    {
+      "purpose": "logout_and_revocation_retest",
+      "workflow_run": 33119763314,
+      "commit": "d2eb96d5662318c3e389b02b78b3f84903d4d64f",
       "conclusion": "success"
     }
   ],
@@ -110,15 +117,25 @@
       "result": "passed",
       "observed_date": "2026-08-27",
       "detail": "Create Inventory saved ECM / PCM as INV-000002. The ready-for-sync confirmation, one-item session count, and Session Inventory entry rendered."
+    },
+    {
+      "step": "deployed_logout_control",
+      "result": "passed",
+      "observed_date": "2026-08-28",
+      "detail": "After Safari website data for the GitHub Pages origin was cleared, the deployment at commit d2eb96d displayed the icon-based Sign out command on Mission Control. A direct no-cache request independently confirmed that the public main.dart.js contains both the Sign out label and /v1/auth/logout endpoint."
+    },
+    {
+      "step": "logout_and_revoked_session",
+      "result": "passed",
+      "observed_date": "2026-08-28",
+      "detail": "The tester selected Sign out on the iPhone and the Flutter client returned to the Sign in screen. Automated backend and Flutter coverage pairs the visible transition with POST /v1/auth/logout returning HTTP 204, subsequent bearer-token rejection with HTTP 401, and client workflow-state clearing only after successful revocation."
     }
   ],
   "continuity_note": {
     "status": "not_fully_evidenced",
     "detail": "Opportunity and Vehicle Record evidence used OPP-000002 and VEH-000002. Procurement evidence shows a later synthetic opportunity OPP-000003. These screenshots prove manual stage behavior through Focus Point entry but do not prove one uninterrupted entity chain across every retained screenshot."
   },
-  "remaining_steps": [
-    "logout_and_revoked_session"
-  ],
+  "remaining_steps": [],
   "observed_defects": [
     {
       "id": "DEF-RAILWAY-008",
@@ -134,11 +151,11 @@
     {
       "id": "DEF-RAILWAY-009",
       "severity": "high",
-      "status": "open_fix_candidate",
+      "status": "closed_2026-08-28",
       "detail": "The Flutter client has no logout control and Rc1Gateway has no logout operation, so a field operator cannot revoke the bearer session from the UI.",
-      "fix_candidate": "Add POST /v1/auth/logout to the gateway, clear client state only after successful revocation, and expose Sign out on Mission Control with success and failure tests.",
+      "resolution": "PR 28 added POST /v1/auth/logout to the gateway, server-confirmed client state clearing, and the Mission Control Sign out command. All CI jobs passed, Pages deployment 33119763314 succeeded, and the iPhone retest returned to Sign in.",
       "evidence_retained": true,
-      "evidence_note": "Repository code inspection and the completed iPhone path through Inventory Intake establish the missing final action."
+      "evidence_note": "The retained Mission Control and Sign in screenshots establish the manual UI transition. Automated HTTP 204 and revoked-token HTTP 401 tests establish server-side revocation behavior that a screenshot cannot expose."
     }
   ],
   "screenshots": [
@@ -201,6 +218,16 @@
       "file": "2026-08-27-iphone-inventory-created.jpg",
       "displayed_clock": "12:37",
       "sha256": "619b53c848d990aca8ce8a38f442e3470fa49116db719414c0a4fde720e706da"
+    },
+    {
+      "file": "2026-08-28-iphone-logout-control.jpg",
+      "displayed_clock": "9:02",
+      "sha256": "bcd024c4526d2bc53e56c443f0284b0e0c26881eab69a2cf14a9ba7c816260f9"
+    },
+    {
+      "file": "2026-08-28-iphone-logout-returned-sign-in.jpg",
+      "displayed_clock": "9:03",
+      "sha256": "391ec645cc7f833514cce861541710e9d8b30f7ead1d9fe00387876e2ce17829"
     }
   ],
   "duplicate_submissions_omitted": [

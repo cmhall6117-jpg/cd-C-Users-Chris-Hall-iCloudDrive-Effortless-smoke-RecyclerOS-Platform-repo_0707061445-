@@ -35,6 +35,18 @@ memory and is discarded when the page is closed or refreshed.
 6. Retrieve the operator credential from the approved password manager. Do not
    paste it into chat, screenshots, source control, or defect evidence.
 
+### Deployed Build Freshness
+
+If an expected control is missing after a successful Pages deployment, first
+verify the public `main.dart.js` returns HTTP 200 and contains a marker unique to
+the deployed feature. On Safari, remove website data only for
+`cmhall6117-jpg.github.io`, fully close Safari, and reopen the Pages URL with a
+commit-specific query value. Sign in again before continuing the test.
+
+Clearing website data or closing the old tab discards the in-memory client token
+but does not prove that the old server session was revoked. Perform the logout
+acceptance step from the newly authenticated session.
+
 ## iPhone Field Session
 
 Use Safari on Chris Hall's approved iPhone. Private Browsing remains acceptable,
@@ -78,7 +90,10 @@ header:
 - screenshots after login with any sensitive fields excluded
 - defects with screen, action, expected result, and observed result
 
-`DEF-RAILWAY-006` remains open until this evidence is committed and reviewed.
+`DEF-RAILWAY-006` was closed on August 28, 2026 after the stage evidence, logout
+implementation CI, Pages deployment, and iPhone Sign out result were committed
+for review. Repeat this runbook for future release candidates; its completion
+does not authorize a second tester or production traffic.
 
 ## Rollback
 

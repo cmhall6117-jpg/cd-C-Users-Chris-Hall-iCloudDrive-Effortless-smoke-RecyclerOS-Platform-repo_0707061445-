@@ -449,11 +449,11 @@ header was written to repository evidence.
 
 ## Railway iPhone UI Field Smoke
 
-Result through August 27, 2026: passed through Inventory Intake creation;
-logout remains blocked by missing Flutter functionality.
+Result through August 28, 2026: passed from login through Inventory Intake and
+logout for the approved one-person pilot.
 
 - tester: Chris Hall
-- device: iPhone; model, browser, and browser version were not evidenced
+- device: iPhone running Safari; model and browser version were not evidenced
 - frontend: public GitHub Pages pilot
 - initial frontend workflow: run `32783845146`, passed
 - guarded frontend workflow: run `33061203825`, passed
@@ -483,7 +483,10 @@ logout remains blocked by missing Flutter functionality.
 - continuity limitation: retained screenshots span two synthetic attempts and
   do not prove one uninterrupted entity chain across every stage
 - observed UI defect: `DEF-RAILWAY-008`, closed after guarded-build retest
-- pending: logout and revoked-session behavior; blocked by `DEF-RAILWAY-009`
+- logout: the deployed Mission Control Sign out control returned the iPhone to
+  Sign in; automated API coverage proves HTTP 204 and revoked-token HTTP 401
+- logout implementation defect: `DEF-RAILWAY-009`, closed after green CI,
+  successful Pages deployment, and the live iPhone retest
 - evidence manifest:
   `documentation/release/evidence/railway/2026-08-26-iphone-ui-manifest.json`
 - workspace screenshot SHA-256:
@@ -508,12 +511,17 @@ logout remains blocked by missing Flutter functionality.
   `8604b7177dc1c9cdf615ac394945a4df0ebde2fe35f3a95e7801ba7f60d47739`
 - Inventory created screenshot SHA-256:
   `619b53c848d990aca8ce8a38f442e3470fa49116db719414c0a4fde720e706da`
+- Logout control screenshot SHA-256:
+  `bcd024c4526d2bc53e56c443f0284b0e0c26881eab69a2cf14a9ba7c816260f9`
+- Logout returned-to-sign-in screenshot SHA-256:
+  `391ec645cc7f833514cce861541710e9d8b30f7ead1d9fe00387876e2ce17829`
 - duplicate Pick List submission: byte-identical to the retained
   awaiting-availability screenshot and omitted
 
-This evidence narrows `DEF-RAILWAY-006` but does not close it. No credential,
-session token, authorization header, or database URL appears in the retained
-evidence.
+This closes `DEF-RAILWAY-006` for the approved one-person pilot. It does not
+remove the documented continuity limitation or expand the evidence to a second
+tester or production traffic. No credential, session token, authorization
+header, or database URL appears in the retained evidence.
 
 ## Flutter Browser Session Guard
 
@@ -545,14 +553,13 @@ creation retest.
 - sanitized screenshot SHA-256:
   `09f3ddda7bf057359ab3fa818276487dbd8c9f2fc49c4e3421d91a131ea4b200`
 - defect result: `DEF-RAILWAY-008` closed
-- remaining device evidence: logout and revoked-session behavior under
-  `DEF-RAILWAY-006`, blocked by missing client functionality in
+- remaining device evidence at that point: logout and revoked-session behavior;
+  subsequently completed on August 28 and closed under `DEF-RAILWAY-006` and
   `DEF-RAILWAY-009`
 
-## Flutter Logout Candidate
+## Flutter Logout Verification
 
-Result on August 27, 2026: implementation and regression coverage added; CI and
-live iPhone execution are pending.
+Result on August 28, 2026: passed CI, deployment, and live iPhone execution.
 
 - gateway contract: adds logout without tenant headers
 - Dio behavior: sends `POST /v1/auth/logout` with the bearer token and clears the
@@ -565,5 +572,13 @@ live iPhone execution are pending.
   widget logout, and the full RC1 widget path ending at Sign in
 - local Flutter execution: blocked because this workstation has no Flutter or
   Dart SDK
-- required evidence: green Flutter analyze/tests, successful Pages deployment,
-  and iPhone Sign out plus browser-back verification
+- push CI run `33097181838`: passed every RC1 job
+- pull-request CI run `33097221722`: passed every RC1 job
+- GitHub Pages run `33119763314`: build and deployment passed for merge commit
+  `d2eb96d5662318c3e389b02b78b3f84903d4d64f`
+- public bundle check: HTTP 200 with both Sign out and `/v1/auth/logout`
+- iPhone result: Sign out rendered on Mission Control and returned the client to
+  Sign in
+- retained evidence: two sanitized screenshots and SHA-256 values in the iPhone
+  UI manifest
+- defects closed: `DEF-RAILWAY-006` and `DEF-RAILWAY-009`

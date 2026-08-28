@@ -365,7 +365,7 @@ audited account-provisioning operation before adding the second tester.
 
 #### DEF-RAILWAY-006: Manual Flutter device field session is not evidenced
 
-Status: open, partially evidenced test gap
+Status: closed on August 28, 2026
 
 Evidence: Live synthetic API run `20260824212230-5fd820be` passed all 18 checks
 from login through inventory intake and session revocation. Flutter analyze,
@@ -389,13 +389,23 @@ Intake opened with the expected selected part and defaults. Create Inventory
 then saved `INV-000002` and rendered its ready-for-sync confirmation and Session
 Inventory entry.
 
-Impact: Rendering, touch navigation, credential exchange, tenant selection, and
-device network behavior are now evidenced through Inventory Intake creation.
-Manual logout and revoked-session behavior are not yet evidenced.
+On August 28, PR `#28` had passed every push and pull-request CI job and Pages
+deployment `33119763314` had deployed merge commit
+`d2eb96d5662318c3e389b02b78b3f84903d4d64f`. After clearing Safari's cached
+website data for the Pages origin, the iPhone rendered the new Sign out command.
+Selecting it returned the client to Sign in. The retained screenshots establish
+the manual UI transition; existing automated API and Flutter coverage establish
+HTTP 204 logout, subsequent HTTP 401 rejection of the revoked token, and client
+state clearing after successful revocation.
 
-Next action: Continue `documentation/deployment/FLUTTER_WEB_PILOT_RUNBOOK.md` on
-Chris Hall's iPhone by deploying a Flutter logout control, logging out, and
-retaining non-secret evidence that the client returns to login.
+Impact: None remaining for the one-person Railway pilot. Manual stage behavior
+is evidenced from login through Inventory Intake and logout. The retained
+screenshots span more than one synthetic attempt and therefore do not claim one
+uninterrupted entity chain across every image.
+
+Resolution: Close the device evidence gate for the approved one-person pilot.
+Continue treating the continuity note and the single-tester limit as explicit
+scope constraints rather than broader production evidence.
 
 #### DEF-RAILWAY-007: The sealed pilot operator credential is unavailable
 
@@ -451,28 +461,30 @@ sanitized screenshot and checksum are recorded in the iPhone evidence manifest.
 
 #### DEF-RAILWAY-009: Flutter field operator cannot log out
 
-Status: open, field-test blocker; fix candidate implemented
+Status: closed on August 28, 2026
 
-Evidence: The live iPhone path reached Inventory Intake and created
-`INV-000002`, but the Flutter UI exposes no logout control. Repository inspection
-confirmed no logout or sign-out action in the mobile screens, no logout method
-on `Rc1Gateway`, and no client call to the existing backend
+Evidence before resolution: The live iPhone path reached Inventory Intake and
+created `INV-000002`, but the Flutter UI exposed no logout control. Repository
+inspection confirmed no logout or sign-out action in the mobile screens, no
+logout method on `Rc1Gateway`, and no client call to the existing backend
 `POST /v1/auth/logout` endpoint. Backend automated coverage already proves that
 this endpoint returns HTTP 204 and rejects the revoked bearer session afterward.
 
-Impact: A field operator cannot intentionally revoke the current session from
-the browser UI. Closing the tab only discards in-memory client state and is not
-evidence of server-side revocation, so the final device-session gate cannot pass.
+Prior impact: A field operator could not intentionally revoke the current
+session from the browser UI. Closing the tab only discarded in-memory client
+state and was not evidence of server-side revocation, so the final
+device-session gate could not pass.
 
-Fix candidate: Add a bearer-authenticated gateway call to
-`POST /v1/auth/logout`, clear all client workflow state only after successful
-revocation, and expose an icon-based Sign out command on Mission Control. Dio,
+Resolution: PR `#28` added a bearer-authenticated gateway call to
+`POST /v1/auth/logout`, clears all client workflow state only after successful
+revocation, and exposes an icon-based Sign out command on Mission Control. Dio,
 fake-gateway, success, failure, and full-workflow widget coverage verify the
-request header, token clearing, state clearing, and failure preservation.
-
-Next action: Pass Flutter analyze and tests in CI, deploy the updated Pages
-build, and complete the iPhone Sign out and browser-back retest before closing
-this defect.
+request header, token clearing, state clearing, and failure preservation. Push
+run `33097181838` and pull-request run `33097221722` passed every RC1 job.
+GitHub Pages deployment `33119763314` deployed merge commit
+`d2eb96d5662318c3e389b02b78b3f84903d4d64f`. On August 28, the iPhone displayed
+Sign out and returned to Sign in after it was selected. Non-secret screenshots
+and checksums are retained in the iPhone evidence manifest.
 
 ## Production Launch Preparation
 

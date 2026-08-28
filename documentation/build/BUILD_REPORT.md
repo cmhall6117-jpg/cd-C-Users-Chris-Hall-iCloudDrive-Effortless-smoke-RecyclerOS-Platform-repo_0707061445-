@@ -342,8 +342,9 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
   `9c3814c07cab4d5c1c4301f8bf198aab5d310c36`
 - Live API health: version `0.6.0`, release
   `e929c9977666b1fc30c7cdecbe30a2dfd3e4feef`, PostgreSQL storage and auth
-- Device-session gate: `DEF-RAILWAY-006` remains open for Opportunity Discovery
-  through Inventory Intake and logout
+- Device-session gate at the time: `DEF-RAILWAY-006` remained open for
+  Opportunity Discovery through Inventory Intake and logout; it was closed by
+  the completed August 27-28 device evidence recorded below
 - Evidence:
   `documentation/release/evidence/railway/2026-08-26-iphone-ui-manifest.json`
 
@@ -378,14 +379,14 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
 - Evidence limitation: retained screenshots span two synthetic attempts and do
   not prove one uninterrupted entity chain across every stage
 - Defect `DEF-RAILWAY-008`: closed on August 27, 2026
-- Broader device-session gate `DEF-RAILWAY-006`: remains open for logout and
-  revoked-session evidence
-- New blocker `DEF-RAILWAY-009`: Flutter exposes no logout control or gateway
-  revocation operation; implementation and deployment are required
+- Broader device-session gate `DEF-RAILWAY-006`: subsequently closed after the
+  August 28 logout retest
+- Logout blocker `DEF-RAILWAY-009`: subsequently closed by PR `#28`, green CI,
+  Pages deployment, and the August 28 iPhone retest
 
-## Flutter Logout Candidate
+## Flutter Logout and Device Evidence Closure
 
-- Date: August 27, 2026
+- Date: August 27-28, 2026
 - Branch: `codex/railway-pilot-logout-revocation`
 - Added bearer-authenticated `POST /v1/auth/logout` gateway support
 - Clears the gateway token and complete Flutter workflow state only after the
@@ -397,4 +398,18 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
 - Updated the iPhone runbook to require Sign out and browser-back verification
 - Local Flutter analyze/tests: not run; Flutter and Dart are unavailable on this
   workstation
-- CI, Pages deployment, and live iPhone retest: pending
+- Pull request `#28`: merged as
+  `d2eb96d5662318c3e389b02b78b3f84903d4d64f`
+- Push run `33097181838` and pull-request run `33097221722`: every RC1 job
+  passed, including Flutter analyze and Flutter tests
+- GitHub Pages workflow run `33119763314`: build and deployment passed
+- Public Pages bundle: HTTP 200; a no-cache check found both the `Sign out`
+  label and `/v1/auth/logout` endpoint in `main.dart.js`
+- iPhone retest: Safari rendered Sign out on Mission Control after stale website
+  data was cleared; selecting it returned the client to Sign in
+- Evidence:
+  `documentation/release/evidence/railway/2026-08-26-iphone-ui-manifest.json`
+- Defects `DEF-RAILWAY-006` and `DEF-RAILWAY-009`: closed for the approved
+  one-person Railway pilot
+- Scope constraint: the retained stage screenshots span multiple synthetic
+  attempts and do not prove one uninterrupted entity chain across every image

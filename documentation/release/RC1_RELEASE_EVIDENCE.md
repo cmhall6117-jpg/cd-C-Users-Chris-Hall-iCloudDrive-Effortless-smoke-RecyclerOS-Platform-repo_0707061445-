@@ -131,7 +131,7 @@ Cloud resources.
 | Database backup and restore | Passed for one-person pilot | August 9 custom dump, checksum match, encrypted off-platform copy, clean restore, staging cleanup, live PITR, and restore-owner assignment passed. August 24 history proves daily and weekly native schedules produced real snapshots. Off-platform automation and key escrow remain broader-use hardening under `DEF-RAILWAY-003`. |
 | Monitoring and protected acceptance | Passed for one-person pilot | Two-hour monitoring, simulated incident delivery and recovery, owner approval, and protected acceptance run `32770410381` passed. `DEF-RAILWAY-004` is closed. |
 | Live tenant-scoped API working path | Passed for one-person pilot | Field run `20260824212230-5fd820be` passed 18 checks from login through inventory and revoked-session rejection. |
-| Manual Flutter device working path | Partially passed | iPhone evidence covers login through Vehicle Record on `OPP-000002` / `VEH-000002` and Procurement through inventory `INV-000002` on later synthetic attempt `OPP-000003`; logout remains under `DEF-RAILWAY-006` and is blocked by `DEF-RAILWAY-009`. |
+| Manual Flutter device working path | Passed for one-person pilot | iPhone stage evidence covers login through Vehicle Record on `OPP-000002` / `VEH-000002`, Procurement through inventory `INV-000002` on later synthetic attempt `OPP-000003`, and deployed Sign out returning to Sign in. Automated coverage pairs the UI result with HTTP 204 logout and revoked-token HTTP 401. The retained images do not claim one uninterrupted entity chain. |
 | Second unique tester identity | Blocked for tester two | `DEF-RAILWAY-005`. |
 
 Passed Railway gates above have live command or endpoint evidence. The contract
@@ -223,8 +223,8 @@ HTTP 401. The run created `OPP-000001`, `VEH-000001`, and `INV-000001` under
 `documentation/release/evidence/railway/2026-08-24-one-person-field-smoke.json`
 with SHA-256
 `7ceffa050ddba5a2901ac7794747b8882d105812536c10be24313a1888fc249f`.
-No credential or token is present. Manual Flutter device interaction remains a
-separate evidence gate under `DEF-RAILWAY-006`.
+No credential or token is present. Manual Flutter device interaction was then
+completed on August 28 as described below.
 
 ## Operator Credential Recovery Resolution
 
@@ -244,7 +244,7 @@ key was revoked and the temporary local key files were removed. The reviewed
 rotation command remains available as a contingency, and `DEF-RAILWAY-007` is
 closed without recording any secret in repository evidence.
 
-## Partial iPhone UI Field Evidence
+## Completed iPhone UI Field Evidence
 
 On August 26, 2026, Chris Hall used the public GitHub Pages Flutter pilot on an
 iPhone to authenticate, render the Effortless Smoke, LLC organization and
@@ -280,10 +280,23 @@ Available status, and enabled Create Inventory action. Submitting the form saved
 entry.
 
 The retained screenshots span two synthetic attempts, so they prove manual
-stage behavior through Focus Point entry but not one uninterrupted entity chain
-across every stage. This closes `DEF-RAILWAY-008` and further narrows
-`DEF-RAILWAY-006`. Manual iPhone evidence now remains only for logout and
-revoked-session behavior. Repository inspection found that Flutter has no logout
-control or gateway revocation operation, recorded as `DEF-RAILWAY-009`; the
-device-session gate cannot pass until that functionality is implemented,
-deployed, and retested.
+stage behavior but not one uninterrupted entity chain across every stage. This
+closed `DEF-RAILWAY-008` and left only logout and revoked-session behavior under
+`DEF-RAILWAY-006` and `DEF-RAILWAY-009`.
+
+PR `#28` then added bearer-authenticated logout, server-confirmed client state
+clearing, and the Mission Control Sign out command. Push run `33097181838` and
+pull-request run `33097221722` passed every RC1 job, including Flutter analyze
+and Flutter tests. GitHub Pages run `33119763314` deployed merge commit
+`d2eb96d5662318c3e389b02b78b3f84903d4d64f`, and a no-cache request confirmed
+the public JavaScript bundle contains both Sign out and `/v1/auth/logout`.
+
+On August 28, Safari initially presented an older cached build. After the Pages
+origin's website data was cleared, the iPhone rendered Sign out on Mission
+Control. Selecting it returned the client to Sign in. Two sanitized screenshots
+and their checksums are retained in the iPhone evidence manifest. Existing API
+and Flutter tests establish the HTTP 204 logout, subsequent HTTP 401 rejection
+of the revoked bearer session, and successful-state clearing that screenshots
+cannot expose. `DEF-RAILWAY-006` and `DEF-RAILWAY-009` are closed for the
+approved one-person Railway pilot. This does not pass any second-tester or
+broader production gate.

@@ -486,6 +486,29 @@ GitHub Pages deployment `33119763314` deployed merge commit
 Sign out and returned to Sign in after it was selected. Non-secret screenshots
 and checksums are retained in the iPhone evidence manifest.
 
+#### DEF-RAILWAY-010: Scheduled monitor expected a superseded API release
+
+Status: closed on August 28, 2026
+
+Evidence: Scheduled monitor runs from `32961483830` through `33180786025`
+reported release-identity failure and maintained incident `#24`. The latest
+failed report showed TLS 1.3, HTTP 200 liveness and readiness, every required
+security header, and hidden docs/OpenAPI; only release identity failed. The
+contract expected original release
+`5784f4526e97de7cc60538d00ecc6977ca13a375`, while the live `/v1/health`
+payload reported healthy release
+`e929c9977666b1fc30c7cdecbe30a2dfd3e4feef` with PostgreSQL storage and auth.
+
+Impact: The endpoint remained available and healthy, but the intentionally
+strict monitor correctly blocked field-access status because repository release
+expectations had drifted from the deployed API.
+
+Resolution: Synchronize `runtime.release_commit` with the exact deployed SHA
+and require that update for every future Railway API deployment. Read-only
+workflow run `33190365952` passed the full public-surface verification in 10
+seconds and automatically closed incident `#24` with a recovery comment. The
+contract now records that recovery run as current monitor evidence.
+
 ## Production Launch Preparation
 
 ### High

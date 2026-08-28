@@ -129,7 +129,7 @@ Cloud resources.
 | Railway account and budget controls | Passed live | Private Pro project, MFA/passkey, USD 20 warning and USD 30 hard limit verified; expected monthly minimum is USD 20. |
 | Runtime, domain, and sealed variables | Passed live | Successful US East API/PostgreSQL deployments, public HTTPS API, private database, sealed operator credential, exact release identity. |
 | Database backup and restore | Passed for one-person pilot | August 9 custom dump, checksum match, encrypted off-platform copy, clean restore, staging cleanup, live PITR, and restore-owner assignment passed. August 24 history proves daily and weekly native schedules produced real snapshots. Off-platform automation and key escrow remain broader-use hardening under `DEF-RAILWAY-003`. |
-| Monitoring and protected acceptance | Passed for one-person pilot | Two-hour monitoring, simulated incident delivery and recovery, owner approval, and protected acceptance run `32770410381` passed. `DEF-RAILWAY-004` is closed. |
+| Monitoring and protected acceptance | Passed for one-person pilot | Two-hour monitoring, simulated incident delivery and recovery, owner approval, and protected acceptance run `32770410381` passed. Later release-identity drift opened incident `#24`; contract synchronization and recovery run `33190365952` passed and closed it. `DEF-RAILWAY-004` and `DEF-RAILWAY-010` are closed. |
 | Live tenant-scoped API working path | Passed for one-person pilot | Field run `20260824212230-5fd820be` passed 18 checks from login through inventory and revoked-session rejection. |
 | Manual Flutter device working path | Passed for one-person pilot | iPhone stage evidence covers login through Vehicle Record on `OPP-000002` / `VEH-000002`, Procurement through inventory `INV-000002` on later synthetic attempt `OPP-000003`, and deployed Sign out returning to Sign in. Automated coverage pairs the UI result with HTTP 204 logout and revoked-token HTTP 401. The retained images do not claim one uninterrupted entity chain. |
 | Second unique tester identity | Blocked for tester two | `DEF-RAILWAY-005`. |
@@ -300,3 +300,21 @@ of the revoked bearer session, and successful-state clearing that screenshots
 cannot expose. `DEF-RAILWAY-006` and `DEF-RAILWAY-009` are closed for the
 approved one-person Railway pilot. This does not pass any second-tester or
 broader production gate.
+
+## Railway Monitor Release Identity Recovery
+
+Scheduled monitor runs from `32961483830` through `33180786025` maintained
+incident `#24` because the credential-free pilot contract still expected
+original API release `5784f4526e97de7cc60538d00ecc6977ca13a375`. The live
+service was otherwise healthy and reported release
+`e929c9977666b1fc30c7cdecbe30a2dfd3e4feef`, PostgreSQL storage, and PostgreSQL
+auth. The latest failed run passed TLS, liveness, readiness, every required
+security header, and hidden docs/OpenAPI; exact release identity was its only
+failure.
+
+The contract now pins the exact live release. Read-only Railway Pilot Monitor
+run `33190365952` passed the full public-surface verification in 10 seconds and
+automatically closed incident `#24` with a recovery comment. The deployment
+runbook now makes contract release synchronization and a successful monitor run
+mandatory after every API deployment. This closes `DEF-RAILWAY-010` without
+changing the live API, database, credentials, or pilot scope.

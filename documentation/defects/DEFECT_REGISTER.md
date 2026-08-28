@@ -404,8 +404,18 @@ screenshots span more than one synthetic attempt and therefore do not claim one
 uninterrupted entity chain across every image.
 
 Resolution: Close the device evidence gate for the approved one-person pilot.
-Continue treating the continuity note and the single-tester limit as explicit
-scope constraints rather than broader production evidence.
+At closure, the multi-attempt continuity note and single-tester limit remained
+explicit scope constraints. The continuity follow-up below removes the former;
+the single-tester and broader production limits remain.
+
+Continuity follow-up: On August 28, the tester submitted six sanitized images
+from one displayed 5:34-5:35 session. They establish synthetic opportunity
+`OPP-000007` with a blank VIN through Procurement, Focus Point, and inventory
+`INV-000004`. The Vehicle Record identifier was not retained, so the evidence
+uses the repeated synthetic title, year, make, model, and opportunity identifier
+to establish entity continuity. Login, workspace selection, Vehicle Record
+behavior, and logout remain separately evidenced. This removes the prior
+multi-attempt entity-chain limitation without expanding the one-person scope.
 
 #### DEF-RAILWAY-007: The sealed pilot operator credential is unavailable
 

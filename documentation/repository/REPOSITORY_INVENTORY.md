@@ -1319,6 +1319,12 @@ preserved.
 - `documentation/release/evidence/railway/2026-08-27-iphone-inventory-created.jpg`
 - `documentation/release/evidence/railway/2026-08-28-iphone-logout-control.jpg`
 - `documentation/release/evidence/railway/2026-08-28-iphone-logout-returned-sign-in.jpg`
+- `documentation/release/evidence/railway/2026-08-28-iphone-continuity-opportunity-created.jpg`
+- `documentation/release/evidence/railway/2026-08-28-iphone-continuity-opportunity-active.jpg`
+- `documentation/release/evidence/railway/2026-08-28-iphone-continuity-procurement.jpg`
+- `documentation/release/evidence/railway/2026-08-28-iphone-continuity-focus-point.jpg`
+- `documentation/release/evidence/railway/2026-08-28-iphone-continuity-inventory-saved.jpg`
+- `documentation/release/evidence/railway/2026-08-28-iphone-continuity-inventory-session.jpg`
 
 The branch also updates `services/api/Dockerfile` so the healthcheck honors the
 platform-assigned port, and extends RC1 CI, recovery, monitoring, and evidence

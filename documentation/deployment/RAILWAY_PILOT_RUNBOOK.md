@@ -12,6 +12,12 @@
 6. Log in as the assigned tester and complete the organization/workspace choice.
 7. Use synthetic or approved pilot records only.
 
+Every Railway API deployment must update
+`deploy/railway/pilot/pilot.contract.json` `runtime.release_commit` to the exact
+deployed 40-character SHA in the same reviewed release change. Run the Railway
+Pilot Monitor immediately afterward and keep field access stopped until release
+identity passes. Record the successful recovery run in `monitor_evidence`.
+
 ## Core Field Test
 
 Exercise and record the existing path without activating another vertical slice:

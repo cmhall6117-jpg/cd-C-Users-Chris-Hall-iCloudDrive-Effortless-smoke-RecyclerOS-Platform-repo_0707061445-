@@ -582,3 +582,18 @@ Result on August 28, 2026: passed CI, deployment, and live iPhone execution.
 - retained evidence: two sanitized screenshots and SHA-256 values in the iPhone
   UI manifest
 - defects closed: `DEF-RAILWAY-006` and `DEF-RAILWAY-009`
+
+## Railway Monitor Release Identity Recovery
+
+Result on August 28, 2026: passed.
+
+- prior expected release: `5784f4526e97de7cc60538d00ecc6977ca13a375`
+- observed healthy release: `e929c9977666b1fc30c7cdecbe30a2dfd3e4feef`
+- latest failed scheduled run: `33180786025`; only release identity failed
+- direct health result: HTTP 200 with PostgreSQL storage and auth
+- corrected contract/live SHA comparison: exact match
+- recovery run `33190365952`: success in 10 seconds
+- recovery checks: TLS, liveness, readiness, release identity, security headers,
+  hidden docs, and hidden OpenAPI passed
+- incident `#24`: automatically closed by the successful workflow
+- defect `DEF-RAILWAY-010`: closed

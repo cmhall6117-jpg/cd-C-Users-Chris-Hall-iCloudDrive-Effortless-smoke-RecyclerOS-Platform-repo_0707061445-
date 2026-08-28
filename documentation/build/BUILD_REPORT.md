@@ -413,3 +413,21 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
   one-person Railway pilot
 - Scope constraint: the retained stage screenshots span multiple synthetic
   attempts and do not prove one uninterrupted entity chain across every image
+
+## Railway Monitor Release Identity Recovery
+
+- Date: August 28, 2026
+- Defect: `DEF-RAILWAY-010`
+- Incident: GitHub issue `#24`
+- Trigger: the live API moved from original release `5784f452...` to
+  `e929c997...`, but the scheduled monitor contract retained the original SHA
+- Failed scheduled evidence: runs `32961483830` through `33180786025`
+- Failure isolation: TLS, liveness, readiness, headers, and hidden docs passed;
+  only exact release identity failed
+- Live health: HTTP 200, release `e929c997...`, PostgreSQL storage and auth
+- Contract correction: `runtime.release_commit` synchronized to the live
+  40-character SHA
+- Recovery workflow: run `33190365952`, passed in 10 seconds
+- Incident handling: issue `#24` automatically closed with a recovery comment
+- Prevention: the Railway runbook now requires contract release synchronization
+  and a successful monitor run after every API deployment

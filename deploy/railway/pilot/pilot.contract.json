@@ -64,7 +64,7 @@
     "railway_logs_enabled": true,
     "uptime_check_configured": true,
     "alert_delivery_verified": true,
-    "monitor_evidence": "github-actions-2026-08-09-31331712419-31331739729-31331787276"
+    "monitor_evidence": "github-actions-2026-08-28-33190365952"
   },
   "testing": {
     "maximum_testers": 1,

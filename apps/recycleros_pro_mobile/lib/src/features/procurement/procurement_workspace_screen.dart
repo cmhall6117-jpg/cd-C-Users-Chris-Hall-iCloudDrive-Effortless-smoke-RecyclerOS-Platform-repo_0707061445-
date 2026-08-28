@@ -87,82 +87,96 @@ class _ProcurementWorkspaceScreenState
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
             ),
-          for (final scenario in state.procurementScenarios)
-            Card(
-              color: scenario.intent == selectedIntent
-                  ? Theme.of(context).colorScheme.primaryContainer
-                  : null,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-                side: BorderSide(
-                  color: scenario.intent == selectedIntent
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.outlineVariant,
-                  width: scenario.intent == selectedIntent ? 2 : 1,
-                ),
-              ),
-              clipBehavior: Clip.antiAlias,
-              child: InkWell(
-                key: ValueKey('procurementOption-${scenario.intent.name}'),
-                onTap: state.canOperate && !state.isBusy
-                    ? () => setState(() {
-                          _selectedIntent = scenario.intent;
-                        })
-                    : null,
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Radio<ProcurementIntent>(
-                            value: scenario.intent,
-                            groupValue: selectedIntent,
-                            onChanged: state.canOperate && !state.isBusy
-                                ? (value) => setState(() {
-                                      _selectedIntent = value;
-                                    })
-                                : null,
-                          ),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              _intentLabel(scenario.intent),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
-                                  ?.copyWith(fontWeight: FontWeight.w700),
-                            ),
-                          ),
-                          if (scenario.intent == recommendedIntent)
-                            const Tooltip(
-                              message: 'Recommended outcome',
-                              child: Icon(Icons.recommend_outlined),
-                            ),
-                        ],
+          RadioGroup<ProcurementIntent>(
+            groupValue: selectedIntent,
+            onChanged: (value) {
+              if (value != null && state.canOperate && !state.isBusy) {
+                setState(() {
+                  _selectedIntent = value;
+                });
+              }
+            },
+            child: Column(
+              children: [
+                for (final scenario in state.procurementScenarios)
+                  Card(
+                    color: scenario.intent == selectedIntent
+                        ? Theme.of(context).colorScheme.primaryContainer
+                        : null,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      side: BorderSide(
+                        color: scenario.intent == selectedIntent
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.outlineVariant,
+                        width: scenario.intent == selectedIntent ? 2 : 1,
                       ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 20,
-                        runSpacing: 8,
-                        children: [
-                          Text(
-                            'Max bid ${currency.format(scenario.recommendedMaxBid)}',
-                          ),
-                          Text(
-                            'Net ${currency.format(scenario.projectedNetProfit)}',
-                          ),
-                          Text(
-                            'Confidence ${scenario.confidenceScore.toInt()}%',
-                          ),
-                        ],
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: InkWell(
+                      key: ValueKey(
+                        'procurementOption-${scenario.intent.name}',
                       ),
-                    ],
+                      onTap: state.canOperate && !state.isBusy
+                          ? () => setState(() {
+                                _selectedIntent = scenario.intent;
+                              })
+                          : null,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Radio<ProcurementIntent>(
+                                  value: scenario.intent,
+                                  enabled:
+                                      state.canOperate && !state.isBusy,
+                                ),
+                                const SizedBox(width: 4),
+                                Expanded(
+                                  child: Text(
+                                    _intentLabel(scenario.intent),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                  ),
+                                ),
+                                if (scenario.intent == recommendedIntent)
+                                  const Tooltip(
+                                    message: 'Recommended outcome',
+                                    child: Icon(Icons.recommend_outlined),
+                                  ),
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+                            Wrap(
+                              spacing: 20,
+                              runSpacing: 8,
+                              children: [
+                                Text(
+                                  'Max bid ${currency.format(scenario.recommendedMaxBid)}',
+                                ),
+                                Text(
+                                  'Net ${currency.format(scenario.projectedNetProfit)}',
+                                ),
+                                Text(
+                                  'Confidence ${scenario.confidenceScore.toInt()}%',
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
+              ],
             ),
+          ),
           const SizedBox(height: 16),
           FilledButton.icon(
             key: const Key('procurementApprove'),

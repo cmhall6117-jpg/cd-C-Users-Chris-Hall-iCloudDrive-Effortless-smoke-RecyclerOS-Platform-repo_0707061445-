@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "evidence_id": "railway-iphone-ui-2026-08-26",
-  "scope": "completed_manual_flutter_web_primary_path_stage_evidence",
+  "scope": "completed_manual_flutter_web_primary_path_evidence",
   "submitted_date": "2026-08-26",
   "completed_date": "2026-08-28",
   "tester": "Chris Hall",
@@ -14,10 +14,10 @@
   "frontend": {
     "provider": "GitHub Pages",
     "origin": "https://cmhall6117-jpg.github.io/cd-C-Users-Chris-Hall-iCloudDrive-Effortless-smoke-RecyclerOS-Platform-repo_0707061445-/",
-    "workflow_run": 33119763314,
-    "commit": "d2eb96d5662318c3e389b02b78b3f84903d4d64f",
-    "validation_ci_run": 33097221722,
-    "pull_request": 28,
+    "workflow_run": 33190842112,
+    "commit": "aafbf5334092c258939473a696878f2f145097cc",
+    "validation_ci_run": 33190621461,
+    "pull_request": 30,
     "conclusion": "success"
   },
   "frontend_deployment_history": [
@@ -37,6 +37,12 @@
       "purpose": "logout_and_revocation_retest",
       "workflow_run": 33119763314,
       "commit": "d2eb96d5662318c3e389b02b78b3f84903d4d64f",
+      "conclusion": "success"
+    },
+    {
+      "purpose": "single_entity_continuity_retest",
+      "workflow_run": 33190842112,
+      "commit": "aafbf5334092c258939473a696878f2f145097cc",
       "conclusion": "success"
     }
   ],
@@ -129,11 +135,17 @@
       "result": "passed",
       "observed_date": "2026-08-28",
       "detail": "The tester selected Sign out on the iPhone and the Flutter client returned to the Sign in screen. Automated backend and Flutter coverage pairs the visible transition with POST /v1/auth/logout returning HTTP 204, subsequent bearer-token rejection with HTTP 401, and client workflow-state clearing only after successful revocation."
+    },
+    {
+      "step": "single_entity_continuity_through_inventory",
+      "result": "passed",
+      "observed_date": "2026-08-28",
+      "detail": "Within the displayed 5:34-5:35 session window, the tester created synthetic opportunity OPP-000007 with a blank VIN, rendered its active card, reviewed Procurement for OPP-000007, completed Focus Point for the same 2014 make Test Model test vehicle, and saved inventory item INV-000004. The Vehicle Record identifier was not retained. Login, workspace selection, and logout are established by the separately retained device evidence and are not claimed to appear in these six continuity screenshots."
     }
   ],
   "continuity_note": {
-    "status": "not_fully_evidenced",
-    "detail": "Opportunity and Vehicle Record evidence used OPP-000002 and VEH-000002. Procurement evidence shows a later synthetic opportunity OPP-000003. These screenshots prove manual stage behavior through Focus Point entry but do not prove one uninterrupted entity chain across every retained screenshot."
+    "status": "single_entity_path_evidenced_through_inventory",
+    "detail": "The August 28 continuity screenshots establish one synthetic entity path from OPP-000007 through Procurement, Focus Point, and INV-000004 in a displayed one-minute session window. The Vehicle Record identifier was not retained, but Procurement names OPP-000007 and Focus Point carries the same synthetic year, make, and model. Earlier screenshots separately establish login, workspace selection, Vehicle Record behavior, and logout; no claim is made that every primary-path screen appears in the six continuity images."
   },
   "remaining_steps": [],
   "observed_defects": [
@@ -228,6 +240,36 @@
       "file": "2026-08-28-iphone-logout-returned-sign-in.jpg",
       "displayed_clock": "9:03",
       "sha256": "391ec645cc7f833514cce861541710e9d8b30f7ead1d9fe00387876e2ce17829"
+    },
+    {
+      "file": "2026-08-28-iphone-continuity-opportunity-created.jpg",
+      "displayed_clock": "5:34",
+      "sha256": "7c5cae9fce463c3ebd51c07bc5f45ea7b6dd613a2ab0e09d39262aa2fb9dc0b2"
+    },
+    {
+      "file": "2026-08-28-iphone-continuity-opportunity-active.jpg",
+      "displayed_clock": "5:34",
+      "sha256": "e027d4228a23496acd1e2730f42cc13197649b4eaf46b6f75de8c09ca9683d7d"
+    },
+    {
+      "file": "2026-08-28-iphone-continuity-procurement.jpg",
+      "displayed_clock": "5:35",
+      "sha256": "e2086bffc99dbfe51ce07b4cc3521c8a08fb464f04e35fcc3e1867bf35f905bb"
+    },
+    {
+      "file": "2026-08-28-iphone-continuity-focus-point.jpg",
+      "displayed_clock": "5:35",
+      "sha256": "86ee4eb5c114217c8ffc4384bb0254570f5881b661bcefc204a71938ab7c5efe"
+    },
+    {
+      "file": "2026-08-28-iphone-continuity-inventory-saved.jpg",
+      "displayed_clock": "5:35",
+      "sha256": "d93baca81195ec2a9769776dbfa9ee24061dc9bb15c34ff3a3371d4615f7891c"
+    },
+    {
+      "file": "2026-08-28-iphone-continuity-inventory-session.jpg",
+      "displayed_clock": "5:35",
+      "sha256": "6e1c91cbc263dc3194575fef91e9203f24488119e1bd036cbb4f6581b27420e8"
     }
   ],
   "duplicate_submissions_omitted": [

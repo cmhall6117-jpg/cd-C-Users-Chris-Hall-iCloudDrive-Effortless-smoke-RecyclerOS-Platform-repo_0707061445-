@@ -480,8 +480,8 @@ logout for the approved one-person pilot.
   Untested condition, Available status, and enabled Create Inventory rendered
 - Inventory item creation: `INV-000002` saved and rendered its ready-for-sync
   confirmation, one-item session count, and Session Inventory entry
-- continuity limitation: retained screenshots span two synthetic attempts and
-  do not prove one uninterrupted entity chain across every stage
+- continuity limitation at this point: retained screenshots spanned two
+  synthetic attempts; the August 28 continuity run below later resolved it
 - observed UI defect: `DEF-RAILWAY-008`, closed after guarded-build retest
 - logout: the deployed Mission Control Sign out control returned the iPhone to
   Sign in; automated API coverage proves HTTP 204 and revoked-token HTTP 401
@@ -518,10 +518,11 @@ logout for the approved one-person pilot.
 - duplicate Pick List submission: byte-identical to the retained
   awaiting-availability screenshot and omitted
 
-This closes `DEF-RAILWAY-006` for the approved one-person pilot. It does not
-remove the documented continuity limitation or expand the evidence to a second
-tester or production traffic. No credential, session token, authorization
-header, or database URL appears in the retained evidence.
+This closes `DEF-RAILWAY-006` for the approved one-person pilot. At this point
+the multi-attempt continuity limitation remained; the August 28 continuity run
+below later resolved it. The evidence does not expand to a second tester or
+production traffic. No credential, session token, authorization header, or
+database URL appears in the retained evidence.
 
 ## Flutter Browser Session Guard
 
@@ -597,3 +598,24 @@ Result on August 28, 2026: passed.
   hidden docs, and hidden OpenAPI passed
 - incident `#24`: automatically closed by the successful workflow
 - defect `DEF-RAILWAY-010`: closed
+
+## iPhone Single-Entity Continuity Run
+
+Result on August 28, 2026: passed through Inventory creation.
+
+- displayed session window: 5:34-5:35
+- Opportunity creation: `OPP-000007`, blank VIN, synthetic vehicle facts
+- active opportunity: `OPP-000007` card rendered with Create Vehicle Record
+- Procurement: `OPP-000007` rendered all three scenarios with Part-Out
+  recommended
+- Focus Point: the same synthetic vehicle rendered with active KPI timer and
+  selected ECM / PCM plus LED Headlights
+- Inventory: `INV-000004` saved and rendered ready-for-sync plus Session
+  Inventory confirmation
+- vehicle identifier: not retained
+- continuity result: the repeated opportunity identifier and synthetic vehicle
+  facts establish one entity path from Opportunity through Inventory
+- boundary evidence: login, workspace selection, Vehicle Record behavior, and
+  logout remain established by the earlier retained iPhone evidence
+- privacy: no credential, real VIN, customer data, token, or GPS metadata is
+  present in the six new screenshots

@@ -376,8 +376,9 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
   enabled Focus Point; selecting two synthetic parts enabled and completed Focus
   Point; Inventory Intake opened with the expected selected part and defaults;
   Create Inventory saved `INV-000002` and rendered ready-for-sync confirmation
-- Evidence limitation: retained screenshots span two synthetic attempts and do
-  not prove one uninterrupted entity chain across every stage
+- Evidence limitation at this point: retained screenshots spanned two synthetic
+  attempts; the August 28 continuity run recorded below subsequently resolved
+  that entity-chain limitation
 - Defect `DEF-RAILWAY-008`: closed on August 27, 2026
 - Broader device-session gate `DEF-RAILWAY-006`: subsequently closed after the
   August 28 logout retest
@@ -411,8 +412,9 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
   `documentation/release/evidence/railway/2026-08-26-iphone-ui-manifest.json`
 - Defects `DEF-RAILWAY-006` and `DEF-RAILWAY-009`: closed for the approved
   one-person Railway pilot
-- Scope constraint: the retained stage screenshots span multiple synthetic
-  attempts and do not prove one uninterrupted entity chain across every image
+- Scope constraint at this point: the retained stage screenshots spanned
+  multiple synthetic attempts; the August 28 continuity run recorded below
+  subsequently resolved that entity-chain limitation
 
 ## Railway Monitor Release Identity Recovery
 
@@ -431,3 +433,22 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
 - Incident handling: issue `#24` automatically closed with a recovery comment
 - Prevention: the Railway runbook now requires contract release synchronization
   and a successful monitor run after every API deployment
+
+## iPhone Single-Entity Continuity Evidence
+
+- Date: August 28, 2026
+- Frontend deployment: run `33190842112`, commit
+  `aafbf5334092c258939473a696878f2f145097cc`
+- Displayed session window: 5:34-5:35
+- Synthetic opportunity: `OPP-000007`, title `iPhone pilot test`, blank VIN
+- Synthetic vehicle facts: 2014 `make Test` `Model test`
+- Procurement: `OPP-000007`, Part-Out recommended and approvable
+- Focus Point: same synthetic vehicle, Greenville Pull-A-Part Row 12, ECM / PCM
+  and LED Headlights selected
+- Inventory: `INV-000004`, ECM / PCM, A-12, Used Untested, Available
+- Vehicle identifier: not retained in the submitted continuity screenshots
+- Result: one synthetic entity path is evidenced from Opportunity creation
+  through Inventory creation; login, workspace selection, Vehicle Record
+  behavior, and logout remain separately evidenced
+- Scope: closes the prior multi-attempt entity-chain limitation only; no second
+  tester or production gate is passed

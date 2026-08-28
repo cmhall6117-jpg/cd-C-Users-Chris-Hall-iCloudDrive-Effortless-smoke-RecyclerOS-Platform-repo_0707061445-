@@ -131,7 +131,7 @@ Cloud resources.
 | Database backup and restore | Passed for one-person pilot | August 9 custom dump, checksum match, encrypted off-platform copy, clean restore, staging cleanup, live PITR, and restore-owner assignment passed. August 24 history proves daily and weekly native schedules produced real snapshots. Off-platform automation and key escrow remain broader-use hardening under `DEF-RAILWAY-003`. |
 | Monitoring and protected acceptance | Passed for one-person pilot | Two-hour monitoring, simulated incident delivery and recovery, owner approval, and protected acceptance run `32770410381` passed. Later release-identity drift opened incident `#24`; contract synchronization and recovery run `33190365952` passed and closed it. `DEF-RAILWAY-004` and `DEF-RAILWAY-010` are closed. |
 | Live tenant-scoped API working path | Passed for one-person pilot | Field run `20260824212230-5fd820be` passed 18 checks from login through inventory and revoked-session rejection. |
-| Manual Flutter device working path | Passed for one-person pilot | iPhone stage evidence covers login through Vehicle Record on `OPP-000002` / `VEH-000002`, Procurement through inventory `INV-000002` on later synthetic attempt `OPP-000003`, and deployed Sign out returning to Sign in. Automated coverage pairs the UI result with HTTP 204 logout and revoked-token HTTP 401. The retained images do not claim one uninterrupted entity chain. |
+| Manual Flutter device working path | Passed for one-person pilot | Initial stage evidence covers login, workspace selection, Vehicle Record behavior, and deployed Sign out returning to Sign in. A later one-session continuity run establishes `OPP-000007` through Procurement, Focus Point, and `INV-000004`. Automated coverage pairs logout with HTTP 204 and revoked-token HTTP 401. The Vehicle Record identifier was not retained in the continuity screenshots. |
 | Second unique tester identity | Blocked for tester two | `DEF-RAILWAY-005`. |
 
 Passed Railway gates above have live command or endpoint evidence. The contract
@@ -318,3 +318,20 @@ automatically closed incident `#24` with a recovery comment. The deployment
 runbook now makes contract release synchronization and a successful monitor run
 mandatory after every API deployment. This closes `DEF-RAILWAY-010` without
 changing the live API, database, credentials, or pilot scope.
+
+## iPhone Single-Entity Continuity Evidence
+
+On August 28, six sanitized iPhone screenshots recorded one displayed 5:34-5:35
+session. The operator created synthetic opportunity `OPP-000007` with a blank
+VIN and test-only 2014 vehicle facts. Its active card rendered, Procurement
+identified `OPP-000007` and recommended Part-Out, Focus Point carried the same
+year/make/model at Greenville Pull-A-Part Row 12, and Inventory Intake saved
+ECM / PCM as `INV-000004` with its ready-for-sync and Session Inventory states.
+
+The Vehicle Record identifier was not retained. Continuity is established by
+the repeated opportunity identifier, title, and synthetic vehicle facts rather
+than an inferred vehicle code. Earlier retained iPhone evidence separately
+establishes login, workspace selection, Vehicle Record behavior, and logout;
+the six new images are not described as containing those screens. Together,
+the evidence removes the earlier multi-attempt entity-chain limitation for the
+approved one-person pilot without passing a second-tester or production gate.

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from auth import Permission
 from dependencies import get_store
-from schemas.vehicle import VehicleCreate
+from schemas.vehicle import VehicleCreate, VehicleMileageUpdate
 from store import WorkflowStore
 from tenant import TenantContext, require_permission, validate_payload_tenant
 
@@ -33,6 +33,23 @@ def get_vehicle(
     store: WorkflowStore = Depends(get_store),
 ):
     vehicle = store.get_vehicle(vehicle_code, tenant)
+    if vehicle is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Vehicle not found in tenant workspace.",
+        )
+    return vehicle
+
+
+@router.patch("/{vehicle_code}/mileage")
+def update_vehicle_mileage(
+    vehicle_code: str,
+    payload: VehicleMileageUpdate,
+    tenant: TenantContext = Depends(require_permission(Permission.OPERATE)),
+    store: WorkflowStore = Depends(get_store),
+):
+    validate_payload_tenant(payload, tenant)
+    vehicle = store.update_vehicle_mileage(vehicle_code, payload.mileage, tenant)
     if vehicle is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

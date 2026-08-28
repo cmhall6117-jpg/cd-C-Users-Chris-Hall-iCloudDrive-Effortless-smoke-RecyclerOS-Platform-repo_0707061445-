@@ -105,12 +105,28 @@ def test_postgres_workflow_auth_persist_and_revoke_across_restart():
         assert vehicle_response.status_code == 201
         vehicle = vehicle_response.json()
 
+        mileage_response = first_client.patch(
+            f"/v1/vehicles/{vehicle['vehicle_code']}/mileage",
+            headers=headers,
+            json={"mileage": 141500},
+        )
+        assert mileage_response.status_code == 200
+        assert mileage_response.json()["mileage"] == 141500
+
         procurement = first_client.get(
             f"/v1/procurement/{opportunity['opportunity_id']}/analysis",
             headers=headers,
         )
         assert procurement.status_code == 200
         assert len(procurement.json()["scenarios"]) == 3
+
+        decision_response = first_client.patch(
+            f"/v1/procurement/{opportunity['opportunity_id']}/decision",
+            headers=headers,
+            json={"intent": "partOut"},
+        )
+        assert decision_response.status_code == 200
+        assert decision_response.json()["procurement_intent"] == "partOut"
 
         pick_list_response = first_client.post(
             "/v1/pick-list",

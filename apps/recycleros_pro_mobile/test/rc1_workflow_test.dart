@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:recycleros_domain/recycleros_domain.dart';
 import 'package:recycleros_pro_mobile/src/app/recycleros_app.dart';
 import 'package:recycleros_pro_mobile/src/state/rc1_workflow.dart';
 
@@ -65,11 +66,30 @@ void main() {
 
     expect(find.text('Vehicle Record'), findsOneWidget);
     expect(find.text('VEH-000001'), findsWidgets);
+    await tester.tap(find.byKey(const Key('vehicleMileageEdit')));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const Key('vehicleMileageField')),
+      '141500',
+    );
+    await tester.tap(find.byKey(const Key('vehicleMileageSave')));
+    await tester.pumpAndSettle();
+    expect(find.text('141500'), findsOneWidget);
     await tester.ensureVisible(find.byKey(const Key('vehicleContinue')));
     await tester.tap(find.byKey(const Key('vehicleContinue')));
     await tester.pumpAndSettle();
 
     expect(find.text('Procurement'), findsOneWidget);
+    await tester.tap(
+      find.byKey(const ValueKey('procurementOption-personalUse')),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Approve Personal Buy / Use'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('procurementOption-resale')));
+    await tester.pumpAndSettle();
+    expect(find.text('Approve Sell Whole'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('procurementOption-partOut')));
+    await tester.pumpAndSettle();
     await tester.ensureVisible(find.byKey(const Key('procurementApprove')));
     await tester.tap(find.byKey(const Key('procurementApprove')));
     await tester.pumpAndSettle();
@@ -107,8 +127,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(gateway.logoutCalls, 1);
+    expect(gateway.lastUpdatedMileage, 141500);
+    expect(gateway.lastProcurementIntent, ProcurementIntent.partOut);
     expect(find.text('Sign in'), findsOneWidget);
-    expect(gateway.seenTenants, hasLength(8));
+    expect(gateway.seenTenants, hasLength(10));
     expect(
       gateway.seenTenants.every(
         (tenant) =>

@@ -86,3 +86,7 @@
   The retained evidence proves manual screen and mutation behavior through
   Focus Point entry, but it does not claim one uninterrupted entity chain across
   every screenshot.
+- Procurement intent `resale` is the RC1 Sell Whole outcome, while
+  `personalUse` is presented as Personal Buy / Use. Only `partOut` creates a
+  Pick List item and enters Focus Point; the other approved outcomes return to
+  Vehicle Record and remain visible as the saved intent.

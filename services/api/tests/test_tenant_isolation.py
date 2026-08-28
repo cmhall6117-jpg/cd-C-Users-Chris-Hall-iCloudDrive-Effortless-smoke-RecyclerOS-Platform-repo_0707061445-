@@ -188,6 +188,72 @@ def test_cross_tenant_linked_resource_is_rejected(
     assert response.status_code == 404
 
 
+def test_cross_tenant_vehicle_mileage_update_is_not_disclosed(
+    client,
+    tenant_headers,
+    other_tenant_headers,
+):
+    opportunity = client.post(
+        "/v1/opportunities",
+        headers=tenant_headers,
+        json={"title": "Mileage source"},
+    ).json()
+    vehicle = client.post(
+        "/v1/vehicles",
+        headers=tenant_headers,
+        json={"opportunity_id": opportunity["opportunity_id"], "make": "Ford"},
+    ).json()
+
+    response = client.patch(
+        f"/v1/vehicles/{vehicle['vehicle_code']}/mileage",
+        headers=other_tenant_headers,
+        json={"mileage": 100000},
+    )
+
+    assert response.status_code == 404
+
+
+def test_cross_tenant_procurement_decision_is_not_disclosed(
+    client,
+    tenant_headers,
+    other_tenant_headers,
+):
+    opportunity = client.post(
+        "/v1/opportunities",
+        headers=tenant_headers,
+        json={"title": "Decision source"},
+    ).json()
+
+    response = client.patch(
+        f"/v1/procurement/{opportunity['opportunity_id']}/decision",
+        headers=other_tenant_headers,
+        json={"intent": "resale"},
+    )
+
+    assert response.status_code == 404
+
+
+@pytest.mark.parametrize(
+    ("path", "payload"),
+    [
+        ("/v1/vehicles/VEH-UNKNOWN/mileage", {"mileage": 100000}),
+        (
+            "/v1/procurement/OPP-UNKNOWN/decision",
+            {"intent": "personalUse"},
+        ),
+    ],
+)
+def test_tenant_scoped_updates_reject_missing_context(
+    client,
+    authorization,
+    path,
+    payload,
+):
+    response = client.patch(path, headers=authorization, json=payload)
+
+    assert response.status_code == 400
+
+
 def test_cross_tenant_pick_list_update_is_not_disclosed(
     client,
     tenant_headers,

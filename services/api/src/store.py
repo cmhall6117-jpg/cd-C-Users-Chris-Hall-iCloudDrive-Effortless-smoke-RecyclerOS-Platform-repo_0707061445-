@@ -30,8 +30,16 @@ class WorkflowStore(Protocol):
         self, vehicle_identifier: str, tenant: TenantContext
     ) -> dict[str, Any] | None: ...
 
+    def update_vehicle_mileage(
+        self, vehicle_identifier: str, mileage: int, tenant: TenantContext
+    ) -> dict[str, Any] | None: ...
+
     def get_or_create_procurement_analysis(
         self, opportunity_id: str, tenant: TenantContext
+    ) -> dict[str, Any] | None: ...
+
+    def update_procurement_intent(
+        self, opportunity_id: str, intent: str, tenant: TenantContext
     ) -> dict[str, Any] | None: ...
 
     def create_pick_list_item(
@@ -196,6 +204,26 @@ class InMemoryStore:
                 return None
             return deepcopy(record)
 
+    def update_vehicle_mileage(
+        self, vehicle_identifier: str, mileage: int, tenant: TenantContext
+    ) -> dict[str, Any] | None:
+        with self._lock:
+            record = self._vehicles.get(vehicle_identifier)
+            if record is None:
+                record = next(
+                    (
+                        item
+                        for item in self._vehicles.values()
+                        if item["vehicle_code"] == vehicle_identifier
+                    ),
+                    None,
+                )
+            if record is None or not self._belongs_to(record, tenant):
+                return None
+            record["mileage"] = mileage
+            record["updated_at"] = self._now()
+            return deepcopy(record)
+
     def get_or_create_procurement_analysis(
         self, opportunity_id: str, tenant: TenantContext
     ) -> dict[str, Any] | None:
@@ -213,7 +241,7 @@ class InMemoryStore:
                 **self._tenant_fields(tenant),
                 "opportunity_id": opportunity_id,
                 "auction_access_type": "nonDealerPublic",
-                "recommended_intent": opportunity["procurement_intent"],
+                "recommended_intent": "partOut",
                 "scenarios": [
                     {
                         "intent": "resale",
@@ -247,6 +275,17 @@ class InMemoryStore:
             }
             self._procurement_analyses[opportunity_id] = record
             return deepcopy(record)
+
+    def update_procurement_intent(
+        self, opportunity_id: str, intent: str, tenant: TenantContext
+    ) -> dict[str, Any] | None:
+        with self._lock:
+            opportunity = self._opportunities.get(opportunity_id)
+            if opportunity is None or not self._belongs_to(opportunity, tenant):
+                return None
+            opportunity["procurement_intent"] = intent
+            opportunity["updated_at"] = self._now()
+            return deepcopy(opportunity)
 
     def create_pick_list_item(
         self, tenant: TenantContext, values: dict[str, Any]

@@ -69,9 +69,21 @@ abstract interface class Rc1Gateway {
     required Opportunity opportunity,
   });
 
+  Future<Vehicle> updateVehicleMileage(
+    TenantScope tenant, {
+    required Vehicle vehicle,
+    required int mileage,
+  });
+
   Future<List<ProcurementScenario>> getProcurementAnalysis(
     TenantScope tenant, {
     required String opportunityId,
+  });
+
+  Future<Opportunity> updateProcurementDecision(
+    TenantScope tenant, {
+    required Opportunity opportunity,
+    required ProcurementIntent intent,
   });
 
   Future<PickListItem> createPickListItem(

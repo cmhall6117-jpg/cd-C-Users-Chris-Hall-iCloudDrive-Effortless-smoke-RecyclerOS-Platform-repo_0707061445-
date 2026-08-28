@@ -27,7 +27,7 @@
     "healthcheck_path": "/v1/health/ready",
     "public_access_enabled": true,
     "api_url": "https://recycleros-api-pilot.up.railway.app",
-    "release_commit": "5784f4526e97de7cc60538d00ecc6977ca13a375"
+    "release_commit": "e929c9977666b1fc30c7cdecbe30a2dfd3e4feef"
   },
   "frontend": {
     "provider": "github_pages",

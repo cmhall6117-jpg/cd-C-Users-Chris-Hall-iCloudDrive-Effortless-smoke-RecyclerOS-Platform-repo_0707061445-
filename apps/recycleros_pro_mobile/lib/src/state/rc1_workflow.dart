@@ -251,6 +251,32 @@ class Rc1WorkflowController extends StateNotifier<Rc1WorkflowState> {
     }
   }
 
+  Future<Vehicle?> updateVehicleMileage(String vehicleId, int mileage) async {
+    final vehicle = state.activeVehicle;
+    if (vehicle == null || vehicle.vehicleId != vehicleId) {
+      _failRequest(const Rc1GatewayException('Vehicle record is not active.'));
+      return null;
+    }
+
+    _startRequest();
+    try {
+      final updated = await _gateway.updateVehicleMileage(
+        state.tenant,
+        vehicle: vehicle,
+        mileage: mileage,
+      );
+      state = state.copyWith(
+        activeVehicle: updated,
+        isBusy: false,
+        clearError: true,
+      );
+      return updated;
+    } on Object catch (error) {
+      _failRequest(error);
+      return null;
+    }
+  }
+
   Future<List<ProcurementScenario>?> loadProcurementAnalysis(
     String opportunityId,
   ) async {
@@ -266,6 +292,36 @@ class Rc1WorkflowController extends StateNotifier<Rc1WorkflowState> {
         clearError: true,
       );
       return scenarios;
+    } on Object catch (error) {
+      _failRequest(error);
+      return null;
+    }
+  }
+
+  Future<Opportunity?> updateProcurementDecision(
+    String opportunityId,
+    ProcurementIntent intent,
+  ) async {
+    final opportunity = state.opportunities.firstWhere(
+      (item) => item.opportunityId == opportunityId,
+    );
+    _startRequest();
+    try {
+      final updated = await _gateway.updateProcurementDecision(
+        state.tenant,
+        opportunity: opportunity,
+        intent: intent,
+      );
+      state = state.copyWith(
+        opportunities: [
+          for (final current in state.opportunities)
+            if (current.opportunityId == opportunityId) updated else current,
+        ],
+        activeOpportunityId: opportunityId,
+        isBusy: false,
+        clearError: true,
+      );
+      return updated;
     } on Object catch (error) {
       _failRequest(error);
       return null;

@@ -519,6 +519,39 @@ workflow run `33190365952` passed the full public-surface verification in 10
 seconds and automatically closed incident `#24` with a recovery comment. The
 contract now records that recovery run as current monitor evidence.
 
+#### DEF-RAILWAY-011: Vehicle and procurement choices are display-only
+
+Status: fix implemented; CI passed on August 29, 2026; deployment and field
+retest pending
+
+Evidence: During the iPhone pilot, Vehicle Record displayed a hardcoded mileage
+without an edit action. Procurement rendered Resale, Personal Use, and Part-Out
+scenarios, but the cards were not selectable and the only approval command
+always created a Part-Out Pick List item.
+
+Impact: A field operator cannot record actual vehicle mileage or choose Sell
+Whole or Personal Buy / Use. The UI can therefore persist the wrong operating
+intent and incorrectly force a vehicle into the dismantling workflow.
+
+Resolution in progress: The existing VS-002 and VS-003 path now includes
+tenant-scoped mileage and procurement-decision updates. Mileage opens a
+validated numeric editor. Procurement outcomes are selectable, persist the
+chosen intent, and use outcome-specific actions. Only Part Out proceeds to Pick
+List; Sell Whole and Personal Buy / Use return to Vehicle Record with the saved
+intent visible. Backend, PostgreSQL, tenant-isolation, Dio, fake-gateway, live
+gateway, and Flutter workflow coverage are included.
+
+CI evidence: commits `12817f7`, `9bc8c7d`, and `c9e61b5` passed the complete
+push run `33247011522` and pull-request run `33247013038`. This includes
+backend, clean PostgreSQL, SQLite, tenant-isolation, Flutter analyze, Flutter
+test, connected integration, container, environment-contract, and composite
+release-evidence jobs. Pages run `33247012999` built the Flutter web bundle;
+deployment was correctly skipped for the draft branch.
+
+Closure requires: successful Pages and API deployment from the accepted change,
+then an iPhone retest showing mileage edit plus at least one non-Part-Out
+decision. Do not close this defect from CI evidence alone.
+
 ## Production Launch Preparation
 
 ### High

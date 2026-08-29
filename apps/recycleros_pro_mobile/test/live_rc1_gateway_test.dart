@@ -33,13 +33,23 @@ void main() {
         tenant,
         opportunity: opportunity,
       );
+      final updatedVehicle = await gateway.updateVehicleMileage(
+        tenant,
+        vehicle: vehicle,
+        mileage: 141500,
+      );
       final scenarios = await gateway.getProcurementAnalysis(
         tenant,
         opportunityId: opportunity.opportunityId,
       );
+      final decidedOpportunity = await gateway.updateProcurementDecision(
+        tenant,
+        opportunity: opportunity,
+        intent: ProcurementIntent.partOut,
+      );
       final pendingPick = await gateway.createPickListItem(
         tenant,
-        vehicle: vehicle,
+        vehicle: updatedVehicle,
       );
       final availablePick = await gateway.updatePickListAvailability(
         tenant,
@@ -66,7 +76,9 @@ void main() {
 
       expect(opportunity.opportunityCode, 'OPP-000001');
       expect(vehicle.vehicleCode, 'VEH-000001');
+      expect(updatedVehicle.mileage, 141500);
       expect(scenarios, hasLength(3));
+      expect(decidedOpportunity.procurementIntent, ProcurementIntent.partOut);
       expect(availablePick.availabilityStatus, 'available');
       expect(completedSession.status, 'completed');
       expect(inventory.inventoryCode, 'INV-000001');

@@ -87,6 +87,14 @@ def test_rc1_backend_workflow():
         ).json()
         assert vehicle_record["opportunity_id"] == opportunity["opportunity_id"]
 
+        mileage_response = client.patch(
+            f"/v1/vehicles/{vehicle['vehicle_code']}/mileage",
+            headers=headers,
+            json={"mileage": 141500},
+        )
+        assert mileage_response.status_code == 200
+        assert mileage_response.json()["mileage"] == 141500
+
         procurement_response = client.get(
             f"/v1/procurement/{opportunity['opportunity_id']}/analysis",
             headers=headers,
@@ -95,6 +103,30 @@ def test_rc1_backend_workflow():
         procurement = procurement_response.json()
         assert procurement["recommended_intent"] == "partOut"
         assert len(procurement["scenarios"]) == 3
+
+        resale_decision_response = client.patch(
+            f"/v1/procurement/{opportunity['opportunity_id']}/decision",
+            headers=headers,
+            json={"intent": "resale"},
+        )
+        assert resale_decision_response.status_code == 200
+        assert resale_decision_response.json()["procurement_intent"] == "resale"
+
+        personal_decision_response = client.patch(
+            f"/v1/procurement/{opportunity['opportunity_id']}/decision",
+            headers=headers,
+            json={"intent": "personalUse"},
+        )
+        assert personal_decision_response.status_code == 200
+        assert personal_decision_response.json()["procurement_intent"] == "personalUse"
+
+        part_out_decision_response = client.patch(
+            f"/v1/procurement/{opportunity['opportunity_id']}/decision",
+            headers=headers,
+            json={"intent": "partOut"},
+        )
+        assert part_out_decision_response.status_code == 200
+        assert part_out_decision_response.json()["procurement_intent"] == "partOut"
 
         pick_list_response = client.post(
             "/v1/pick-list",

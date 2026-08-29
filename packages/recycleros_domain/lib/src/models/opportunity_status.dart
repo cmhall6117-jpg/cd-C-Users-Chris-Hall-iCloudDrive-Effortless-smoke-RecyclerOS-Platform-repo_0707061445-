@@ -7,5 +7,6 @@ enum OpportunityStatus {
   bidSubmitted,
   won,
   lost,
+  converted,
   closed,
 }

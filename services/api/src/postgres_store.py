@@ -363,6 +363,45 @@ class PostgresStore:
                 item["event_type"] = "vehicle.created"
             return record
 
+    def update_vehicle_mileage(
+        self, vehicle_identifier: str, mileage: int, tenant: TenantContext
+    ) -> dict[str, Any] | None:
+        with self._connect() as conn, conn.cursor() as cursor:
+            cursor.execute(
+                """
+                UPDATE vehicles
+                SET mileage = %s, updated_at = NOW()
+                WHERE (id::text = %s OR vehicle_code = %s)
+                  AND organization_id = %s
+                  AND workspace_id = %s
+                RETURNING
+                    id AS vehicle_id,
+                    vehicle_code,
+                    organization_id,
+                    workspace_id,
+                    vin,
+                    year,
+                    make,
+                    model,
+                    trim,
+                    engine,
+                    transmission,
+                    drivetrain,
+                    mileage,
+                    lifecycle_status,
+                    created_at,
+                    updated_at
+                """,
+                (
+                    mileage,
+                    vehicle_identifier,
+                    vehicle_identifier,
+                    *self._tenant_values(tenant),
+                ),
+            )
+            row = cursor.fetchone()
+            return None if row is None else dict(row)
+
     def get_or_create_procurement_analysis(
         self, opportunity_id: str, tenant: TenantContext
     ) -> dict[str, Any] | None:
@@ -425,7 +464,7 @@ class PostgresStore:
                     (
                         opportunity_id,
                         *self._tenant_values(tenant),
-                        opportunity["procurement_intent"],
+                        "partOut",
                     ),
                 )
                 analysis = cursor.fetchone()
@@ -482,6 +521,45 @@ class PostgresStore:
             )
             record["scenarios"] = [dict(row) for row in cursor.fetchall()]
             return record
+
+    def update_procurement_intent(
+        self, opportunity_id: str, intent: str, tenant: TenantContext
+    ) -> dict[str, Any] | None:
+        with self._connect() as conn, conn.cursor() as cursor:
+            cursor.execute(
+                """
+                UPDATE opportunities
+                SET procurement_intent = %s
+                WHERE id::text = %s
+                  AND organization_id = %s
+                  AND workspace_id = %s
+                RETURNING
+                    id AS opportunity_id,
+                    opportunity_code,
+                    organization_id,
+                    workspace_id,
+                    title,
+                    source_type,
+                    procurement_intent,
+                    vin,
+                    year,
+                    make,
+                    model,
+                    estimated_max_bid,
+                    estimated_net_profit,
+                    confidence_score,
+                    status,
+                    vehicle_id,
+                    created_at
+                """,
+                (
+                    intent,
+                    opportunity_id,
+                    *self._tenant_values(tenant),
+                ),
+            )
+            row = cursor.fetchone()
+            return None if row is None else dict(row)
 
     def create_pick_list_item(
         self, tenant: TenantContext, values: dict[str, Any]

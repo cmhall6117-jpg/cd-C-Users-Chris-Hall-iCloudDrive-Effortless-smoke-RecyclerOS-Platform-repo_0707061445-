@@ -16,6 +16,13 @@ class VehicleCreate(BaseModel):
     drivetrain: str | None = None
     mileage: int | None = Field(default=None, ge=0)
 
+
+class VehicleMileageUpdate(BaseModel):
+    organization_id: str | None = None
+    workspace_id: str | None = None
+    mileage: int = Field(ge=0)
+
+
 class VehicleRead(BaseModel):
     vehicle_id: str
     vehicle_code: str

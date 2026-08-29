@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:recycleros_domain/recycleros_domain.dart';
 
 import '../../app/app_routes.dart';
 import '../../state/rc1_workflow.dart';
@@ -55,6 +56,9 @@ class VehicleTwinScreen extends ConsumerWidget {
               _VehicleFact(
                 label: 'Mileage',
                 value: vehicle.mileage?.toString() ?? 'Pending',
+                onEdit: state.canOperate && !state.isBusy
+                    ? () => _editMileage(context, ref, vehicle)
+                    : null,
               ),
               _VehicleFact(
                 label: 'Lifecycle',
@@ -62,7 +66,10 @@ class VehicleTwinScreen extends ConsumerWidget {
               ),
               _VehicleFact(
                 label: 'Intent',
-                value: _label(opportunity?.procurementIntent.name ?? 'undecided'),
+                value: _intentLabel(
+                  opportunity?.procurementIntent ??
+                      ProcurementIntent.undecided,
+                ),
               ),
             ],
           ),
@@ -98,19 +105,141 @@ class VehicleTwinScreen extends ConsumerWidget {
     );
   }
 
+  static Future<void> _editMileage(
+    BuildContext context,
+    WidgetRef ref,
+    Vehicle vehicle,
+  ) async {
+    final mileage = await showDialog<int>(
+      context: context,
+      builder: (_) => _MileageDialog(
+        initialMileage: vehicle.mileage,
+      ),
+    );
+    if (mileage == null || !context.mounted) {
+      return;
+    }
+
+    final updated = await ref
+        .read(rc1WorkflowProvider.notifier)
+        .updateVehicleMileage(vehicle.vehicleId, mileage);
+    if (!context.mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          updated == null
+              ? ref.read(rc1WorkflowProvider).errorMessage ??
+                  'Mileage could not be updated.'
+              : 'Mileage updated to $mileage mi.',
+        ),
+      ),
+    );
+  }
+
+  static String _intentLabel(ProcurementIntent intent) {
+    return switch (intent) {
+      ProcurementIntent.resale => 'Sell Whole',
+      ProcurementIntent.personalUse => 'Personal Buy / Use',
+      ProcurementIntent.partOut => 'Part Out',
+      ProcurementIntent.undecided => 'Undecided',
+    };
+  }
+
   static String _label(String value) {
-    return value.replaceAllMapped(
+    final label = value.replaceAllMapped(
       RegExp(r'([a-z])([A-Z])'),
       (match) => '${match.group(1)} ${match.group(2)}',
+    );
+    return label.isEmpty
+        ? label
+        : '${label[0].toUpperCase()}${label.substring(1)}';
+  }
+}
+
+class _MileageDialog extends StatefulWidget {
+  const _MileageDialog({required this.initialMileage});
+
+  final int? initialMileage;
+
+  @override
+  State<_MileageDialog> createState() => _MileageDialogState();
+}
+
+class _MileageDialogState extends State<_MileageDialog> {
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(
+      text: widget.initialMileage?.toString() ?? '',
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Update Mileage'),
+      content: Form(
+        key: _formKey,
+        child: TextFormField(
+          key: const Key('vehicleMileageField'),
+          controller: _controller,
+          autofocus: true,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(
+            labelText: 'Current mileage',
+            suffixText: 'mi',
+          ),
+          validator: (value) {
+            final parsed = int.tryParse(value?.trim() ?? '');
+            if (parsed == null || parsed < 0) {
+              return 'Enter a valid mileage.';
+            }
+            return null;
+          },
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          key: const Key('vehicleMileageSave'),
+          onPressed: () {
+            if (_formKey.currentState?.validate() ?? false) {
+              Navigator.of(context).pop(
+                int.parse(_controller.text.trim()),
+              );
+            }
+          },
+          child: const Text('Save'),
+        ),
+      ],
     );
   }
 }
 
 class _VehicleFact extends StatelessWidget {
-  const _VehicleFact({required this.label, required this.value});
+  const _VehicleFact({
+    required this.label,
+    required this.value,
+    this.onEdit,
+  });
 
   final String label;
   final String value;
+  final VoidCallback? onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +255,24 @@ class _VehicleFact extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: Theme.of(context).textTheme.bodySmall),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  label,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ),
+              if (onEdit != null)
+                IconButton(
+                  key: const Key('vehicleMileageEdit'),
+                  onPressed: onEdit,
+                  icon: const Icon(Icons.edit_outlined),
+                  tooltip: 'Edit mileage',
+                  visualDensity: VisualDensity.compact,
+                ),
+            ],
+          ),
           const SizedBox(height: 4),
           Text(
             value,

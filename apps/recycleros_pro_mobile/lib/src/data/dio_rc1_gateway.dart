@@ -76,7 +76,7 @@ class DioRc1Gateway implements Rc1Gateway {
         data: {
           'title': title,
           'source_type': 'manual',
-          'procurement_intent': 'partOut',
+          'procurement_intent': 'undecided',
           'vin': vin,
           'year': year,
           'make': make,
@@ -105,8 +105,24 @@ class DioRc1Gateway implements Rc1Gateway {
           'year': opportunity.year,
           'make': opportunity.make,
           'model': opportunity.model,
-          'mileage': 126000,
+          'mileage': null,
         },
+        options: _tenantOptions(tenant),
+      ),
+    );
+    return _vehicle(json);
+  }
+
+  @override
+  Future<Vehicle> updateVehicleMileage(
+    TenantScope tenant, {
+    required Vehicle vehicle,
+    required int mileage,
+  }) async {
+    final json = await _request(
+      () => _dio.patch<dynamic>(
+        '/v1/vehicles/${vehicle.vehicleCode}/mileage',
+        data: {'mileage': mileage},
         options: _tenantOptions(tenant),
       ),
     );
@@ -126,6 +142,22 @@ class DioRc1Gateway implements Rc1Gateway {
     );
     final scenarios = json['scenarios'] as List<dynamic>? ?? const [];
     return scenarios.map((item) => _scenario(_json(item))).toList();
+  }
+
+  @override
+  Future<Opportunity> updateProcurementDecision(
+    TenantScope tenant, {
+    required Opportunity opportunity,
+    required ProcurementIntent intent,
+  }) async {
+    final json = await _request(
+      () => _dio.patch<dynamic>(
+        '/v1/procurement/${opportunity.opportunityId}/decision',
+        data: {'intent': intent.name},
+        options: _tenantOptions(tenant),
+      ),
+    );
+    return _opportunity(json);
   }
 
   @override

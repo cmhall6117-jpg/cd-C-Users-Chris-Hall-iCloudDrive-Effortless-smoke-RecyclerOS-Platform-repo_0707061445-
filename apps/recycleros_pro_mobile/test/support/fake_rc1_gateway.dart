@@ -13,6 +13,8 @@ class FakeRc1Gateway implements Rc1Gateway {
   final String? logoutError;
   final List<TenantScope> seenTenants = [];
   int logoutCalls = 0;
+  int? lastUpdatedMileage;
+  ProcurementIntent? lastProcurementIntent;
 
   int _opportunitySequence = 0;
   int _vehicleSequence = 0;
@@ -78,7 +80,7 @@ class FakeRc1Gateway implements Rc1Gateway {
       title: title,
       source: OpportunitySource.manual,
       status: OpportunityStatus.discovered,
-      procurementIntent: ProcurementIntent.partOut,
+      procurementIntent: ProcurementIntent.undecided,
       vin: vin,
       year: year,
       make: make,
@@ -105,10 +107,38 @@ class FakeRc1Gateway implements Rc1Gateway {
       year: opportunity.year,
       make: opportunity.make,
       model: opportunity.model,
-      mileage: 126000,
+      mileage: null,
       lifecycleStatus: VehicleLifecycleStatus.discovered,
       createdAt: _now,
       updatedAt: _now,
+    );
+  }
+
+  @override
+  Future<Vehicle> updateVehicleMileage(
+    TenantScope tenant, {
+    required Vehicle vehicle,
+    required int mileage,
+  }) async {
+    _record(tenant);
+    lastUpdatedMileage = mileage;
+    return Vehicle(
+      vehicleId: vehicle.vehicleId,
+      vehicleCode: vehicle.vehicleCode,
+      vin: vehicle.vin,
+      year: vehicle.year,
+      make: vehicle.make,
+      model: vehicle.model,
+      trim: vehicle.trim,
+      engine: vehicle.engine,
+      transmission: vehicle.transmission,
+      drivetrain: vehicle.drivetrain,
+      exteriorColor: vehicle.exteriorColor,
+      interiorColor: vehicle.interiorColor,
+      mileage: mileage,
+      lifecycleStatus: vehicle.lifecycleStatus,
+      createdAt: vehicle.createdAt,
+      updatedAt: _now.add(const Duration(minutes: 1)),
     );
   }
 
@@ -147,6 +177,33 @@ class FakeRc1Gateway implements Rc1Gateway {
         confidenceScore: 81,
       ),
     ];
+  }
+
+  @override
+  Future<Opportunity> updateProcurementDecision(
+    TenantScope tenant, {
+    required Opportunity opportunity,
+    required ProcurementIntent intent,
+  }) async {
+    _record(tenant);
+    lastProcurementIntent = intent;
+    return Opportunity(
+      opportunityId: opportunity.opportunityId,
+      opportunityCode: opportunity.opportunityCode,
+      title: opportunity.title,
+      source: opportunity.source,
+      status: opportunity.status,
+      procurementIntent: intent,
+      vin: opportunity.vin,
+      year: opportunity.year,
+      make: opportunity.make,
+      model: opportunity.model,
+      estimatedMaxBid: opportunity.estimatedMaxBid,
+      estimatedNetProfit: opportunity.estimatedNetProfit,
+      confidenceScore: opportunity.confidenceScore,
+      createdAt: opportunity.createdAt,
+      updatedAt: _now.add(const Duration(minutes: 1)),
+    );
   }
 
   @override

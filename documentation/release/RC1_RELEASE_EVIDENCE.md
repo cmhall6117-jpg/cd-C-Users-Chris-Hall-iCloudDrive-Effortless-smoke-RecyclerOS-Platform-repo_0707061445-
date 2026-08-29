@@ -11,15 +11,16 @@
 | Part Out to Pick List | Passed in CI | Connected workflow and Flutter jobs passed. |
 | Non-Part-Out route behavior | Passed in CI | Flutter workflow tests passed. |
 | Flutter web artifact | Passed | Pages build run `33247012999`. |
-| Candidate Pages deployment | Blocked by draft state | Deploy job skipped for the unmerged draft branch. |
-| Railway API deployment | Pending | Candidate has not been merged or deployed. |
+| Candidate Pages deployment | Passed | Main run `33250152249` built and deployed merge `8fec853`. |
+| Railway API deployment | Passed | Live health reported PostgreSQL and exact release `8fec853`. |
+| Railway public-surface monitor | Passed | Run `33250626205` passed TLS, health, release identity, headers, and hidden docs/OpenAPI. |
 | iPhone field verification | Pending | Requires deployed mileage edit and non-Part-Out evidence. |
 
-Candidate branch `codex/rc1-vehicle-procurement-controls`, draft PR `#32`, and
-commits `12817f7`, `9bc8c7d`, and `c9e61b5` have a reproducible automated build.
-Push run `33247011522` and pull-request run `33247013038` passed every RC1 job.
-`DEF-RAILWAY-011` remains open until deployment and device evidence are
-complete.
+Candidate branch `codex/rc1-vehicle-procurement-controls`, PR `#32`, and commits
+`12817f7`, `9bc8c7d`, and `c9e61b5` have a reproducible automated build. Push
+run `33247011522` and pull-request run `33247013038` passed every RC1 job. PR
+`#32` merged as `8fec8531427b26af7f063289163272f14fde418e`; Pages and Railway
+now serve that release. `DEF-RAILWAY-011` remains open only for device evidence.
 
 ## Release Gate Status
 

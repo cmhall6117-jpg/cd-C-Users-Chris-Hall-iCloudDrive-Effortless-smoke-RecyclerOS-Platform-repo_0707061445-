@@ -13,7 +13,7 @@
 | Flutter web artifact | Passed | Pages build run `33247012999`. |
 | Candidate Pages deployment | Passed | Main run `33250152249` built and deployed merge `8fec853`. |
 | Railway API deployment | Passed | Live health reported PostgreSQL and exact release `8fec853`. |
-| Railway public-surface monitor | Passed | Run `33250626205` passed TLS, health, release identity, headers, and hidden docs/OpenAPI. |
+| Railway public-surface monitor | Passed | Main run `33250867140` passed TLS, health, release identity, headers, and hidden docs/OpenAPI. |
 | iPhone field verification | Passed | `VEH-000007` displayed mileage `123000` and persisted Sell Whole; both non-Part-Out options were selectable. |
 
 Candidate branch `codex/rc1-vehicle-procurement-controls`, PR `#32`, and commits
@@ -51,29 +51,30 @@ now serve that release. The August 29 iPhone retest is retained in
 | Flutter analyze/test | Passed | `flutter` succeeded on run `29366685297`. |
 | GitHub Actions checks | Passed | Six jobs succeeded on push run `29366652838` and PR run `29366685297`. |
 | Composite release-evidence check | Passed | Both trigger paths passed at commit `7beea835073e42e8f07b90afbf1c4687e972d734`. |
-| Draft pull request | Passed | PR #8 is open and draft. |
-| Draft pull request body | Passed | `documentation/release/RC1_DEFECT_CLOSURE_PR.md`. |
+| First reproducible-build pull request | Passed | PR #8 opened as the required draft and later merged as `2ef5161`. |
+| Pull request body | Passed | `documentation/release/RC1_DEFECT_CLOSURE_PR.md`. |
 
 ## CI Evidence
 
 Latest successful CI/CD release-evidence workflow:
 
 - Workflow: RC1 Integration Checks
-- Pull-request run: `29366685297`
-- Push run: `29366652838`
-- Branch: `codex/rc1-defect-closure`
-- Commit: `7beea835073e42e8f07b90afbf1c4687e972d734`
-- PR: `#8`
+- Pull-request run: `33266128892`
+- Push run: `33266116580`
+- Branch: `codex/railway-vehicle-procurement-field-closure`
+- Commit: `379b832806283d5bd9c1fc86adcdf95bb10efcbf`
+- PR: `#34`, merged as `027a422ab88ec310bb3f601f3efbbe539520bf46`
 - Result: success
-- Jobs passed: backend, sqlite-migrations, postgres-migrations, flutter,
-  core-integration, release-evidence
+- Jobs passed: backend, SQLite, PostgreSQL, Flutter, core integration, pilot and
+  production containers, environment contract, GCP IaC, Railway configuration,
+  and release evidence on both trigger paths
 
-Draft pull request:
+First reproducible-build draft pull request:
 
 - URL: `https://github.com/cmhall6117-jpg/cd-C-Users-Chris-Hall-iCloudDrive-Effortless-smoke-RecyclerOS-Platform-repo_0707061445-/pull/8`
-- State: open
-- Draft: true
-- Mergeable: true
+- Initial state: draft
+- Final state: merged on August 2, 2026
+- Merge commit: `2ef516168a49771418915be9d5b02a8256dcbab7`
 
 ## RC1 Decision
 
@@ -153,9 +154,9 @@ Cloud resources.
 | Railway account and budget controls | Passed live | Private Pro project, MFA/passkey, USD 20 warning and USD 30 hard limit verified; expected monthly minimum is USD 20. |
 | Runtime, domain, and sealed variables | Passed live | Successful US East API/PostgreSQL deployments, public HTTPS API, private database, sealed operator credential, exact release identity. |
 | Database backup and restore | Passed for one-person pilot | August 9 custom dump, checksum match, encrypted off-platform copy, clean restore, staging cleanup, live PITR, and restore-owner assignment passed. August 24 history proves daily and weekly native schedules produced real snapshots. Off-platform automation and key escrow remain broader-use hardening under `DEF-RAILWAY-003`. |
-| Monitoring and protected acceptance | Passed for one-person pilot | Two-hour monitoring, simulated incident delivery and recovery, owner approval, and protected acceptance run `32770410381` passed. Later release-identity drift opened incident `#24`; contract synchronization and recovery run `33190365952` passed and closed it. `DEF-RAILWAY-004` and `DEF-RAILWAY-010` are closed. |
+| Monitoring and protected acceptance | Passed for one-person pilot | Two-hour monitoring, simulated incident delivery and recovery, owner approval, and protected acceptance run `32770410381` passed. Release-identity recovery run `33190365952` closed incident `#24`; exact-release main run `33250867140` later passed. `DEF-RAILWAY-004` and `DEF-RAILWAY-010` are closed. |
 | Live tenant-scoped API working path | Passed for one-person pilot | Field run `20260824212230-5fd820be` passed 18 checks from login through inventory and revoked-session rejection. |
-| Manual Flutter device working path | Passed for one-person pilot | Initial stage evidence covers login, workspace selection, Vehicle Record behavior, and deployed Sign out returning to Sign in. A later one-session continuity run establishes `OPP-000007` through Procurement, Focus Point, and `INV-000004`. Automated coverage pairs logout with HTTP 204 and revoked-token HTTP 401. The Vehicle Record identifier was not retained in the continuity screenshots. |
+| Manual Flutter device working path | Passed for one-person pilot | Initial evidence covers login, workspace selection, the core path through inventory, and Sign out returning to Sign in. The August 29 retest records `VEH-000007` with editable mileage `123000`, persisted Sell Whole intent, and both non-Part-Out choices selectable. Automated coverage pairs logout with HTTP 204 and revoked-token HTTP 401. |
 | Second unique tester identity | Blocked for tester two | `DEF-RAILWAY-005`. |
 
 Passed Railway gates above have live command or endpoint evidence. The contract

@@ -7,17 +7,19 @@ capacity for a second tester after a separate account is provisioned. It is a
 controlled pilot, not the production environment. The repository creates no
 Railway account, project, billing commitment, database, domain, or secret.
 
-The approved planning envelope is USD 12-25 per month, with a USD 20 alert and
-a USD 30 hard usage limit. Do not activate billable resources until the account
-owner approves those values. If the selected Railway plan cannot enforce the
-hard limit, leave `hard_limit_verified` false and keep field access blocked.
+The verified one-person pilot uses Railway Pro so native point-in-time recovery
+and scheduled volume backups are available. Its recorded operating envelope is
+USD 20-25 per month, with a USD 20 alert and a USD 30 hard usage limit. Do not
+expand billable resources without account-owner approval. If the selected plan
+cannot enforce the hard limit, leave `hard_limit_verified` false and keep field
+access blocked.
 
 ## Account Controls
 
 1. Create or use the Effortless Smoke Railway account and enable two-factor
    authentication before connecting GitHub.
-2. Select the Hobby plan only after the account owner approves its current
-   price and usage terms.
+2. Use the account-owner-approved Pro plan for the verified pilot. Reconfirm
+   price and usage terms before changing plans or enabling more resources.
 3. Create project `recycleros-pilot` and an environment named `pilot` in the US
    East region.
 4. Configure the USD 20 usage alert and USD 30 hard usage limit. Test alert

@@ -2,8 +2,8 @@
 
 ## Vehicle and Procurement Controls CI
 
-Result on August 29, 2026: passed automated candidate checks and live
-deployment verification; iPhone retest pending.
+Result on August 29, 2026: passed automated candidate checks, live deployment
+verification, and iPhone field retest.
 
 - Branch: `codex/rc1-vehicle-procurement-controls`
 - Pull request: `#32` (merged)
@@ -22,8 +22,15 @@ deployment verification; iPhone retest pending.
 - Flutter coverage includes mileage editing, all three procurement choices,
   Part Out routing to Pick List, and non-Part-Out routing back to Vehicle Record
 - `flutter analyze` and `flutter test`: passed on both RC1 workflow runs
-- Field closure still requires an iPhone test of mileage editing plus Sell Whole
-  or Personal Buy / Use
+- iPhone field retest: `VEH-000007` displayed editable mileage `123000` and
+  persisted Sell Whole intent; Sell Whole and Personal Buy / Use were both
+  selectable with outcome-specific commands
+- Pick List and Mission Control remained at the existing one-item queue count
+  after the non-Part-Out exercise; automated routing tests supply the entity-ID
+  assertion that is not visible in the static screenshot
+- Evidence manifest:
+  `documentation/release/evidence/railway/2026-08-29-vehicle-procurement-field-manifest.json`
+- Defect `DEF-RAILWAY-011`: closed
 
 ## Local Smoke Checks
 

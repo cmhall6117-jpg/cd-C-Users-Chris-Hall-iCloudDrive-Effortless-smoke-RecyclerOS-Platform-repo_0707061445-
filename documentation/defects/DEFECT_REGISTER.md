@@ -521,8 +521,7 @@ contract now records that recovery run as current monitor evidence.
 
 #### DEF-RAILWAY-011: Vehicle and procurement choices are display-only
 
-Status: fix implemented; CI and deployment passed on August 29, 2026; field
-retest pending
+Status: closed on August 29, 2026
 
 Evidence: During the iPhone pilot, Vehicle Record displayed a hardcoded mileage
 without an edit action. Procurement rendered Resale, Personal Use, and Part-Out
@@ -555,9 +554,22 @@ fast-forwarded to the same commit, the live API reported that exact release
 with PostgreSQL storage, and monitor run `33250626205` passed TLS, liveness,
 readiness, release identity, security headers, and hidden docs/OpenAPI.
 
-Closure requires: an iPhone retest showing mileage edit plus at least one
-non-Part-Out decision. Do not close this defect from automated deployment
-evidence alone.
+Field evidence: On the deployed iPhone Flutter pilot, `VEH-000007` displayed
+editable mileage `123000` and persisted Intent Sell Whole. Procurement for
+`OPP-000008` allowed Sell Whole (Resale) and Personal Buy / Use to be selected
+with outcome-specific approval commands. Pick List and Mission Control remained
+at the existing one-item queue count after the non-Part-Out exercise, consistent
+with no additional queue item. The static Pick List screenshot does not expose
+the queued entity identifier, so outcome-specific routing remains paired with
+the passing automated Flutter and connected workflow tests.
+
+Closure evidence:
+`documentation/release/evidence/railway/2026-08-29-vehicle-procurement-field-manifest.json`.
+The manifest retains all six submitted screenshots and SHA-256 checksums. No
+credential, bearer token, database URL, or real VIN is recorded.
+
+Result: closed. Editable mileage, selectable procurement outcomes, persisted
+Sell Whole intent, and non-Part-Out routing are evidenced on the live release.
 
 ## Production Launch Preparation
 

@@ -80,7 +80,10 @@ Auth/tenant/RBAC baseline CI result:
   release identity, security headers, and hidden docs/OpenAPI
 - Local Flutter execution remains unavailable on this workstation; GitHub
   Actions is the reproducible SDK-backed evidence
-- Live iPhone behavior still requires a manual mileage and non-Part-Out retest
+- Live iPhone retest passed: `VEH-000007` displayed editable mileage `123000`
+  and persisted Sell Whole intent; both non-Part-Out options were selectable
+- Field evidence manifest:
+  `documentation/release/evidence/railway/2026-08-29-vehicle-procurement-field-manifest.json`
 
 ## CI
 

@@ -62,7 +62,7 @@ Auth/tenant/RBAC baseline CI result:
 
 - Date: August 29, 2026
 - Branch: `codex/rc1-vehicle-procurement-controls`
-- Draft pull request: `#32`
+- Pull request: `#32` (merged)
 - Implementation commits: `12817f7`, `9bc8c7d`, `c9e61b5`
 - Push workflow run: `33247011522`
 - Pull-request workflow run: `33247013038`
@@ -71,11 +71,16 @@ Auth/tenant/RBAC baseline CI result:
   containers, Flutter analyze, Flutter test, and release evidence: passed on
   both RC1 workflow trigger paths
 - Flutter web build: passed in 2 minutes 18 seconds
-- Pages deploy: skipped because this is an unmerged draft branch
+- Candidate Pages build: passed while the change was a draft branch
+- Merge commit: `8fec8531427b26af7f063289163272f14fde418e`
+- Main Pages run `33250152249`: build and deployment passed
+- Railway deployment branch: fast-forwarded from `e929c997` to `8fec853`
+- Live Railway API: PostgreSQL-backed health reported release `8fec853`
+- Railway monitor run `33250626205`: passed TLS, liveness, readiness, exact
+  release identity, security headers, and hidden docs/OpenAPI
 - Local Flutter execution remains unavailable on this workstation; GitHub
   Actions is the reproducible SDK-backed evidence
-- Live Railway API and iPhone behavior remain unchanged until the candidate is
-  accepted and deployed
+- Live iPhone behavior still requires a manual mileage and non-Part-Out retest
 
 ## CI
 

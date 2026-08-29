@@ -27,7 +27,7 @@
     "healthcheck_path": "/v1/health/ready",
     "public_access_enabled": true,
     "api_url": "https://recycleros-api-pilot.up.railway.app",
-    "release_commit": "e929c9977666b1fc30c7cdecbe30a2dfd3e4feef"
+    "release_commit": "8fec8531427b26af7f063289163272f14fde418e"
   },
   "frontend": {
     "provider": "github_pages",
@@ -64,7 +64,7 @@
     "railway_logs_enabled": true,
     "uptime_check_configured": true,
     "alert_delivery_verified": true,
-    "monitor_evidence": "github-actions-2026-08-28-33190365952"
+    "monitor_evidence": "github-actions-2026-08-29-33250626205"
   },
   "testing": {
     "maximum_testers": 1,

@@ -110,54 +110,12 @@ class VehicleTwinScreen extends ConsumerWidget {
     WidgetRef ref,
     Vehicle vehicle,
   ) async {
-    final formKey = GlobalKey<FormState>();
-    final controller = TextEditingController(
-      text: vehicle.mileage?.toString() ?? '',
-    );
     final mileage = await showDialog<int>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Update Mileage'),
-        content: Form(
-          key: formKey,
-          child: TextFormField(
-            key: const Key('vehicleMileageField'),
-            controller: controller,
-            autofocus: true,
-            keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              labelText: 'Current mileage',
-              suffixText: 'mi',
-            ),
-            validator: (value) {
-              final parsed = int.tryParse(value?.trim() ?? '');
-              if (parsed == null || parsed < 0) {
-                return 'Enter a valid mileage.';
-              }
-              return null;
-            },
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            key: const Key('vehicleMileageSave'),
-            onPressed: () {
-              if (formKey.currentState?.validate() ?? false) {
-                Navigator.of(dialogContext).pop(
-                  int.parse(controller.text.trim()),
-                );
-              }
-            },
-            child: const Text('Save'),
-          ),
-        ],
+      builder: (_) => _MileageDialog(
+        initialMileage: vehicle.mileage,
       ),
     );
-    controller.dispose();
     if (mileage == null || !context.mounted) {
       return;
     }
@@ -197,6 +155,78 @@ class VehicleTwinScreen extends ConsumerWidget {
     return label.isEmpty
         ? label
         : '${label[0].toUpperCase()}${label.substring(1)}';
+  }
+}
+
+class _MileageDialog extends StatefulWidget {
+  const _MileageDialog({required this.initialMileage});
+
+  final int? initialMileage;
+
+  @override
+  State<_MileageDialog> createState() => _MileageDialogState();
+}
+
+class _MileageDialogState extends State<_MileageDialog> {
+  final _formKey = GlobalKey<FormState>();
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(
+      text: widget.initialMileage?.toString() ?? '',
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Update Mileage'),
+      content: Form(
+        key: _formKey,
+        child: TextFormField(
+          key: const Key('vehicleMileageField'),
+          controller: _controller,
+          autofocus: true,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(
+            labelText: 'Current mileage',
+            suffixText: 'mi',
+          ),
+          validator: (value) {
+            final parsed = int.tryParse(value?.trim() ?? '');
+            if (parsed == null || parsed < 0) {
+              return 'Enter a valid mileage.';
+            }
+            return null;
+          },
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          key: const Key('vehicleMileageSave'),
+          onPressed: () {
+            if (_formKey.currentState?.validate() ?? false) {
+              Navigator.of(context).pop(
+                int.parse(_controller.text.trim()),
+              );
+            }
+          },
+          child: const Text('Save'),
+        ),
+      ],
+    );
   }
 }
 

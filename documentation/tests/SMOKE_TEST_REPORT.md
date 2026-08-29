@@ -1,5 +1,25 @@
 # Smoke Test Report
 
+## Vehicle and Procurement Controls CI
+
+Result on August 29, 2026: passed automated candidate checks; live deployment
+and iPhone retest pending.
+
+- Branch: `codex/rc1-vehicle-procurement-controls`
+- Draft pull request: `#32`
+- Tested commit: `c9e61b5`
+- Push run `33247011522`: all RC1 jobs passed
+- Pull-request run `33247013038`: all RC1 jobs passed
+- Pages run `33247012999`: Flutter web build passed; draft-branch deployment
+  skipped
+- Backend coverage includes tenant-scoped mileage updates, procurement-decision
+  updates, mismatched tenant rejection, and cross-tenant non-disclosure
+- Flutter coverage includes mileage editing, all three procurement choices,
+  Part Out routing to Pick List, and non-Part-Out routing back to Vehicle Record
+- `flutter analyze` and `flutter test`: passed on both RC1 workflow runs
+- Field closure still requires deployment and an iPhone test of mileage editing
+  plus Sell Whole or Personal Buy / Use
+
 ## Local Smoke Checks
 
 ### SQLite Migration Initialization

@@ -521,8 +521,8 @@ contract now records that recovery run as current monitor evidence.
 
 #### DEF-RAILWAY-011: Vehicle and procurement choices are display-only
 
-Status: fix implemented on August 28, 2026; CI, deployment, and field retest
-pending
+Status: fix implemented; CI passed on August 29, 2026; deployment and field
+retest pending
 
 Evidence: During the iPhone pilot, Vehicle Record displayed a hardcoded mileage
 without an edit action. Procurement rendered Resale, Personal Use, and Part-Out
@@ -541,9 +541,16 @@ List; Sell Whole and Personal Buy / Use return to Vehicle Record with the saved
 intent visible. Backend, PostgreSQL, tenant-isolation, Dio, fake-gateway, live
 gateway, and Flutter workflow coverage are included.
 
-Closure requires: green backend, PostgreSQL, tenant-isolation, Flutter analyze,
-and Flutter test jobs; successful Pages and API deployment; and an iPhone retest
-showing mileage edit plus at least one non-Part-Out decision.
+CI evidence: commits `12817f7`, `9bc8c7d`, and `c9e61b5` passed the complete
+push run `33247011522` and pull-request run `33247013038`. This includes
+backend, clean PostgreSQL, SQLite, tenant-isolation, Flutter analyze, Flutter
+test, connected integration, container, environment-contract, and composite
+release-evidence jobs. Pages run `33247012999` built the Flutter web bundle;
+deployment was correctly skipped for the draft branch.
+
+Closure requires: successful Pages and API deployment from the accepted change,
+then an iPhone retest showing mileage edit plus at least one non-Part-Out
+decision. Do not close this defect from CI evidence alone.
 
 ## Production Launch Preparation
 

@@ -1,5 +1,26 @@
 # RC1 Release Evidence
 
+## Vehicle and Procurement Controls Candidate
+
+| Gate | Status | Evidence |
+| --- | --- | --- |
+| Tenant-scoped mileage update | Passed in CI | Backend and PostgreSQL jobs on runs `33247011522` and `33247013038`. |
+| Tenant-scoped procurement decision | Passed in CI | Backend, PostgreSQL, and tenant-isolation coverage on both runs. |
+| Flutter mileage editor | Passed in CI | Flutter analyze and tests passed on both runs. |
+| Selectable procurement outcomes | Passed in CI | Sell Whole, Personal Buy / Use, and Part Out widget flows passed. |
+| Part Out to Pick List | Passed in CI | Connected workflow and Flutter jobs passed. |
+| Non-Part-Out route behavior | Passed in CI | Flutter workflow tests passed. |
+| Flutter web artifact | Passed | Pages build run `33247012999`. |
+| Candidate Pages deployment | Blocked by draft state | Deploy job skipped for the unmerged draft branch. |
+| Railway API deployment | Pending | Candidate has not been merged or deployed. |
+| iPhone field verification | Pending | Requires deployed mileage edit and non-Part-Out evidence. |
+
+Candidate branch `codex/rc1-vehicle-procurement-controls`, draft PR `#32`, and
+commits `12817f7`, `9bc8c7d`, and `c9e61b5` have a reproducible automated build.
+Push run `33247011522` and pull-request run `33247013038` passed every RC1 job.
+`DEF-RAILWAY-011` remains open until deployment and device evidence are
+complete.
+
 ## Release Gate Status
 
 | Gate | Status | Evidence |

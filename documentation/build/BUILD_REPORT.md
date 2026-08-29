@@ -58,6 +58,25 @@ Auth/tenant/RBAC baseline CI result:
 - Pull-request run `29363414967` passed `flutter pub get`, `flutter analyze`,
   `flutter test`, and the authenticated live Dio-to-FastAPI path.
 
+## Vehicle and Procurement Controls Candidate
+
+- Date: August 29, 2026
+- Branch: `codex/rc1-vehicle-procurement-controls`
+- Draft pull request: `#32`
+- Implementation commits: `12817f7`, `9bc8c7d`, `c9e61b5`
+- Push workflow run: `33247011522`
+- Pull-request workflow run: `33247013038`
+- Pages workflow run: `33247012999`
+- Backend, PostgreSQL, SQLite, tenant isolation, connected integration,
+  containers, Flutter analyze, Flutter test, and release evidence: passed on
+  both RC1 workflow trigger paths
+- Flutter web build: passed in 2 minutes 18 seconds
+- Pages deploy: skipped because this is an unmerged draft branch
+- Local Flutter execution remains unavailable on this workstation; GitHub
+  Actions is the reproducible SDK-backed evidence
+- Live Railway API and iPhone behavior remain unchanged until the candidate is
+  accepted and deployed
+
 ## CI
 
 GitHub Actions workflow at `.github/workflows/rc1-ci.yml` runs backend, SQLite,

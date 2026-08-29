@@ -14,7 +14,10 @@
 | Clean PostgreSQL backup/restore rehearsal | Passed in CI | Populated auth/workflow data verified after restore. |
 | Flutter and live core path | Passed on baseline | Retained RC1 workflow gates. |
 
-## External Prerequisites
+## Generic Host And GCP Prerequisites
+
+These prerequisites apply to the generic self-hosted and Google Cloud paths.
+They do not override the separately verified Railway alternative below.
 
 | Prerequisite | Status |
 | --- | --- |
@@ -48,23 +51,29 @@
 | Gate | Status | Evidence |
 | --- | --- | --- |
 | Config as code | Passed locally | Official Railway schema and repository validator passed. |
-| Credential-free contract | Passed locally | Planned contract is valid and not field-ready. |
+| Credential-free contract | Passed and verified | Lifecycle is `verified`; deployment and field approvals are true; access remains capped at one tester. |
 | Dynamic platform port | Passed locally | Docker healthcheck and API entrypoint use `PORT`. |
 | Budget envelope | Passed live | USD 20 warning and USD 30 hard limit are active. |
-| Railway account and project | Passed live | Private Hobby project, MFA, and passkey verified. |
+| Railway account and project | Passed live | Private Pro project, MFA, and passkey verified. |
 | Private PostgreSQL 16 | Passed live | Private service, 5 GiB volume, and no public database domain. |
-| Native and off-platform recovery | Partially passed live | Encrypted off-platform dump, clean restore, and staging cleanup passed August 9; native schedules, automated cadence/retention, key escrow, and owner approval remain open. |
+| Native and off-platform recovery | Passed for one-person pilot | PITR, daily and weekly volume backups, encrypted off-platform dump, clean restore, staging cleanup, and restore ownership passed. Automated off-platform cadence and cross-device key escrow remain non-blocking hardening under `DEF-RAILWAY-003`. |
 | Public endpoint and sealed variables | Passed live | HTTPS API, private database, and sealed operator credential verified. |
-| Monitoring and alert delivery | Blocked external | Uptime and cost alert delivery are not evidenced. |
-| Protected acceptance workflow | Partially passed | GitHub environment and Railway Wait for CI exist; reviewer-run field acceptance remains pending. |
+| Monitoring and alert delivery | Passed for one-person pilot | Two-hour monitor, alert delivery, synthetic incident recovery, and exact-release run `33250867140` passed. |
+| Protected acceptance workflow | Passed for one-person pilot | Protected acceptance run `32770410381` passed and temporary policy changes were removed afterward. |
+| Live tenant-scoped API path | Passed for one-person pilot | Run `20260824212230-5fd820be` passed 18 checks from login through inventory and revoked-session rejection. |
+| Manual Flutter device path | Passed for one-person pilot | Login through inventory, logout, editable mileage, and persisted Sell Whole intent are evidenced through August 29. |
+| Second tester identity | Blocked beyond approved scope | The contract allows one tester; `DEF-RAILWAY-005` remains open before adding another person. |
 
-Railway field access remains no-go until the strict contract reports field-ready,
-the manual acceptance workflow passes, and all `DEF-RAILWAY-*` defects close.
+Railway field access is approved for one named tester using synthetic or
+otherwise authorized pilot data. This does not authorize a second tester,
+production traffic, or closure of non-blocking hardening item
+`DEF-RAILWAY-003`.
 
 ## Decision
 
 The local-container pilot repository was deployment-ready at commit
 `59bd74a78c39923ad99d583a00f352a57d8dfb95`. Google Cloud remains a
-credential-free deployment candidate. Railway has a reproducible live runtime,
-but a data-bearing field pilot remains no-go until its scheduled recovery,
-monitoring, ownership, cleanup, and approval prerequisites are evidenced.
+credential-free deployment candidate. Railway is the verified provider for the
+approved one-person pilot: scheduled recovery, monitoring, ownership, cleanup,
+protected acceptance, API smoke, and manual Flutter evidence passed. Production
+and any scope beyond one tester remain no-go.

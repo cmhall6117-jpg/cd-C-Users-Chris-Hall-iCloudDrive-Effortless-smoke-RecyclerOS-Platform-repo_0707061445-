@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "evidence_id": "railway-iphone-vehicle-procurement-2026-08-29",
+  "scope": "manual_flutter_web_vehicle_mileage_and_non_part_out_retest",
+  "observed_date": "2026-08-29",
+  "tester": "Chris Hall",
+  "device": {
+    "family": "iPhone",
+    "model": "not evidenced",
+    "browser": "Safari",
+    "browser_version": "not evidenced"
+  },
+  "frontend": {
+    "provider": "GitHub Pages",
+    "origin": "https://cmhall6117-jpg.github.io/cd-C-Users-Chris-Hall-iCloudDrive-Effortless-smoke-RecyclerOS-Platform-repo_0707061445-/",
+    "workflow_run": 33250853054,
+    "commit": "716f1545c9335e3fa587a9eaa936ac0d897a82ab",
+    "conclusion": "success"
+  },
+  "api": {
+    "url": "https://recycleros-api-pilot.up.railway.app",
+    "release": "8fec8531427b26af7f063289163272f14fde418e",
+    "storage": "postgres",
+    "monitor_run": 33250867140,
+    "monitor_conclusion": "success"
+  },
+  "entities": {
+    "opportunity_id": "OPP-000008",
+    "vehicle_id": "VEH-000007",
+    "vehicle_mileage": 123000,
+    "persisted_procurement_intent": "sell_whole"
+  },
+  "observations": [
+    {
+      "step": "vehicle_mileage",
+      "result": "passed",
+      "detail": "Vehicle Record displayed editable mileage 123000 for VEH-000007. The retained screenshot shows the saved value and edit control; it does not display the prior value."
+    },
+    {
+      "step": "sell_whole_selection",
+      "result": "passed",
+      "detail": "Procurement for OPP-000008 allowed Sell Whole (Resale) to be selected and rendered the outcome-specific Approve Sell Whole command."
+    },
+    {
+      "step": "sell_whole_persistence",
+      "result": "passed",
+      "detail": "Vehicle Record for VEH-000007 displayed Intent Sell Whole after the non-Part-Out decision."
+    },
+    {
+      "step": "personal_buy_selection",
+      "result": "passed",
+      "detail": "The same Procurement screen allowed Personal Buy / Use to be selected and rendered the outcome-specific approval command. This screenshot establishes selection, not persistence of a second decision."
+    },
+    {
+      "step": "pick_list_non_part_out_behavior",
+      "result": "passed_with_context",
+      "detail": "Pick List and Mission Control remained at the existing count of one queued vehicle after the non-Part-Out exercise, consistent with no additional queue item. The retained screens do not expose the queued entity identifier; automated Flutter and connected workflow tests establish the outcome-specific routing contract."
+    }
+  ],
+  "defect_result": {
+    "id": "DEF-RAILWAY-011",
+    "status": "closed_2026-08-29",
+    "basis": "CI, Pages deployment, Railway exact-release monitor, and manual iPhone mileage plus persisted Sell Whole evidence passed."
+  },
+  "screenshots": [
+    {
+      "file": "2026-08-29-iphone-vehicle-mileage-sell-whole.jpg",
+      "displayed_clock": "1:29",
+      "sha256": "e85ed266272752e710307840cd33b1d7698a3bdcc34646c2e31e5b1e596c2b77"
+    },
+    {
+      "file": "2026-08-29-iphone-procurement-sell-whole-selected.jpg",
+      "displayed_clock": "1:29",
+      "sha256": "4627b9d848901a51cf83f1dd492272e5377ceff0d7111b92d70aee47b7161fcc"
+    },
+    {
+      "file": "2026-08-29-iphone-procurement-personal-use-selected.jpg",
+      "displayed_clock": "1:30",
+      "sha256": "491dcbc550dea31ef7ab6c0a865e44c550e3554aaa0e688c49f3db36620cfef3"
+    },
+    {
+      "file": "2026-08-29-iphone-pick-list-after-non-part-out.jpg",
+      "displayed_clock": "1:30",
+      "sha256": "78305907cba1828d8d8a23b60c4d15fb856400c8e170f526262a1f1aa5bf2b6c"
+    },
+    {
+      "file": "2026-08-29-iphone-mission-control-operations.jpg",
+      "displayed_clock": "1:31",
+      "sha256": "e8488b1165f5690d7009d843805cc99d8098036d8d7c1015386be15fc62df9d8"
+    },
+    {
+      "file": "2026-08-29-iphone-mission-control-counts.jpg",
+      "displayed_clock": "1:31",
+      "sha256": "d187407d9db4271548e8c12e250ee9f58e7abaebd19c0af1be75574e6b303bb4"
+    }
+  ],
+  "credential_material_recorded": false
+}

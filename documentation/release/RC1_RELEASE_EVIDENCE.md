@@ -14,13 +14,15 @@
 | Candidate Pages deployment | Passed | Main run `33250152249` built and deployed merge `8fec853`. |
 | Railway API deployment | Passed | Live health reported PostgreSQL and exact release `8fec853`. |
 | Railway public-surface monitor | Passed | Run `33250626205` passed TLS, health, release identity, headers, and hidden docs/OpenAPI. |
-| iPhone field verification | Pending | Requires deployed mileage edit and non-Part-Out evidence. |
+| iPhone field verification | Passed | `VEH-000007` displayed mileage `123000` and persisted Sell Whole; both non-Part-Out options were selectable. |
 
 Candidate branch `codex/rc1-vehicle-procurement-controls`, PR `#32`, and commits
 `12817f7`, `9bc8c7d`, and `c9e61b5` have a reproducible automated build. Push
 run `33247011522` and pull-request run `33247013038` passed every RC1 job. PR
 `#32` merged as `8fec8531427b26af7f063289163272f14fde418e`; Pages and Railway
-now serve that release. `DEF-RAILWAY-011` remains open only for device evidence.
+now serve that release. The August 29 iPhone retest is retained in
+`documentation/release/evidence/railway/2026-08-29-vehicle-procurement-field-manifest.json`.
+`DEF-RAILWAY-011` is closed.
 
 ## Release Gate Status
 

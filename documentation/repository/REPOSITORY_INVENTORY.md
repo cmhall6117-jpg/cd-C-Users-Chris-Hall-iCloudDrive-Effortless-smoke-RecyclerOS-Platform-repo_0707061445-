@@ -1294,6 +1294,9 @@ preserved.
 - `deploy/railway/pilot/pilot.contract.json`
 - `tools/scripts/railway_pilot_contract.py`
 - `tools/scripts/railway_field_smoke.py`
+- `tools/scripts/pilot_postgres_offsite_backup.py`
+- `tools/scripts/register_pilot_offsite_backup_task.ps1`
+- `deploy/pilot/offsite-backup.config.example.json`
 - `services/api/tests/test_railway_pilot_contract.py`
 - `services/api/tests/test_railway_field_smoke.py`
 - `apps/recycleros_pro_mobile/web/index.html`
@@ -1331,6 +1334,11 @@ platform-assigned port, and extends RC1 CI, recovery, monitoring, and evidence
 documents. These files are credential-free and activate no vertical slice. The
 monitor performs read-only public endpoint checks; its scoped GitHub token can
 only maintain the single readiness incident issue.
+
+The August 31 off-platform backup files extend the existing recovery tooling.
+They encrypt before publication, bound retention to valid RecyclerOS artifacts,
+and require explicit local task registration. They contain no destination,
+database credential, private key, or active schedule.
 
 The August 26-28 iPhone files are operator-supplied, non-secret field evidence
 for the existing Flutter pilot. They are not generated package contributions

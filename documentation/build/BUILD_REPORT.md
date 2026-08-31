@@ -479,3 +479,29 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
   behavior, and logout remain separately evidenced
 - Scope: closes the prior multi-attempt entity-chain limitation only; no second
   tester or production gate is passed
+
+## Encrypted Off-Platform Backup Automation Baseline
+
+- Date: August 31, 2026
+- Branch: `codex/railway-offsite-backup-automation`
+- Added provider-neutral `age` recipient encryption around the existing
+  PostgreSQL custom dump and SHA-256 manifest
+- Plaintext scope: temporary staging only, removed on success and failure
+- Publication: ciphertext copied and rehashed before an envelope is created as
+  the completed-backup marker
+- Retention: 14 newest daily points and one older point from each of eight
+  additional ISO weeks
+- Deletion boundary: only structurally valid RecyclerOS ciphertext/envelope
+  pairs; unrelated or malformed files remain untouched
+- Secret boundary: config contains paths and policy only; database URL is read
+  from a separate file and private `age` identities are rejected
+- Scheduler: explicit-confirmation Windows registration script, limited current
+  user, signed-in execution only, no overwrite of an existing task
+- Focused operations tests: 18 passed
+- Complete backend tests: 88 passed, 3 PostgreSQL-only tests skipped
+- Python compilation: API source and all operations scripts passed
+- External state: no task registered, no backup destination selected, no key
+  created, and no Railway networking changed
+- Remaining activation gate: approve a destination and bounded access to
+  private Railway PostgreSQL, escrow the recovery identity, pass an attended
+  run, capture a scheduled run, and restore that encrypted recovery point

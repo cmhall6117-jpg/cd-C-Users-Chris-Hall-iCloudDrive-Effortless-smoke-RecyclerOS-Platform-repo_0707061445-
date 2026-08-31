@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "database_url_file": "C:\\RecyclerOS\\private\\railway-database-url.txt",
+  "destination_directory": "C:\\ApprovedSyncFolder\\RecyclerOS\\encrypted-backups",
+  "age_recipient_file": "C:\\RecyclerOS\\private\\offsite-backup-recipient.txt",
+  "staging_directory": "C:\\RecyclerOS\\backup-staging",
+  "age_executable": "C:\\Program Files\\age\\age.exe",
+  "pg_dump_executable": "C:\\Program Files\\PostgreSQL\\16\\bin\\pg_dump.exe",
+  "keep_daily": 14,
+  "keep_weekly": 8
+}

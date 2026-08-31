@@ -360,3 +360,23 @@ establishes login, workspace selection, Vehicle Record behavior, and logout;
 the six new images are not described as containing those screens. Together,
 the evidence removes the earlier multi-attempt entity-chain limitation for the
 approved one-person pilot without passing a second-tester or production gate.
+
+## Off-Platform Backup Automation Readiness
+
+On August 31, the repository added fail-closed encrypted off-platform backup
+orchestration and a guarded Windows scheduler registration path. The tool wraps
+the existing PostgreSQL custom dump and manifest in a temporary tar, encrypts it
+to a public `age` recipient, verifies the copied ciphertext, publishes an
+integrity envelope last, and applies 14-daily/eight-older-weekly retention only
+to valid RecyclerOS pairs. It rejects private identities and every operational
+path inside Git.
+
+Focused operations evidence is 18 passed. Complete backend evidence is 88
+passed with 3 PostgreSQL-only skips, and API/operations Python compilation
+passed. No external system was changed. This passes the repository
+implementation portion of `DEF-RAILWAY-003`; it does not close the defect or
+pass an RC1 production gate. Live activation still requires an approved synced
+destination, bounded access to private Railway PostgreSQL, an installed and
+pinned `age` executable, cross-device recovery-identity escrow, successful
+attended and scheduled runs, remote-sync confirmation, and a clean-target
+restore from the scheduled encrypted artifact.

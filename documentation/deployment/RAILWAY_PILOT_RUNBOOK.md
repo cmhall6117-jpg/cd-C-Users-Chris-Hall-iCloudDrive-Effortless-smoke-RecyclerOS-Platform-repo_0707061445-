@@ -109,6 +109,14 @@ Before the first field session and after any material test data change:
    `tools/scripts/pilot_postgres_verify.py --require-runtime-data`.
 7. Record the non-secret rehearsal reference in the Railway pilot contract.
 
+Repository-side encrypted off-platform automation is defined in
+`tools/scripts/pilot_postgres_offsite_backup.py`; setup, retention, scheduler,
+and recovery-key controls are in
+`documentation/operations/BACKUP_RESTORE_RUNBOOK.md`. It remains inactive until
+the owner approves a synced destination, a secure way to reach private Railway
+PostgreSQL for each run, and cross-device `age` identity escrow. Do not enable a
+persistent public database proxy for convenience.
+
 Never test restore by overwriting the active pilot volume. Never wipe a Railway
 volume to troubleshoot an application deployment.
 

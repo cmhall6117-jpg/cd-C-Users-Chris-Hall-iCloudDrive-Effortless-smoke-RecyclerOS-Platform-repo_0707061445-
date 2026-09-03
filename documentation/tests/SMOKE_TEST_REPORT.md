@@ -651,3 +651,29 @@ Result on August 28, 2026: passed through Inventory creation.
   logout remain established by the earlier retained iPhone evidence
 - privacy: no credential, real VIN, customer data, token, or GPS metadata is
   present in the six new screenshots
+
+## Encrypted Off-Platform Backup Automation
+
+Result on August 31, 2026: repository implementation passed locally; live
+activation remains blocked external.
+
+- focused operations suite: 18 passed
+- complete backend suite: 88 passed, 3 PostgreSQL-only tests skipped
+- API and operations-script compilation: passed
+- successful-run test: only ciphertext and its integrity envelope reach the
+  destination
+- secret test: database URL and password are absent from the `age` command and
+  envelope
+- failure test: simulated encryption failure leaves no destination artifact and
+  clears plaintext staging
+- publication test: simulated post-copy corruption fails checksum verification
+  and removes the artifact/envelope pair
+- key test: a private `age` identity is rejected
+- path test: operational config and data paths inside Git are rejected
+- retention test: daily and older-weekly boundaries pass while unrelated and
+  malformed files remain untouched
+- task state: not registered
+- live backup state: not attempted
+- remaining evidence: approved destination, secure Railway source access,
+  recovery-key escrow, first attended and scheduled runs, remote sync, and
+  clean-target restore from the scheduled artifact

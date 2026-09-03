@@ -67,7 +67,10 @@
 - Railway's PostgreSQL template is unmanaged. The August 9 manual encrypted
   off-platform backup and clean restore proves one recovery point; PITR and
   daily/weekly native schedules are active. Automated off-platform retention
-  and cross-device key escrow remain separate operational requirements.
+  and cross-device key escrow remain separate operational requirements. The
+  August 31 repository implementation prepares encrypted off-platform cadence
+  and bounded retention but is intentionally inactive until source
+  connectivity, destination, `age` identity escrow, and RPO/RTO are approved.
 - Chris Hall is the named restore and support owner for the one-person Railway
   pilot. These assignments must be revisited before adding another tester or
   promoting the environment beyond pilot scope.

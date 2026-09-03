@@ -32,6 +32,97 @@ overwrite an existing backup unless `--overwrite` is explicitly supplied.
 Copy both files to the approved encrypted off-host destination. A backup is not
 complete until the copy and checksum are verified.
 
+## Automated Encrypted Off-Platform Backup
+
+Repository implementation is available but is not activated. The operator must
+approve the destination, database connection method, recovery-key escrow, and
+RPO/RTO before registering the schedule.
+
+`tools/scripts/pilot_postgres_offsite_backup.py` performs the following guarded
+sequence:
+
+1. Reads a config file containing paths and retention policy, never a database
+   password or private encryption key.
+2. Requires the config, database URL secret file, staging directory, and
+   destination to be outside the Git repository.
+3. Creates the custom PostgreSQL dump, SHA-256 manifest, and tar bundle in a
+   temporary staging directory.
+4. Encrypts the bundle to one public `age` recipient before any backup payload
+   reaches the synced destination.
+5. Copies the ciphertext, verifies its SHA-256 value, and creates the JSON
+   envelope last as the completed-backup marker.
+6. Keeps the newest 14 daily recovery points plus one older point from each of
+   eight additional ISO weeks. Only valid RecyclerOS artifact/envelope pairs
+   are eligible for removal; unrelated and malformed files are left alone.
+7. Removes the temporary dump, plaintext manifest, and tar bundle when the run
+   succeeds or fails.
+
+The config refuses a private `age` identity. Keep only the public recipient on
+the backup workstation. Store the private identity in the approved password
+manager and a separately controlled recovery location. Never store it in Git,
+the synced backup folder, the task command, or chat.
+
+Copy `deploy/pilot/offsite-backup.config.example.json` to a protected location
+outside the repository. Use absolute paths. The database URL file contains a
+secret and must be limited to the operator account. The destination must
+already exist so a misspelled or unavailable sync path fails closed.
+Use absolute executable paths for both `age` and PostgreSQL 16 `pg_dump` because
+Windows scheduled tasks may not inherit the interactive shell's `PATH`.
+
+Railway PostgreSQL has no public endpoint at rest. Do not leave a TCP proxy
+enabled to support this task. Before activation, approve either private-source
+execution or a bounded connection procedure that opens the source only for the
+backup and closes it afterward. The current task runner does not create or
+expose Railway networking.
+
+Validate without connecting to PostgreSQL or writing a backup:
+
+```powershell
+python tools/scripts/pilot_postgres_offsite_backup.py `
+  --config C:\RecyclerOS\private\offsite-backup.config.json `
+  --validate-only
+```
+
+After source connectivity is approved, run one attended backup and confirm that
+the destination contains only a `.tar.age` artifact and its
+`.tar.age.envelope.json` file:
+
+```powershell
+python tools/scripts/pilot_postgres_offsite_backup.py `
+  --config C:\RecyclerOS\private\offsite-backup.config.json
+```
+
+Register the daily Windows task only after that attended run passes. The script
+requires an exact confirmation, validates the config first, refuses to replace
+an existing task, and registers a limited task that runs only while the current
+operator is signed in:
+
+```powershell
+& tools/scripts/register_pilot_offsite_backup_task.ps1 `
+  -ConfigPath C:\RecyclerOS\private\offsite-backup.config.json `
+  -PythonExecutable C:\Path\To\python.exe `
+  -DailyAt 02:00 `
+  -Confirm "REGISTER RECYCLEROS OFFSITE BACKUP"
+```
+
+Disable the automation without deleting backup artifacts:
+
+```powershell
+Unregister-ScheduledTask `
+  -TaskName "RecyclerOS Pilot Off-Platform Backup" `
+  -Confirm:$false
+```
+
+Activation evidence must include config validation, the first attended run,
+the first scheduled run, remote sync confirmation, task history, an escrow
+record that exposes no key material, and a clean-target restore from one of the
+scheduled encrypted artifacts.
+
+To rehearse restore, first verify the ciphertext SHA-256 against the envelope,
+then decrypt the tar into a protected temporary directory using the escrowed
+identity. Extract the dump and its manifest and follow the clean-target restore
+steps below. Remove the decrypted tar, dump, and manifest after verification.
+
 ## Restore Rehearsal
 
 Create a new empty target database through the source admin connection:
@@ -83,8 +174,10 @@ Railway returned `Deleted /recycleros-pilot-2026-08-09-rc1.dump`. The operator
 verified the file was absent, revoked the cleanup SSH key, removed its local key
 files, and confirmed that Railway had no registered SSH keys.
 
-This one-time drill does not satisfy the proposed daily cadence, retention
-policy, native volume schedule, or restore-owner approval.
+This one-time drill did not by itself satisfy the proposed daily cadence or
+retention policy. Later Railway evidence establishes native daily and weekly
+volume schedules plus restore ownership. Automated off-platform execution and
+cross-device key escrow remain unverified.
 
 ## Production Restore Controls
 

@@ -1,4 +1,5 @@
 from collections.abc import Mapping
+import hashlib
 import os
 from pathlib import Path
 from urllib.parse import parse_qs, unquote, urlparse
@@ -22,6 +23,14 @@ def read_secret_setting(
     if not direct_value or not direct_value.strip():
         raise RuntimeError(f"{name} or {name}_FILE is required.")
     return direct_value.strip()
+
+
+def sha256_file(path: Path, *, chunk_size: int = 1024 * 1024) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as source:
+        for chunk in iter(lambda: source.read(chunk_size), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def postgres_command_environment(

@@ -1,5 +1,4 @@
 import argparse
-import hashlib
 import json
 import os
 from pathlib import Path
@@ -8,6 +7,7 @@ import subprocess
 from pilot_postgres_common import (
     postgres_command_environment,
     read_secret_setting,
+    sha256_file,
 )
 
 
@@ -17,7 +17,7 @@ def verify_backup_manifest(backup: Path, manifest_path: Path) -> None:
     except (OSError, json.JSONDecodeError) as exc:
         raise RuntimeError("Unable to read the backup manifest.") from exc
 
-    actual_digest = hashlib.sha256(backup.read_bytes()).hexdigest()
+    actual_digest = sha256_file(backup)
     if manifest.get("file") != backup.name:
         raise RuntimeError("Backup manifest filename does not match the backup.")
     if manifest.get("size_bytes") != backup.stat().st_size:

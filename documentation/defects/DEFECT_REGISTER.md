@@ -311,14 +311,25 @@ owner-only staging dump, verified its absence, revoked the cleanup SSH key,
 removed its local files, and confirmed that Railway again reported no
 registered keys. On August 9, the project owner explicitly assigned Chris Hall
 as restore owner for the one-person pilot. Automated off-platform cadence and
-cross-device key escrow remain unverified.
+cross-device key escrow remain unverified. On August 31, repository-side
+automation was added with public-recipient `age` encryption, ciphertext
+checksum verification, envelope-last publication, 14-daily/eight-weekly
+retention, temporary plaintext cleanup, and a guarded Windows scheduled-task
+registration script. Focused local operations tests pass all 18 checks,
+including encryption-failure cleanup, private-identity rejection, repository
+boundary enforcement, and retention boundaries. No task, destination, key, or
+Railway network exposure was created.
 
 Impact: The one-person pilot has PITR, proven native daily/weekly execution, one
-independent restore point, and assigned ownership. Off-platform automation and
-cross-device key escrow remain defense-in-depth work before broader use.
+independent restore point, and assigned ownership. The repository implementation
+for off-platform automation is ready for operator configuration. Live scheduled
+execution, secure access to private PostgreSQL, and cross-device key escrow
+remain defense-in-depth work before broader use.
 
-Next action: Automate off-platform cadence and retention, escrow the recovery
-key, and approve the RPO/RTO before expanding beyond the one-person pilot.
+Next action: Approve a destination and bounded private-database connection
+method, install and pin `age`, escrow the recovery identity, validate and run one
+attended backup, activate the task, capture a scheduled run, pass a clean-target
+restore, and approve the RPO/RTO before expanding beyond the one-person pilot.
 
 ### Medium
 

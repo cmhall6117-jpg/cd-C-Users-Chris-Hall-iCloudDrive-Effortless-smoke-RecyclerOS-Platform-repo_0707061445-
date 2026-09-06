@@ -66,11 +66,21 @@
 - The Railway API uses one US East replica, one worker, serverless sleep, a 512 MiB memory limit, and private PostgreSQL networking for one approved tester.
 - Railway's PostgreSQL template is unmanaged. The August 9 manual encrypted
   off-platform backup and clean restore proves one recovery point; PITR and
-  daily/weekly native schedules are active. Automated off-platform retention
-  and cross-device key escrow remain separate operational requirements. The
-  August 31 repository implementation prepares encrypted off-platform cadence
-  and bounded retention but is intentionally inactive until source
-  connectivity, destination, `age` identity escrow, and RPO/RTO are approved.
+  daily/weekly native schedules are active. The September 6 attended encrypted
+  export proves the private-tunnel automation and local decryptability;
+  scheduled off-platform retention and cross-device key escrow remain separate
+  operational requirements. The activation path uses Railway CLI's ephemeral
+  SSH tunnel to private PostgreSQL and never requires a public TCP proxy or
+  stored database URL.
+- The protected backup workstation has pinned `age` and PostgreSQL 16 tools, a
+  ciphertext-only synced destination, a validated path-only configuration, and
+  a locally generated recovery identity awaiting cross-device escrow. On
+  September 5, the owner explicitly approved and registered the dedicated
+  no-passphrase Railway SSH key for this backup purpose. On September 6, the
+  owner authorized an encrypted export. The first successful export exposed an
+  orphaned local SSH child; it was stopped, cleanup was corrected, and a second
+  successful export left no tunnel listener or plaintext staging files. The
+  Windows task remains inactive until recovery-identity escrow is evidenced.
 - Chris Hall is the named restore and support owner for the one-person Railway
   pilot. These assignments must be revisited before adding another tester or
   promoting the environment beyond pilot scope.

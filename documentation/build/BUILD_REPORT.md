@@ -505,3 +505,61 @@ Draft pull request #9 is open against `codex/rc1-defect-closure`:
 - Remaining activation gate: approve a destination and bounded access to
   private Railway PostgreSQL, escrow the recovery identity, pass an attended
   run, capture a scheduled run, and restore that encrypted recovery point
+
+## Railway Off-Platform Backup Activation Preparation
+
+- Date: September 4, 2026
+- Branch: `codex/railway-offsite-backup-activation`
+- Source connection: Railway CLI `connect Postgres --tunnel-only` on fixed
+  workstation loopback port 15432; no public PostgreSQL proxy is required
+- Secret handling: Railway's emitted connection URL is captured in process
+  memory, validated as PostgreSQL on exact `127.0.0.1`, and omitted from config,
+  command arguments, errors, backup envelopes, and repository evidence
+- Railway CLI: 5.44.0, executable SHA-256
+  `14ac83c6a3de6c19166d53e86e313ff101b767357c5c43c5dcc2d399ae422d68`
+- `age`: 1.3.2; official Windows archive matched published SHA-256
+  `f48d8f8f9ebe903ab5027ed067652f2cc1db94bc206976430133b905dcd8e8c7`
+- PostgreSQL client: `pg_dump` 16.15; official EDB HTTPS archive computed
+  SHA-256 `25e6fcdfb8caec38691bf461125e7564508760666f7b8e5dc6a5f0818f58f81e`
+  and the extracted executable is not Authenticode-signed
+- Protected state: path-only config, public recipient, temporary private
+  recovery identity, staging directory, and ciphertext-only iCloud destination
+  exist outside Git with restricted ACLs
+- Config validation: passed without connecting or writing a backup
+- Focused tunnel and operations tests: 22 passed
+- Complete backend tests: 92 passed, 3 PostgreSQL-only tests skipped
+- Python compilation: API source and all operations scripts passed
+- External state: on September 5 the owner explicitly approved registration of
+  the dedicated Railway key; Railway lists the expected `ssh-ed25519`
+  fingerprint `SHA256:xP5rWYWVXwUxgj1YKt84WyoblH2CB8SfK4FcGcQvUs8`
+- At the close of preparation, no public network endpoint, backup artifact, or
+  scheduled task had changed
+
+## Railway Off-Platform Backup Attended Activation
+
+- Date: September 6, 2026
+- Authorization: owner explicitly approved export of an encrypted RecyclerOS
+  pilot database backup to the configured iCloud destination
+- First export: `recycleros-pilot-20260906T182318Z-7ca79100.tar.age` and its
+  integrity envelope were published successfully; post-run inspection found an
+  orphaned local `ssh.exe` listener on port 15432, which was stopped manually
+- Cleanup correction: Windows tunnel shutdown now terminates the Railway
+  process tree with `taskkill /T /F`, retaining bounded fallback shutdown
+- Focused tunnel and operations tests after correction: 23 passed
+- Complete backend tests after correction: 93 passed, 3 PostgreSQL-only tests
+  skipped
+- Python compilation and `git diff --check`: passed
+- Proof export: `recycleros-pilot-20260906T183528Z-af467511.tar.age`, 82,136
+  bytes, SHA-256
+  `54f80becdefe2845554055707115f21bfb7fddcae6676bd21f8c869bb8505c94`
+- Integrity envelope: ciphertext hash and size matched; encryption is
+  `age/recipient` and bundle format is tar
+- Recovery-package check: local decryption passed; the 67,744-byte inner dump
+  matched its SHA-256 and size manifest
+- Cleanup proof: plaintext staging entry count 0 and tunnel listener count 0
+- Network boundary: no Railway PostgreSQL public proxy was created
+- Schedule state: not registered; recovery identity remains locally staged
+  pending confirmed cross-device escrow
+- Remaining gate: escrow and remove the workstation recovery identity, register
+  and evidence the scheduled task, confirm off-device sync, and complete a
+  clean-target restore from a scheduled encrypted artifact

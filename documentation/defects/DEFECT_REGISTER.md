@@ -318,18 +318,42 @@ retention, temporary plaintext cleanup, and a guarded Windows scheduled-task
 registration script. Focused local operations tests pass all 18 checks,
 including encryption-failure cleanup, private-identity rejection, repository
 boundary enforcement, and retention boundaries. No task, destination, key, or
-Railway network exposure was created.
+Railway network exposure was created. On September 4, the activation branch
+added a fail-closed Railway SSH-tunnel connection mode. The protected
+workstation now has `age` 1.3.2, PostgreSQL `pg_dump` 16.15, Railway CLI 5.44.0,
+a ciphertext-only synced destination, and a protected config that stores no
+database URL. Config validation passed. The expanded backend suite passed 92
+tests with 3 PostgreSQL-only skips, and Python compilation passed. A dedicated
+Railway SSH key and an `age` recovery identity were generated locally with
+restricted ACLs. On September 5, the owner explicitly approved registering the
+dedicated key, and Railway verified its expected `ssh-ed25519` fingerprint.
+
+On September 6, the owner explicitly approved the encrypted export. The first
+artifact and envelope published successfully, but post-run inspection found an
+orphaned local Railway `ssh.exe` child listening on port 15432. The process was
+stopped manually. Windows cleanup was corrected to terminate the full Railway
+process tree and covered by a regression test. Focused tunnel and operations
+tests then passed 23 checks, the complete backend suite passed 93 tests with 3
+PostgreSQL-only skips, and Python compilation passed. A second attended export
+published `recycleros-pilot-20260906T183528Z-af467511.tar.age` at 82,136 bytes.
+Its SHA-256 and size matched the integrity envelope, local decryption passed,
+and the 67,744-byte inner dump matched its manifest. Post-run plaintext staging
+and tunnel-listener counts were both zero. No public Railway networking was
+created. The recovery identity has not been escrowed and no scheduled task was
+registered.
 
 Impact: The one-person pilot has PITR, proven native daily/weekly execution, one
-independent restore point, and assigned ownership. The repository implementation
-for off-platform automation is ready for operator configuration. Live scheduled
-execution, secure access to private PostgreSQL, and cross-device key escrow
-remain defense-in-depth work before broader use.
+independent restore point, assigned ownership, and a validated private-tunnel
+automation configuration. Attended encrypted execution and local package
+decryptability now pass. Cross-device key escrow, scheduled execution,
+off-device sync confirmation, and a clean-target restore from a scheduled
+artifact remain defense-in-depth work before broader use.
 
-Next action: Approve a destination and bounded private-database connection
-method, install and pin `age`, escrow the recovery identity, validate and run one
-attended backup, activate the task, capture a scheduled run, pass a clean-target
-restore, and approve the RPO/RTO before expanding beyond the one-person pilot.
+Next action: Escrow the private `age` identity in the approved password manager
+and a second controlled recovery location, verify recovery access from another
+device, remove the workstation copy, activate the task, capture a scheduled
+run, confirm off-device sync, pass a clean-target restore, and approve the
+RPO/RTO before expanding beyond the one-person pilot.
 
 ### Medium
 
@@ -581,6 +605,26 @@ credential, bearer token, database URL, or real VIN is recorded.
 
 Result: closed. Editable mileage, selectable procurement outcomes, persisted
 Sell Whole intent, and non-Part-Out routing are evidenced on the live release.
+
+#### DEF-RAILWAY-012: Windows backup cleanup leaves an SSH tunnel child
+
+Status: closed on September 6, 2026
+
+Evidence: The first attended Railway SSH-tunnel backup successfully published
+its encrypted artifact and envelope, but the mandatory post-run check found one
+`ssh.exe` child still listening on workstation port 15432 after the Railway CLI
+parent was signaled. The listener was stopped manually before further work.
+
+Impact: An unattended task could leave a local database tunnel available after
+`pg_dump`, violating the bounded-connection requirement and eventually causing
+later runs to fail on a port conflict.
+
+Resolution: Windows cleanup now invokes `taskkill /PID <railway-pid> /T /F`
+before bounded signal, terminate, and kill fallbacks. A regression test verifies
+full process-tree cleanup without invoking a real process. Focused tests passed
+23 checks and the full backend suite passed 93 with 3 PostgreSQL-only skips. A
+second live encrypted export passed, after which both the port-15432 listener
+count and plaintext staging entry count were zero.
 
 ## Production Launch Preparation
 

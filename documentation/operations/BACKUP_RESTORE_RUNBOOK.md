@@ -41,10 +41,11 @@ RPO/RTO before registering the schedule.
 `tools/scripts/pilot_postgres_offsite_backup.py` performs the following guarded
 sequence:
 
-1. Reads a config file containing paths and retention policy, never a database
-   password or private encryption key.
-2. Requires the config, database URL secret file, staging directory, and
-   destination to be outside the Git repository.
+1. Reads a config file containing paths, source connection mode, and retention
+   policy, never a database password or private encryption key.
+2. Requires the config, staging directory, and destination to be outside the
+   Git repository. Direct URL-file mode also requires the secret file outside
+   Git; Railway SSH-tunnel mode keeps the database URL in process memory only.
 3. Creates the custom PostgreSQL dump, SHA-256 manifest, and tar bundle in a
    temporary staging directory.
 4. Encrypts the bundle to one public `age` recipient before any backup payload
@@ -57,25 +58,39 @@ sequence:
 7. Removes the temporary dump, plaintext manifest, and tar bundle when the run
    succeeds or fails.
 
-The config refuses a private `age` identity. Keep only the public recipient on
-the backup workstation. Store the private identity in the approved password
-manager and a separately controlled recovery location. Never store it in Git,
-the synced backup folder, the task command, or chat.
+The config refuses a private `age` identity. During activation, generate the
+identity in a protected local directory, copy it into the approved password
+manager and a separately controlled recovery location, verify both copies, and
+then remove the local private identity before enabling the schedule. Keep only
+the public recipient on the backup workstation. Never store private identity
+material in Git, the synced backup folder, the task command, or chat.
 
 Copy `deploy/pilot/offsite-backup.config.example.json` to a protected location
-outside the repository. Use absolute paths. The database URL file contains a
-secret and must be limited to the operator account. The destination must
-already exist so a misspelled or unavailable sync path fails closed.
-Use absolute executable paths for both `age` and PostgreSQL 16 `pg_dump` because
+outside the repository. Use absolute paths. The destination must already exist
+so a misspelled or unavailable sync path fails closed. Use absolute executable
+paths for `age`, PostgreSQL 16 `pg_dump`, Railway CLI, and OpenSSH because
 Windows scheduled tasks may not inherit the interactive shell's `PATH`.
 
-Railway PostgreSQL has no public endpoint at rest. Do not leave a TCP proxy
-enabled to support this task. Before activation, approve either private-source
-execution or a bounded connection procedure that opens the source only for the
-backup and closes it afterward. The current task runner does not create or
-expose Railway networking.
+For Railway, use `connection_mode: railway_ssh_tunnel`. The runner starts
+`railway connect Postgres --tunnel-only` against the configured project and
+environment, captures the loopback PostgreSQL URL in memory, and closes the
+tunnel immediately after `pg_dump` finishes. It rejects a URL unless it is a
+PostgreSQL URL for the exact configured `127.0.0.1` port. Railway credentials
+and the database password are never placed in the task arguments, config, or
+backup envelope.
 
-Validate without connecting to PostgreSQL or writing a backup:
+The Railway CLI requires a local SSH key already registered with Railway.
+Unattended execution must use a dedicated key restricted to the operator
+account, named for this backup purpose, and revoked when the automation is
+retired. Do not reuse the recovery encryption identity as the SSH key.
+
+Railway PostgreSQL has no public endpoint at rest. Do not leave a TCP proxy
+enabled to support this task. The Railway SSH-tunnel mode is the approved
+bounded connection procedure: it creates a workstation loopback listener for
+one backup run and does not create or modify Railway public networking.
+
+Validate tool paths, retention, recipient, and tunnel settings without
+connecting to PostgreSQL or writing a backup:
 
 ```powershell
 python tools/scripts/pilot_postgres_offsite_backup.py `
@@ -176,8 +191,12 @@ files, and confirmed that Railway had no registered SSH keys.
 
 This one-time drill did not by itself satisfy the proposed daily cadence or
 retention policy. Later Railway evidence establishes native daily and weekly
-volume schedules plus restore ownership. Automated off-platform execution and
-cross-device key escrow remain unverified.
+volume schedules plus restore ownership. On September 6, 2026, two attended
+encrypted exports reached the configured iCloud destination. The second run,
+after a Windows process-tree cleanup correction, left no tunnel listener or
+plaintext staging, and its ciphertext and decrypted inner dump matched their
+respective manifests. Scheduled off-platform execution, off-device sync
+confirmation, and cross-device key escrow remain unverified.
 
 ## Production Restore Controls
 

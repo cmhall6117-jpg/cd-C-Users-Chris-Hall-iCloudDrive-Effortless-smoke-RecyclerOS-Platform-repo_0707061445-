@@ -677,3 +677,54 @@ activation remains blocked external.
 - remaining evidence: approved destination, secure Railway source access,
   recovery-key escrow, first attended and scheduled runs, remote sync, and
   clean-target restore from the scheduled artifact
+
+## Railway Off-Platform Backup Activation Preparation
+
+Result on September 4, 2026: local activation preparation passed; live access
+and backup execution remain deliberately blocked on owner authorization.
+
+- focused tunnel and operations suite: 22 passed
+- complete backend suite: 92 passed, 3 PostgreSQL-only tests skipped
+- API and operations-script compilation: passed
+- protected path-only config validation: passed
+- connection contract: exact project, environment, service, and loopback port
+  are passed to Railway CLI; database credentials never enter process arguments
+- tunnel contract: non-loopback, wrong-port, malformed, and incomplete
+  PostgreSQL URLs are rejected; captured CLI output is not echoed on failure
+- toolchain: Railway CLI 5.44.0, `age` 1.3.2, and `pg_dump` 16.15 resolve by
+  absolute path
+- destination: ciphertext-only iCloud folder exists outside the repository and
+  contains zero files before the first attended run
+- Railway SSH key: explicitly approved, registered, and verified with expected
+  `ssh-ed25519` fingerprint
+- recovery identity: generated locally with restricted ACL; cross-device escrow
+  not passed
+- attended backup as of preparation: not run; encrypted database export awaited
+  separate approval
+- Windows task: not registered
+- Railway networking: unchanged; no PostgreSQL TCP proxy exists
+
+## Railway Off-Platform Backup Attended Activation
+
+Result on September 6, 2026: attended encrypted export and local package
+verification passed; scheduled activation remains blocked on recovery-key
+escrow.
+
+- export authorization: explicitly approved by the owner
+- first export: artifact and envelope passed, but verification detected one
+  orphaned `ssh.exe` listener on port 15432; it was stopped manually
+- cleanup regression: full Windows Railway process-tree termination added and
+  covered by a dedicated test
+- focused tunnel and operations suite: 23 passed
+- complete backend suite: 93 passed, 3 PostgreSQL-only tests skipped
+- API and operations-script compilation: passed
+- proof artifact: `recycleros-pilot-20260906T183528Z-af467511.tar.age`, 82,136
+  bytes
+- ciphertext envelope: SHA-256 and size matched; `age/recipient`, tar bundle
+- local package verification: decryption passed; 67,744-byte inner dump hash
+  and size matched its manifest
+- cleanup: protected plaintext staging entry count 0; tunnel listener count 0
+- Railway networking: no public PostgreSQL proxy created
+- Windows task: not registered
+- remaining evidence: cross-device identity escrow, scheduled run, off-device
+  sync confirmation, and clean-target restore from a scheduled artifact

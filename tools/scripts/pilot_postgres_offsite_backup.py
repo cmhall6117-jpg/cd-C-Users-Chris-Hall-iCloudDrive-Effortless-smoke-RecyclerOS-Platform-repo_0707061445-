@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+from contextlib import nullcontext
 from dataclasses import dataclass
 from datetime import datetime, timezone
 import json
@@ -12,7 +13,8 @@ import shutil
 import subprocess
 import tarfile
 import tempfile
-from typing import Any, Callable
+from typing import Any, Callable, ContextManager
+from uuid import UUID
 
 from pilot_postgres_backup import create_backup
 from pilot_postgres_common import (
@@ -20,12 +22,25 @@ from pilot_postgres_common import (
     read_secret_setting,
     sha256_file,
 )
+from pilot_railway_tunnel import (
+    RailwayTunnelSettings,
+    open_railway_postgres_tunnel,
+    resolve_railway_tunnel_tools,
+)
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 CONFIG_KEYS = {
     "schema_version",
+    "connection_mode",
     "database_url_file",
+    "railway_executable",
+    "railway_ssh_executable",
+    "railway_project_id",
+    "railway_environment",
+    "railway_service",
+    "railway_local_port",
+    "railway_tunnel_timeout_seconds",
     "destination_directory",
     "age_recipient_file",
     "staging_directory",
@@ -43,7 +58,8 @@ ARTIFACT_PATTERN = re.compile(
 @dataclass(frozen=True)
 class OffsiteBackupConfig:
     config_path: Path
-    database_url_file: Path
+    database_url_file: Path | None
+    railway_tunnel: RailwayTunnelSettings | None
     destination_directory: Path
     age_recipient_file: Path
     staging_directory: Path
@@ -55,7 +71,8 @@ class OffsiteBackupConfig:
 
 @dataclass(frozen=True)
 class RuntimeSettings:
-    database_url: str
+    database_url: str | None
+    railway_tunnel: RailwayTunnelSettings | None
     age_recipient: str
     age_executable: str
     pg_dump_executable: str
@@ -89,6 +106,32 @@ def _require_count(data: dict[str, Any], name: str, default: int, minimum: int) 
     if value < minimum or value > 365:
         raise RuntimeError(f"{name} must be between {minimum} and 365.")
     return value
+
+
+def _require_int(
+    data: dict[str, Any],
+    name: str,
+    default: int,
+    minimum: int,
+    maximum: int,
+) -> int:
+    value = data.get(name, default)
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise RuntimeError(f"{name} must be an integer.")
+    if value < minimum or value > maximum:
+        raise RuntimeError(f"{name} must be between {minimum} and {maximum}.")
+    return value
+
+
+def _require_uuid(data: dict[str, Any], name: str) -> str:
+    value = _require_string(data, name)
+    try:
+        parsed = UUID(value)
+    except ValueError as exc:
+        raise RuntimeError(f"{name} must be a UUID.") from exc
+    if str(parsed) != value.lower():
+        raise RuntimeError(f"{name} must use canonical UUID form.")
+    return str(parsed)
 
 
 def _absolute_path(value: str, name: str) -> Path:
@@ -134,10 +177,68 @@ def load_config(
     if data.get("schema_version") != 1:
         raise RuntimeError("schema_version must be 1.")
 
-    database_url_file = _absolute_path(
-        _require_string(data, "database_url_file"),
-        "database_url_file",
-    )
+    connection_mode = data.get("connection_mode", "database_url_file")
+    if connection_mode not in {"database_url_file", "railway_ssh_tunnel"}:
+        raise RuntimeError(
+            "connection_mode must be database_url_file or railway_ssh_tunnel."
+        )
+    railway_keys = {
+        "railway_executable",
+        "railway_ssh_executable",
+        "railway_project_id",
+        "railway_environment",
+        "railway_service",
+        "railway_local_port",
+        "railway_tunnel_timeout_seconds",
+    }
+    database_url_file = None
+    railway_tunnel = None
+    if connection_mode == "database_url_file":
+        configured_railway_keys = sorted(railway_keys.intersection(data))
+        if configured_railway_keys:
+            raise RuntimeError(
+                "Railway tunnel keys require connection_mode railway_ssh_tunnel."
+            )
+        database_url_file = _absolute_path(
+            _require_string(data, "database_url_file"),
+            "database_url_file",
+        )
+    else:
+        if "database_url_file" in data:
+            raise RuntimeError(
+                "database_url_file must not be stored for Railway SSH tunnel mode."
+            )
+        railway_tunnel = RailwayTunnelSettings(
+            railway_executable=str(
+                _absolute_path(
+                    _require_string(data, "railway_executable"),
+                    "railway_executable",
+                )
+            ),
+            ssh_executable=str(
+                _absolute_path(
+                    _require_string(data, "railway_ssh_executable"),
+                    "railway_ssh_executable",
+                )
+            ),
+            project_id=_require_uuid(data, "railway_project_id"),
+            environment=_require_string(data, "railway_environment"),
+            service=_require_string(data, "railway_service"),
+            local_port=_require_int(
+                data,
+                "railway_local_port",
+                15432,
+                1024,
+                65535,
+            ),
+            startup_timeout_seconds=_require_int(
+                data,
+                "railway_tunnel_timeout_seconds",
+                30,
+                10,
+                120,
+            ),
+        )
     destination_directory = _absolute_path(
         _require_string(data, "destination_directory"),
         "destination_directory",
@@ -151,11 +252,13 @@ def load_config(
         "staging_directory",
     )
 
-    for path, name in (
-        (database_url_file, "database_url_file"),
+    protected_paths = [
         (destination_directory, "destination_directory"),
         (age_recipient_file, "age_recipient_file"),
-    ):
+    ]
+    if database_url_file is not None:
+        protected_paths.append((database_url_file, "database_url_file"))
+    for path, name in protected_paths:
         _reject_repository_path(path, name, repository_root)
     _reject_repository_path(
         staging_directory,
@@ -163,7 +266,7 @@ def load_config(
         repository_root,
     )
 
-    if not database_url_file.is_file():
+    if database_url_file is not None and not database_url_file.is_file():
         raise RuntimeError("database_url_file must name an existing file.")
     if not age_recipient_file.is_file():
         raise RuntimeError("age_recipient_file must name an existing file.")
@@ -189,6 +292,7 @@ def load_config(
     return OffsiteBackupConfig(
         config_path=config_path,
         database_url_file=database_url_file,
+        railway_tunnel=railway_tunnel,
         destination_directory=destination_directory,
         age_recipient_file=age_recipient_file,
         staging_directory=staging_directory,
@@ -220,17 +324,36 @@ def validate_runtime(config: OffsiteBackupConfig) -> RuntimeSettings:
     pg_dump_executable = shutil.which(config.pg_dump_executable)
     if pg_dump_executable is None:
         raise RuntimeError("The configured pg_dump executable is not available.")
-    database_url = read_secret_setting(
-        "DATABASE_URL",
-        environ={"DATABASE_URL_FILE": str(config.database_url_file)},
-    )
-    postgres_command_environment(database_url, environ={})
+    database_url = None
+    railway_tunnel = None
+    if config.database_url_file is not None:
+        database_url = read_secret_setting(
+            "DATABASE_URL",
+            environ={"DATABASE_URL_FILE": str(config.database_url_file)},
+        )
+        postgres_command_environment(database_url, environ={})
+    elif config.railway_tunnel is not None:
+        railway_tunnel = resolve_railway_tunnel_tools(config.railway_tunnel)
+    else:
+        raise RuntimeError("Backup configuration has no database connection mode.")
     return RuntimeSettings(
         database_url=database_url,
+        railway_tunnel=railway_tunnel,
         age_recipient=_read_age_recipient(config.age_recipient_file),
         age_executable=age_executable,
         pg_dump_executable=pg_dump_executable,
     )
+
+
+def _database_connection(
+    runtime: RuntimeSettings,
+    tunnel_opener: Callable[[RailwayTunnelSettings], ContextManager[str]],
+) -> ContextManager[str]:
+    if runtime.database_url is not None:
+        return nullcontext(runtime.database_url)
+    if runtime.railway_tunnel is not None:
+        return tunnel_opener(runtime.railway_tunnel)
+    raise RuntimeError("Backup runtime has no database connection mode.")
 
 
 def _utc_seconds(value: datetime | None) -> datetime:
@@ -386,6 +509,9 @@ def create_offsite_backup(
     artifact_id: str | None = None,
     age_runner: Callable[..., Any] | None = None,
     backup_creator: Callable[..., Path] | None = None,
+    tunnel_opener: Callable[
+        [RailwayTunnelSettings], ContextManager[str]
+    ] = open_railway_postgres_tunnel,
 ) -> PublishedBackup:
     runtime = validate_runtime(config)
     now = _utc_seconds(now)
@@ -403,11 +529,12 @@ def create_offsite_backup(
     ) as temporary_name:
         temporary = Path(temporary_name)
         backup = temporary / "recycleros-pilot.dump"
-        backup_manifest = backup_creator(
-            backup,
-            database_url=runtime.database_url,
-            pg_dump_executable=runtime.pg_dump_executable,
-        )
+        with _database_connection(runtime, tunnel_opener) as database_url:
+            backup_manifest = backup_creator(
+                backup,
+                database_url=database_url,
+                pg_dump_executable=runtime.pg_dump_executable,
+            )
         bundle = temporary / "recycleros-pilot.tar"
         encrypted_bundle = temporary / artifact_name
         _write_bundle(bundle, backup, backup_manifest)

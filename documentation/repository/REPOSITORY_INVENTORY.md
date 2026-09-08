@@ -1295,10 +1295,12 @@ preserved.
 - `tools/scripts/railway_pilot_contract.py`
 - `tools/scripts/railway_field_smoke.py`
 - `tools/scripts/pilot_postgres_offsite_backup.py`
+- `tools/scripts/pilot_railway_tunnel.py`
 - `tools/scripts/register_pilot_offsite_backup_task.ps1`
 - `deploy/pilot/offsite-backup.config.example.json`
 - `services/api/tests/test_railway_pilot_contract.py`
 - `services/api/tests/test_railway_field_smoke.py`
+- `services/api/tests/test_pilot_railway_tunnel.py`
 - `apps/recycleros_pro_mobile/web/index.html`
 - `apps/recycleros_pro_mobile/web/manifest.json`
 - `apps/recycleros_pro_mobile/web/robots.txt`

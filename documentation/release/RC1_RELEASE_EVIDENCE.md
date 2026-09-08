@@ -153,7 +153,7 @@ Cloud resources.
 | Full RC1 CI | Passed | Push run `32733071474` and PR run `32733139755` passed all 10 jobs for the verified one-person contract. |
 | Railway account and budget controls | Passed live | Private Pro project, MFA/passkey, USD 20 warning and USD 30 hard limit verified; expected monthly minimum is USD 20. |
 | Runtime, domain, and sealed variables | Passed live | Successful US East API/PostgreSQL deployments, public HTTPS API, private database, sealed operator credential, exact release identity. |
-| Database backup and restore | Passed for one-person pilot | August 9 custom dump, checksum match, encrypted off-platform copy, clean restore, staging cleanup, live PITR, and restore-owner assignment passed. August 24 history proves daily and weekly native schedules produced real snapshots. Off-platform automation and key escrow remain broader-use hardening under `DEF-RAILWAY-003`. |
+| Database backup and restore | Passed for one-person pilot | August 9 custom dump, checksum match, encrypted off-platform copy, clean restore, staging cleanup, live PITR, and restore-owner assignment passed. August 24 history proves daily and weekly native schedules produced real snapshots. September 6 attended encrypted automation and local decrypt/manifest verification passed. Scheduled off-platform execution and cross-device key escrow remain broader-use hardening under `DEF-RAILWAY-003`. |
 | Monitoring and protected acceptance | Passed for one-person pilot | Two-hour monitoring, simulated incident delivery and recovery, owner approval, and protected acceptance run `32770410381` passed. Release-identity recovery run `33190365952` closed incident `#24`; exact-release main run `33250867140` later passed. `DEF-RAILWAY-004` and `DEF-RAILWAY-010` are closed. |
 | Live tenant-scoped API working path | Passed for one-person pilot | Field run `20260824212230-5fd820be` passed 18 checks from login through inventory and revoked-session rejection. |
 | Manual Flutter device working path | Passed for one-person pilot | Initial evidence covers login, workspace selection, the core path through inventory, and Sign out returning to Sign in. The August 29 retest records `VEH-000007` with editable mileage `123000`, persisted Sell Whole intent, and both non-Part-Out choices selectable. Automated coverage pairs logout with HTTP 204 and revoked-token HTTP 401. |
@@ -380,3 +380,48 @@ destination, bounded access to private Railway PostgreSQL, an installed and
 pinned `age` executable, cross-device recovery-identity escrow, successful
 attended and scheduled runs, remote-sync confirmation, and a clean-target
 restore from the scheduled encrypted artifact.
+
+## Off-Platform Backup Activation Preparation
+
+On September 4, the protected workstation was prepared for private Railway
+PostgreSQL backup without creating a public TCP proxy. The repository now opens
+Railway CLI's `--tunnel-only` connection for the duration of `pg_dump`, accepts
+only the configured `127.0.0.1` endpoint, and keeps Railway's database URL out
+of config, command arguments, errors, and retained evidence.
+
+Pinned Railway CLI 5.44.0, `age` 1.3.2, and PostgreSQL `pg_dump` 16.15 resolve
+by absolute path. The protected path-only config validates, the ciphertext-only
+synced destination exists outside Git, focused tests pass 22 checks, the full
+backend suite passes 92 with 3 PostgreSQL-only skips, and Python compilation
+passes. The dedicated SSH key and recovery identity have restricted local ACLs.
+
+On September 5, the owner explicitly approved registering the dedicated
+no-passphrase backup key, and Railway verified its expected `ssh-ed25519`
+fingerprint. No public Railway networking changed. At the close of that
+preparation step, the live encrypted export still required separate
+authorization, no scheduled task had run, and cross-device recovery-identity
+escrow was not evidenced.
+
+## Off-Platform Backup Attended Activation
+
+On September 6, the owner explicitly authorized the encrypted pilot export to
+the configured iCloud destination. The first encrypted artifact and envelope
+published successfully, but a required post-run check found the spawned
+`ssh.exe` process still listening on workstation port 15432. The listener was
+stopped, Windows cleanup was changed to terminate the full Railway process tree,
+and a dedicated regression test was added.
+
+After correction, focused tunnel and operations tests passed 23 checks, the
+full backend suite passed 93 tests with 3 PostgreSQL-only skips, and Python
+compilation passed. A second attended run published
+`recycleros-pilot-20260906T183528Z-af467511.tar.age` at 82,136 bytes. Its
+SHA-256 and size matched the envelope. Local decryption passed, the 67,744-byte
+inner PostgreSQL dump matched its manifest, plaintext staging returned to zero
+entries, and port 15432 returned to zero listeners. No public database proxy
+was created.
+
+The Windows task remains unregistered because cross-device recovery-identity
+escrow is not yet evidenced. A scheduled run, off-device sync confirmation, and
+a clean-target restore from a scheduled artifact also remain outstanding.
+`DEF-RAILWAY-003` therefore stays open, and no production recovery gate is
+claimed by this attended run.

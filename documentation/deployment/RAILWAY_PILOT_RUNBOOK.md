@@ -98,13 +98,13 @@ alone also cannot rotate an existing database credential.
 Before the first field session and after any material test data change:
 
 1. Confirm Railway's daily and weekly volume backups are current.
-2. Schedule a maintenance window and temporarily enable the PostgreSQL TCP
-   proxy only for the named restore owner.
-3. Run `tools/scripts/pilot_postgres_backup.py` from the protected workstation
-   with the database URL supplied through a temporary environment variable.
-4. Retain the custom-format dump and SHA-256 manifest in the encrypted approved
+2. Run `tools/scripts/pilot_postgres_offsite_backup.py` from the protected
+   workstation with `connection_mode` set to `railway_ssh_tunnel`.
+3. Require the runner to close its loopback tunnel after `pg_dump` and confirm
+   that no PostgreSQL TCP proxy was enabled in Railway.
+4. Retain only the encrypted artifact and integrity envelope in the approved
    off-platform location.
-5. Clear the local environment variable and disable the TCP proxy immediately.
+5. Confirm the artifact has synced before ending the field session.
 6. Restore into a separate clean PostgreSQL 16 target and run
    `tools/scripts/pilot_postgres_verify.py --require-runtime-data`.
 7. Record the non-secret rehearsal reference in the Railway pilot contract.
@@ -112,10 +112,12 @@ Before the first field session and after any material test data change:
 Repository-side encrypted off-platform automation is defined in
 `tools/scripts/pilot_postgres_offsite_backup.py`; setup, retention, scheduler,
 and recovery-key controls are in
-`documentation/operations/BACKUP_RESTORE_RUNBOOK.md`. It remains inactive until
-the owner approves a synced destination, a secure way to reach private Railway
-PostgreSQL for each run, and cross-device `age` identity escrow. Do not enable a
-persistent public database proxy for convenience.
+`documentation/operations/BACKUP_RESTORE_RUNBOOK.md`. Railway SSH-tunnel mode is
+the approved bounded source connection and must use a dedicated registered SSH
+key. The schedule remains inactive until the owner confirms cross-device `age`
+identity escrow and one attended encrypted backup passes. The attended backup
+condition passed on September 6, 2026; identity escrow remains outstanding. Do
+not enable a persistent public database proxy for convenience.
 
 Never test restore by overwriting the active pilot volume. Never wipe a Railway
 volume to troubleshoot an application deployment.

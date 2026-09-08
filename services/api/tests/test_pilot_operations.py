@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from datetime import datetime, timezone
 import json
 from pathlib import Path
@@ -63,6 +64,53 @@ def _offsite_config(
         pilot_postgres_offsite_backup.shutil,
         "which",
         lambda executable: executable,
+    )
+    return pilot_postgres_offsite_backup.load_config(
+        config_path,
+        repository_root=tmp_path / "repository",
+    )
+
+
+def _railway_offsite_config(tmp_path, monkeypatch):
+    destination = tmp_path / "destination"
+    staging = tmp_path / "staging"
+    destination.mkdir()
+    staging.mkdir()
+    recipient_file = tmp_path / "recipient"
+    recipient_file.write_text("age1testrecipient", encoding="utf-8")
+    config_path = tmp_path / "offsite-backup.json"
+    config_path.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "connection_mode": "railway_ssh_tunnel",
+                "railway_executable": str(tmp_path / "railway"),
+                "railway_ssh_executable": str(tmp_path / "ssh"),
+                "railway_project_id": "22bdb278-c849-4c65-bd93-0031053344a1",
+                "railway_environment": "pilot",
+                "railway_service": "Postgres",
+                "railway_local_port": 15432,
+                "railway_tunnel_timeout_seconds": 30,
+                "destination_directory": str(destination),
+                "age_recipient_file": str(recipient_file),
+                "staging_directory": str(staging),
+                "age_executable": "age",
+                "pg_dump_executable": "pg_dump",
+                "keep_daily": 14,
+                "keep_weekly": 8,
+            }
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(
+        pilot_postgres_offsite_backup.shutil,
+        "which",
+        lambda executable: executable,
+    )
+    monkeypatch.setattr(
+        pilot_postgres_offsite_backup,
+        "resolve_railway_tunnel_tools",
+        lambda settings: settings,
     )
     return pilot_postgres_offsite_backup.load_config(
         config_path,
@@ -146,6 +194,41 @@ def test_offsite_backup_publishes_only_ciphertext_and_envelope(
     assert envelope["artifact"]["size_bytes"] == 26
     assert "secret_value" not in " ".join(captured_command)
     assert DATABASE_URL not in result.envelope_path.read_text(encoding="utf-8")
+    assert list(config.staging_directory.iterdir()) == []
+
+
+def test_offsite_backup_uses_ephemeral_railway_tunnel(monkeypatch, tmp_path):
+    config = _railway_offsite_config(tmp_path, monkeypatch)
+    observed = {}
+
+    @contextmanager
+    def fake_tunnel(settings):
+        observed["settings"] = settings
+        yield "postgresql://pilot_user:secret_value@127.0.0.1:15432/pilot_db"
+
+    def fake_backup(output, *, database_url, pg_dump_executable):
+        observed["database_url"] = database_url
+        output.write_bytes(b"plaintext-pilot-backup")
+        manifest = output.with_suffix(f"{output.suffix}.manifest.json")
+        manifest.write_text("{}\n", encoding="utf-8")
+        return manifest
+
+    def fake_age(command, *, check):
+        encrypted_output = Path(command[command.index("--output") + 1])
+        encrypted_output.write_bytes(b"age-encrypted-pilot-backup")
+
+    pilot_postgres_offsite_backup.create_offsite_backup(
+        config,
+        now=datetime(2026, 9, 4, 12, 30, tzinfo=timezone.utc),
+        artifact_id="0123abcd",
+        age_runner=fake_age,
+        backup_creator=fake_backup,
+        tunnel_opener=fake_tunnel,
+    )
+
+    assert observed["settings"].service == "Postgres"
+    assert observed["database_url"].startswith("postgresql://pilot_user:")
+    assert config.database_url_file is None
     assert list(config.staging_directory.iterdir()) == []
 
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 from contextlib import nullcontext
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 import json
 import os
 from pathlib import Path
@@ -449,6 +449,7 @@ def _load_record(envelope_path: Path) -> BackupRecord | None:
             }
             and envelope.get("bundle", {}).get("format") == "tar"
             and created_at == expected_time
+            and sha256_file(artifact_path) == artifact["sha256"]
         )
     except (
         AttributeError,
@@ -483,12 +484,29 @@ def apply_retention(
             records.append(record)
     records.sort(key=lambda record: record.created_at, reverse=True)
 
-    retained = set(records[:keep_daily])
+    retained: set[BackupRecord] = set()
+    daily_periods: set[date] = set()
+    for record in records:
+        day = record.created_at.date()
+        if day not in daily_periods:
+            retained.add(record)
+            daily_periods.add(day)
+        if len(daily_periods) == keep_daily:
+            break
+
+    daily_weeks = {
+        record.created_at.isocalendar()[:2]
+        for record in retained
+    }
     weekly_periods: set[tuple[int, int]] = set()
-    for record in records[keep_daily:]:
+    for record in records:
         iso_year, iso_week, _ = record.created_at.isocalendar()
         period = (iso_year, iso_week)
-        if period not in weekly_periods and len(weekly_periods) < keep_weekly:
+        if (
+            period not in daily_weeks
+            and period not in weekly_periods
+            and len(weekly_periods) < keep_weekly
+        ):
             retained.add(record)
             weekly_periods.add(period)
 

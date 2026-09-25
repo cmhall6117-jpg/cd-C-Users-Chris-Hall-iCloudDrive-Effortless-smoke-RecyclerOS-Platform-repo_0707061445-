@@ -52,9 +52,15 @@ sequence:
    reaches the synced destination.
 5. Copies the ciphertext, verifies its SHA-256 value, and creates the JSON
    envelope last as the completed-backup marker.
-6. Keeps the newest 14 daily recovery points plus one older point from each of
-   eight additional ISO weeks. Only valid RecyclerOS artifact/envelope pairs
-   are eligible for removal; unrelated and malformed files are left alone.
+6. Keeps the newest recovery point on each of the 14 most recent UTC dates,
+   plus the newest point from each of eight additional ISO weeks. Multiple
+   attended runs or retries on one date do not consume additional daily slots;
+   weeks already represented by daily points do not consume weekly slots.
+   Ciphertext must match its envelope's SHA-256 and size before it can count
+   toward retention or be removed. Unrelated, malformed, unreadable, and
+   checksum-mismatched pairs are left alone and do not displace valid history.
+   Retention reads each eligible ciphertext to verify integrity, which adds
+   disk or sync-provider I/O as the backup collection grows.
 7. Removes the temporary dump, plaintext manifest, and tar bundle when the run
    succeeds or fails.
 

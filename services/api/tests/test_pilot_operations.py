@@ -318,38 +318,40 @@ def test_offsite_backup_config_must_be_outside_repository(tmp_path):
         )
 
 
+def _write_offsite_retention_record(destination, created_at, identifier):
+    timestamp = created_at.astimezone(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    artifact_name = f"recycleros-pilot-{timestamp}-{identifier}.tar.age"
+    artifact = destination / artifact_name
+    artifact.write_bytes(b"ciphertext")
+    envelope = destination / f"{artifact_name}.envelope.json"
+    envelope.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "created_at": created_at.isoformat().replace("+00:00", "Z"),
+                "artifact": {
+                    "file": artifact_name,
+                    "sha256": pilot_postgres_offsite_backup.sha256_file(artifact),
+                    "size_bytes": artifact.stat().st_size,
+                },
+                "encryption": {
+                    "tool": "age",
+                    "mode": "recipient",
+                },
+                "bundle": {"format": "tar"},
+            }
+        ),
+        encoding="utf-8",
+    )
+    return artifact, envelope
+
+
 def test_offsite_retention_keeps_daily_and_older_weekly_boundaries(tmp_path):
     destination = tmp_path / "destination"
     destination.mkdir()
 
     def write_record(created_at, identifier):
-        timestamp = created_at.strftime("%Y%m%dT%H%M%SZ")
-        artifact_name = (
-            f"recycleros-pilot-{timestamp}-{identifier}.tar.age"
-        )
-        artifact = destination / artifact_name
-        artifact.write_bytes(b"ciphertext")
-        envelope = destination / f"{artifact_name}.envelope.json"
-        envelope.write_text(
-            json.dumps(
-                {
-                    "schema_version": 1,
-                    "created_at": created_at.isoformat().replace("+00:00", "Z"),
-                    "artifact": {
-                        "file": artifact_name,
-                        "sha256": "0" * 64,
-                        "size_bytes": artifact.stat().st_size,
-                    },
-                    "encryption": {
-                        "tool": "age",
-                        "mode": "recipient",
-                    },
-                    "bundle": {"format": "tar"},
-                }
-            ),
-            encoding="utf-8",
-        )
-        return artifact, envelope
+        return _write_offsite_retention_record(destination, created_at, identifier)
 
     records = [
         write_record(datetime(2026, 8, 29, tzinfo=timezone.utc), "00000001"),
@@ -379,6 +381,142 @@ def test_offsite_retention_keeps_daily_and_older_weekly_boundaries(tmp_path):
     assert unrelated.is_file()
     assert invalid_artifact.is_file()
     assert invalid_envelope.is_file()
+
+
+def test_offsite_retention_counts_distinct_utc_dates(tmp_path):
+    destination = tmp_path / "destination"
+    destination.mkdir()
+    timestamps = [
+        "2026-09-06T20:00:00Z",
+        "2026-09-07T00:30:00+05:00",  # September 6 in UTC; an older retry.
+        "2026-09-06T00:30:00+05:00",  # September 5 in UTC.
+        "2026-09-04T20:00:00Z",
+    ]
+    records = [
+        _write_offsite_retention_record(
+            destination,
+            datetime.fromisoformat(timestamp.replace("Z", "+00:00")),
+            f"{index:08x}",
+        )
+        for index, timestamp in enumerate(timestamps)
+    ]
+
+    removed = pilot_postgres_offsite_backup.apply_retention(
+        destination,
+        keep_daily=2,
+        keep_weekly=0,
+    )
+
+    assert set(removed) == {records[1][0].name, records[3][0].name}
+    assert all(path.is_file() for index in (0, 2) for path in records[index])
+    assert all(not path.exists() for index in (1, 3) for path in records[index])
+
+
+def test_offsite_retention_keeps_additional_iso_weeks_across_year_boundary(
+    tmp_path,
+):
+    destination = tmp_path / "destination"
+    destination.mkdir()
+    timestamps = [
+        "2026-01-07T12:00:00Z",  # ISO 2026-W02: first daily point.
+        "2026-01-06T12:00:00Z",  # ISO 2026-W02: second daily point.
+        "2026-01-05T12:00:00Z",  # Already covered by daily points.
+        "2026-01-04T12:00:00Z",  # ISO 2026-W01: first weekly point.
+        "2026-01-03T12:00:00Z",  # Same ISO week.
+        "2025-12-31T12:00:00Z",  # Also ISO 2026-W01, despite calendar year.
+        "2025-12-28T12:00:00Z",  # ISO 2025-W52: second weekly point.
+        "2025-12-27T12:00:00Z",  # Same ISO week.
+        "2025-12-21T12:00:00Z",  # Outside retained daily/weekly points.
+    ]
+    records = [
+        _write_offsite_retention_record(
+            destination,
+            datetime.fromisoformat(timestamp.replace("Z", "+00:00")),
+            f"{index:08x}",
+        )
+        for index, timestamp in enumerate(timestamps)
+    ]
+    retained_indices = {0, 1, 3, 6}
+
+    removed = pilot_postgres_offsite_backup.apply_retention(
+        destination,
+        keep_daily=2,
+        keep_weekly=2,
+    )
+
+    assert set(removed) == {
+        pair[0].name
+        for index, pair in enumerate(records)
+        if index not in retained_indices
+    }
+    for index, pair in enumerate(records):
+        assert all(path.is_file() == (index in retained_indices) for path in pair)
+
+
+def test_offsite_retention_ignores_same_size_corruption_in_newest_and_old_records(
+    tmp_path,
+):
+    destination = tmp_path / "destination"
+    destination.mkdir()
+    records = [
+        _write_offsite_retention_record(
+            destination,
+            datetime(2026, 9, day, tzinfo=timezone.utc),
+            f"{day:08x}",
+        )
+        for day in (6, 5, 4, 3, 2)
+    ]
+    for index in (0, 4):
+        artifact = records[index][0]
+        original_size = artifact.stat().st_size
+        artifact.write_bytes(b"corruption")
+        assert artifact.stat().st_size == original_size
+
+    removed = pilot_postgres_offsite_backup.apply_retention(
+        destination,
+        keep_daily=2,
+        keep_weekly=0,
+    )
+
+    assert removed == (records[3][0].name,)
+    # Corrupt pairs remain untouched, and cannot displace valid recovery points.
+    assert all(path.is_file() for index in (0, 1, 2, 4) for path in records[index])
+    assert all(not path.exists() for path in records[3])
+
+
+def test_offsite_retention_ignores_unreadable_ciphertext(monkeypatch, tmp_path):
+    destination = tmp_path / "destination"
+    destination.mkdir()
+    records = [
+        _write_offsite_retention_record(
+            destination,
+            datetime(2026, 9, day, tzinfo=timezone.utc),
+            f"{day:08x}",
+        )
+        for day in (6, 5, 4)
+    ]
+    original_sha256 = pilot_postgres_offsite_backup.sha256_file
+
+    def fail_newest_digest(path):
+        if path == records[0][0]:
+            raise PermissionError("simulated unavailable synced ciphertext")
+        return original_sha256(path)
+
+    monkeypatch.setattr(
+        pilot_postgres_offsite_backup,
+        "sha256_file",
+        fail_newest_digest,
+    )
+
+    removed = pilot_postgres_offsite_backup.apply_retention(
+        destination,
+        keep_daily=1,
+        keep_weekly=0,
+    )
+
+    assert removed == (records[2][0].name,)
+    assert all(path.is_file() for index in (0, 1) for path in records[index])
+    assert all(not path.exists() for path in records[2])
 
 
 def test_restore_requires_exact_target_confirmation(monkeypatch, tmp_path):

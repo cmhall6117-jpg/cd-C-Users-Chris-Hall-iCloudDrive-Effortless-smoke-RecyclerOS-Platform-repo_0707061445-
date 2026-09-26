@@ -69,8 +69,11 @@ jobs:
         run: python tools/scripts/rc1_postgres_migrate.py
         env:
           DATABASE_URL: postgresql://recycleros:recycleros_test_password@localhost:5432/recycleros_test
-      - name: Verify durable workflow and auth across app restart
-        run: PYTHONPATH=services/api/src pytest -q services/api/tests/test_postgres_runtime.py
+      - name: Verify durable workflow, auth, and inventory provenance
+        run: >-
+          PYTHONPATH=services/api/src pytest -q
+          services/api/tests/test_postgres_runtime.py
+          services/api/tests/test_inventory_provenance.py
         env:
           DATABASE_URL: postgresql://recycleros:recycleros_test_password@localhost:5432/recycleros_test
           RECYCLEROS_DEPLOYMENT_MODE: production

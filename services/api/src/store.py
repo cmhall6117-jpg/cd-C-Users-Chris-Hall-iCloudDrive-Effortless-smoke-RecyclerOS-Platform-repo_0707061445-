@@ -378,6 +378,8 @@ class InMemoryStore:
                 session = self._harvest_sessions.get(session_id)
                 if session is None or not self._belongs_to(session, tenant):
                     return None
+                if vehicle_id is not None and session["vehicle_id"] != vehicle_id:
+                    return None
 
             item_id = self._id()
             now = self._now()

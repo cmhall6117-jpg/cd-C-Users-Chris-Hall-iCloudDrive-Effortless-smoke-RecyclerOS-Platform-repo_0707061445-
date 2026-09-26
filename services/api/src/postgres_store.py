@@ -800,7 +800,7 @@ class PostgresStore:
             if session_id is not None:
                 cursor.execute(
                     """
-                    SELECT id
+                    SELECT vehicle_id::text AS vehicle_id
                     FROM harvest_sessions
                     WHERE id::text = %s
                       AND organization_id = %s
@@ -808,7 +808,10 @@ class PostgresStore:
                     """,
                     (session_id, *self._tenant_values(tenant)),
                 )
-                if cursor.fetchone() is None:
+                session = cursor.fetchone()
+                if session is None:
+                    return None
+                if vehicle_id is not None and session["vehicle_id"] != vehicle_id:
                     return None
 
             location_ok, location_id = self._resolve_storage_location(

@@ -57,6 +57,15 @@ RC1 permissions are:
 | operator | Yes | Yes | No |
 | viewer | Yes | No | No |
 
+## Inventory Source Links
+
+Inventory intake accepts optional source-vehicle and harvest-session links.
+Each supplied link must belong to the selected tenant workspace. When both
+links are supplied, the harvest session must belong to that source vehicle.
+Invalid links or a mismatched pair return HTTP 404 before an inventory item
+or storage location is created. Source-only, session-only, and unlinked intake
+remain supported.
+
 ## Validation
 
 ```powershell

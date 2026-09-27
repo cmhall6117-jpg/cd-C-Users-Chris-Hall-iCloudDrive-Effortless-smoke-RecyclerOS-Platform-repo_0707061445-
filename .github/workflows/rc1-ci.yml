@@ -2,8 +2,10 @@ name: RC1 Integration Checks
 
 on:
   pull_request:
+  workflow_dispatch:
   push:
     branches:
+      - main
       - "codex/gcp-*"
       - "codex/rc1-*"
       - "codex/pilot-*"

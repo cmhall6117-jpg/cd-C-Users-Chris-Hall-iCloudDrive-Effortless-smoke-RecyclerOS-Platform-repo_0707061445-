@@ -70,4 +70,3 @@ These results prove buildability, clean database initialization, authenticated
 tenant isolation, RBAC, Flutter analysis/tests, and the connected RC1 path. They
 do not prove durable API persistence or durable production identity; those gates
 remain blocked as `DEF-RC1-007` and `DEF-RC1-010`.
-

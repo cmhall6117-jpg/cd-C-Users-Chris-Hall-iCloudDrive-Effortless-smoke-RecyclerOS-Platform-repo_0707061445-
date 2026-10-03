@@ -1,5 +1,26 @@
 # RC1 CI/CD Release Evidence
 
+## Current Trigger Coverage
+
+`RC1 Integration Checks` runs for pull requests, pushes to `main`, and pushes
+to the existing `codex/gcp-*`, `codex/rc1-*`, `codex/pilot-*`,
+`codex/production-*`, and `codex/railway-*` branches. The `main` trigger records
+the actual merged commit as the tested candidate.
+
+For an on-demand check, open Actions, select `RC1 Integration Checks`, choose
+Run workflow, and select the branch to validate. This runs the current commit
+of that branch; confirm the full commit SHA in the completed run's
+`release-evidence` summary before using it as release evidence. Use GitHub's
+Re-run jobs control on an existing run when the original commit must be tested
+again.
+
+Every trigger runs the same ten prerequisite jobs and final `release-evidence`
+gate. These checks use ephemeral CI services and synthetic test credentials;
+they do not deploy the application or change a live database. A passing run is
+CI evidence only, and does not replace deployment acceptance or recovery checks.
+
+The sections below retain the historical baseline evidence.
+
 ## Auth Baseline
 
 - Branch: `codex/rc1-auth-tenant-rbac`
